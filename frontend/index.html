@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Document</title>
+        <link rel="stylesheet" href="css/vars.css">
+        <link rel="stylesheet" href="css/timeline.css">
+        <link rel="stylesheet" href="css/preview.css">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+
+    </head>
+    <body>
+        <div class="top-bar">
+            <div class="open">Open</div>
+            <div>About</div>
+            <div>?</div>
+        </div>
+        <div class="preview">
+            <div class="aside border-out">
+                <div class="tab-buttons">
+                    <div class="tab-button">
+                        <i class="fas fa-puzzle-piece"></i>
+                    </div>
+                    <div class="tab-button">
+                        <i class="fas fa-project-diagram"></i>
+                    </div>
+                    <div class="tab-button">
+                        <i class="fas fa-palette"></i>
+                    </div>
+                </div>
+                <div class="tabs">
+                    <div class="tab">
+                        <div class="edit">
+                            <h1>Segment</h1>
+                            <br>
+                            <h2>Name:</h2>
+                            <h2 class="name"></h2>
+                            <br>
+                            <h2>Start:</h2>
+                            <input class="start" type="number">
+                            <br>
+                            <br>
+                            <h2>End:</h2>
+                            <input class="end" type="number">
+                            <br>
+                            <br>
+                            <h2>Global Weight:</h2>
+                            <input value="1" type="number">
+                            <br>
+                            <br>
+                            <h2>Local Weight:</h2>
+                            <input value="1" type="number">
+                        </div>
+                    </div>
+                    <div class="tab">
+                        <div class="interpretations">
+                            <h1>Interpretations</h1>
+                            <div class="container border-in">
+                                <div class="interpretation">
+                                    <p class="interpretation-name">
+                                        i_0
+                                    </p>
+                                    <p class="interpretation-type">
+                                        AVG
+                                    </p>
+                                    <i class="fas fa-project-diagram"></i>
+                                </div>
+                                <div class="interpretation">
+                                    <p class="interpretation-name">
+                                        i_1
+                                    </p>
+                                    <p class="interpretation-type">
+                                        MOTION
+                                    </p>
+                                    <i class="fas fa-project-diagram"></i>
+                                </div>
+                            </div>
+                            <br>
+                            <select name="carlist" form="carform">
+                                <option value="average">Average</option>
+                                <option value="transfer">Transfer</option>
+                                <option value="overwrite">Overwrite</option>
+                                <option value="motion">Motion</option>
+                            </select>
+                            <button class="add">
+                                <i class="fa fa-plus"></i>
+                            </button>
+                            <br>
+                            <br>
+
+                            <p class="i-id"></p>
+                            <div class="avg">
+        
+                            </div>
+                            <div class="transfer">
+                            </div>
+                            <div class="overwrite">
+                                <p>Threshold</p>
+                                <input type="number">
+                                <br>
+                                <br>
+                                <p>Offset</p>
+                                <input type="number">
+                                <br>
+                                <br>
+                                <p>Gapping</p>
+                                <input type="number">
+                                <br>
+                                <br>
+                            </div>
+                            <div class="motion">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab">
+                        <div class="masking">
+                            <h1>Masking</h1>
+                            <div class="flow">
+                                    <i class="fas fa-layer-group"></i>
+                                    <i class="fas fa-undo"></i>
+                                    <i class="fas fa-redo"></i>
+                            </div>
+                            <br>
+                            <h2>Tools</h2>
+                            <div class="tools">
+                                    <i class="far fa-square"></i>
+                                    <i class="far fa-circle"></i>
+                                    <i class="fas fa-draw-polygon"></i>
+                                    <i class="fas fa-hand-pointer"></i>
+                                    <i class="fas fa-brush"></i>
+                                    <i class="fas fa-paint-roller"></i>
+                                <i class="fas fa-paint-brush"></i>
+                            </div>
+                            <br>
+                            <h2>Settings</h2>
+                            <br>
+                            <p>Enabled</p>
+                            <input type="checkbox" checked="true">
+                            <br>
+                            <p>Size</p>
+                            <input type="number" value="1">
+                            <br>
+                            <br>
+                            <p>Opacity</p>
+                            <input type="number" value="1">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="player border-out">
+                <div class="center">
+                    <canvas></canvas>
+                    <canvas class="mask"></canvas>
+                    <div class="controls">
+                        <i class="fas fa-step-backward"></i>
+                        <i class="fas fa-stop"></i>
+                        <i class="fas fa-play"></i>
+                        <i class="fas fa-pause"></i>
+                        <i class="fas fa-step-forward"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="image border-out">
+                <div class="center">
+                    <img>
+                    <img src="../fin_state.jpg" class="fake">
+                    <div class="old"></div>
+                    <i class="fas fa-clock spinner"></i>
+                    <i class="fas fa-file-video"></i>
+                    frame
+                    <i class="fas fa-chess-board"></i>
+                    1920x1080
+                    <i class="fas fa-clock"></i>
+                    <span class="time">300</span>ms
+                </div>
+            </div>
+        </div>
+        <div class="timeline">
+            <div class="aside border-out">
+                <div class="menu border-in-out">
+                    <p>
+                        <i class="fas fa-film"></i>
+                        <span class="video-name">No Video</span>
+                    </p>
+                    <input class="fakeinput" type="file" style="display: none">
+                </div>
+                <div class="scroll-wrapper">
+                    <div class="time-label border-out">
+                        <!-- <p>Frames</p> -->
+                    </div>
+                    <div class="video">
+                        <div class="add">
+                            <!-- <i class="fas fa-plus"></i> SEGMENT -->
+                            Add Segment
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+            
+            <div class="main">
+                <div class="scroll-x">
+                    <div class="scroll-left border-in-out hover-font pointer">
+                        <i class="fas fa-chevron-left center"></i>
+                    </div>
+                    <div class="scroll-x-track border-out">
+                        <div class="scroll-x-thumb border-in-out">
+                            <div class="scale-left"></div>
+                            <div class="scale-right"></div>
+                        </div>
+                    </div>
+                    <div class="scroll-right border-in-out hover-font pointer">
+                        <i class="fas fa-chevron-right center"></i>
+                    </div>
+                </div>
+                <div class="scroll-wrapper">
+                    <div class="time-label border-out">
+                    </div>
+                    <div class="video"></div>
+                
+                </div>
+                
+            </div>
+
+            <div class="scroll-y">
+                <div class="scroll-reset border-in-out hover-font pointer">
+                    <i class="fas fa-expand center"></i>
+                </div>
+                <div class="scroll-up border-in-out hover-font pointer">
+                    <i class="fas fa-chevron-up center"></i>
+                </div>
+                <div class="scroll-y-track border-out">
+                    <div class="scroll-y-thumb border-in-out">
+                        <div class="scale-up"></div>
+                        <div class="scale-down"></div>
+                    </div>
+                </div>
+                <div class="scroll-down border-in-out hover-font pointer">
+                    <i class="fas fa-chevron-down center"></i>
+                </div>
+            </div>
+        </div>
+        <div class="overlay">
+            <div>
+                    <svg aria-hidden="true" data-prefix="fas" data-icon="th" class="svg-inline--fa fa-th fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M149.333 56v80c0 13.255-10.745 24-24 24H24c-13.255 0-24-10.745-24-24V56c0-13.255 10.745-24 24-24h101.333c13.255 0 24 10.745 24 24zm181.334 240v-80c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24h101.333c13.256 0 24.001-10.745 24.001-24zm32-240v80c0 13.255 10.745 24 24 24H488c13.255 0 24-10.745 24-24V56c0-13.255-10.745-24-24-24H386.667c-13.255 0-24 10.745-24 24zm-32 80V56c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24h101.333c13.256 0 24.001-10.745 24.001-24zm-205.334 56H24c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24h101.333c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24zM0 376v80c0 13.255 10.745 24 24 24h101.333c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H24c-13.255 0-24 10.745-24 24zm386.667-56H488c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H386.667c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24zm0 160H488c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H386.667c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24zM181.333 376v80c0 13.255 10.745 24 24 24h101.333c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24z"></path></svg>                <p>TimeBasePictures</p>
+            </div>
+        </div>
+        <style>
+            .overlay {
+                position: fixed;
+                width: 100%;
+                height: 100%;
+                background-color: #212121;
+                z-index: 999;
+                opacity: 1;
+                transition: opacity 300ms ease-in;
+            }
+
+            .overlay div {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                color: var(--teal-A700);
+                transform: translate(-50%, -50%);
+                text-align: center;
+
+            }
+
+       
+            .overlay svg {
+                width: 10vh;
+                height: 10vh;
+
+                margin: 30px auto;
+                -webkit-animation: sk-rotateplane 1.2s infinite ease-in-out;
+                animation: sk-rotateplane 1.2s infinite ease-in-out;
+            }
+
+
+            @keyframes sk-rotateplane {
+                0% { 
+                    transform: perspective(120px) rotateX(0deg) rotateY(0deg);
+                } 50% { 
+                    transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg);
+                } 100% { 
+                    transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
+                }
+            }
+
+            .overlay p {
+                font-size: 2.5vh;
+            }
+        </style>
+        <script>
+            window.addEventListener('load', function () {
+                    setTimeout(function () {
+                        let overlay = document.querySelector('.overlay');
+                    overlay.style.opacity = 0;
+                    setTimeout(function () {
+                        document.body.removeChild(overlay);
+                    }, 300);
+                }, 500)
+            });
+        </script>
+        <script src="js/modules/config.js"></script>
+        <script src="js/modules/masking.js"></script>
+        <script src="js/modules/tabs.js"></script>
+        <script src="js/modules/edit.js"></script>
+        <script src="js/modules/preview.js"></script>
+        <script src="js/modules/ipc.js"></script>
+        <script src="js/modules/scrollx.js"></script>
+        <script src="js/modules/scrolly.js"></script>
+        <script src="js/modules/segments.js"></script>
+        <script src="js/modules/timeline.js"></script>
+        <script src="js/modules/interpretations.js"></script>
+    </body>
+</html>

@@ -1,0 +1,530 @@
+
+
+* {
+    margin: 0;
+    padding: 0;
+    -webkit-user-select: none;
+    cursor: default;
+}
+
+.top-bar {
+    position: absolute;
+    width: 100%;
+    height: var(--top-bar-height);
+    /* background-color: var(--gray-900); */
+    background-color: black;
+    color: var(--font-color);
+    line-height: var(--top-bar-height);
+    font-size: 14px;
+}
+
+.top-bar div{
+    float: left;
+    padding: 0 7px;
+    opacity: 0.9;
+}
+
+.top-bar div:hover {
+    opacity: 1;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.center {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.border-in-out {
+    border: 0px solid red;
+    outline: 0.5px solid var(--border-outer-color);
+    box-shadow: inset 0 0 0 0.5px var(--border-inner-color);
+}
+
+.pointer {
+    cursor: pointer;
+}
+
+.border-in {
+    box-shadow: inset 0 0 0 0.5px var(--border-inner-color);
+}
+
+.border-out {
+    border: 0px solid red;
+    outline: 0.5px solid var(--border-outer-color);
+}
+
+.hover-font {
+    color: var(--font-defocus-color);
+}
+
+.hover-font:hover {
+    color: var(--font-focus-color);
+}
+
+body {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    font-family: sans-serif;
+    /* DEBUG */
+    user-select: none; 
+}
+
+.timeline {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: var(--timeline-height);
+    overflow: hidden;
+}
+
+/* ######### aside class ######### */
+.aside {
+    position: absolute;
+    height: 100%;
+    width: var(--aside-width);
+}
+
+.menu {
+    position: absolute;
+    width: 100%;
+    height: var(--scroll-button-height);
+    background-color: var(--gray-700);
+    color: var(--font-color);
+    z-index: 2;
+}
+
+.menu p {
+    font-size: var(--menu-font-size);
+    position: absolute;
+    top: 50%;
+    left: 3%;
+    transform: translate(0, -50%);
+}
+
+.scroll-wrapper {
+    z-index: 1;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    margin-top: var(--scroll-button-height);
+    background-color: var(--scroll-wrapper-color);
+}
+
+.main .scroll-wrapper {
+    z-index: 0;
+}
+
+
+
+.video {
+    height: var(--video-height);
+    overflow: hidden;
+}
+
+.video .img {
+    height: 100%;
+    width: var(--frame-width);
+    float: left;
+    /* background-position: left; */
+    /* background-size: contain; */
+    /* background-repeat: no-repeat; */
+    display: none;
+}
+
+.label-1 .img:nth-child(n + 1) {
+    display: block;
+}
+
+.label-2 .img:nth-child(2n + 1) {
+    display: block;
+    margin-right: var(--frame-width);
+}
+
+.label-4 .img:nth-child(4n + 1) {
+    display: block;
+    margin-right: calc(3 * var(--frame-width));
+}
+
+.label-8 .img:nth-child(8n + 1) {
+    display: block;
+    margin-right: calc(7 * var(--frame-width));
+}
+
+.label-16 .img:nth-child(16n + 1) {
+    display: block;
+    margin-right: calc(15 * var(--frame-width));
+}
+
+.video .img img {
+    height: 100%;
+    width: auto;
+}
+
+.aside .video {
+    position: relative;
+    /* border-radius: 1vh; */
+    background-color: var(--teal-A400);
+}
+
+.video .add {
+    font-size: 1.6vh;
+    color: white;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.segment {
+    position: relative;
+    width: 100%;
+    height: var(--segment-height);
+    transition: filter 150ms ease-in;
+    opacity: 0.75;
+}
+
+.segment.active {
+    opacity: 1;
+}
+
+.segment.segment.deactive {
+    filter: grayscale(1);
+}
+
+.aside .segment {
+    color: white;
+    background-color: var(--teal-A700) !important;
+    background: linear-gradient(to bottom, var(--teal-A700), #28C5AF);
+    /* border-radius: 0 1vh 1vh 0; */
+}
+
+.aside .segment .backdrop{
+    opacity: 0.04;
+    color: black;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    line-height: 50%;
+    font-size: 300%;
+}
+
+.aside .segment .toggle {
+    position: absolute;
+    bottom: 1vh;
+    right: 1vh;
+}
+
+.aside .segment .toggle:active i{
+    opacity: 0.7;
+}
+
+.aside .segment .del {
+    position: absolute;
+    bottom: 1vh;
+    left: 1vh;
+}
+
+.aside .segment .del:active  {
+    opacity: 0.7;
+}
+
+.aside .segment .name {
+    position: absolute;
+    top: 0.5vh;
+    left: 0.5vh;
+}
+
+.segment:nth-child(odd) {
+    background-color: var(--segment-odd-color);
+}
+
+.segment:nth-child(even) {
+    background-color: var(--segment-even-color);
+}
+
+
+/* ######### main class ######### */
+.main {
+    position: absolute;
+    left: var(--aside-width);
+    width: calc(100% - var(--scroll-y-width) - var(--aside-width));
+    height: 100%;
+}
+
+.scroll-x {
+    position: absolute;
+    width: 100%;
+    height: var(--scroll-x-height);
+    z-index: 2;
+}
+
+.scroll-left {
+    position: absolute;
+    width: var(--scroll-button-width);
+    height: var(--scroll-button-height);
+    background-color: var(--scroll-button-color);
+}
+
+.scroll-right {
+    position: absolute;
+    right: 0;
+    width: var(--scroll-button-width);
+    height: var(--scroll-button-height);
+    background-color: var(--scroll-button-color);
+}
+
+.scroll-x-track {
+    position: absolute;
+    left: var(--scroll-button-width);
+    width: calc(100% - 2 * var(--scroll-button-width));
+    height: 100%;
+    background-color: var(--scroll-track-color);
+}
+
+.scroll-x-thumb {
+    /* REPLACE WITH JS */
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background-color: var(--scroll-button-color);
+}
+
+.scale-left {
+    position: absolute;
+    width: var(--scroll-scale-width);
+    left: 0;
+    height: 100%;
+    cursor: col-resize;
+}
+
+.scale-right {
+    position: absolute;
+    width: var(--scroll-scale-width);
+    right: 0;
+    height: 100%;
+    cursor: col-resize;
+}
+
+.time-label {
+    width: 100%;
+    height: var(--time-label-height);
+    background-color: var(--time-label-color);
+    overflow: hidden;
+
+}
+
+.time-label p {
+    color: var(--font-color-transparent);
+    line-height: var(--time-label-height);
+    width: var(--frame-width);
+    text-align: center;
+    float: left;
+    opacity: 0;
+    display: none;
+}
+
+.time-label p.active-frame {
+    color: var(--font-color);
+    background-color: var(--teal-A700);
+}
+
+.label-1 .time-label p:nth-child(n + 1) {
+    opacity: 1;
+    display: block;
+}
+
+.label-2 .time-label p:nth-child(2n + 1) {
+    opacity: 1;
+    display: block;
+    width: calc(2 * var(--frame-width));
+}
+
+.label-4 .time-label p:nth-child(4n + 1) {
+    opacity: 1;
+    display: block;
+    width: calc(4 * var(--frame-width));
+}
+
+.label-8 .time-label p:nth-child(8n + 1) {
+    opacity: 1;
+    display: block;
+    width: calc(8 * var(--frame-width));
+}
+
+.label-16 .time-label p:nth-child(16n + 1) {
+    opacity: 1;
+    display: block;
+    width: calc(16 * var(--frame-width));
+}
+
+.main .label-1 .time-label {
+    background-image: repeating-linear-gradient(
+        90deg,
+        var(--segment-grid-color) 0%,
+        transparent calc(0% + 2px),
+        transparent calc(var(--frame-width) - 1px),
+        var(--segment-grid-color) var(--frame-width)
+    );
+}
+
+.main .label-2 .time-label {
+    background-image: repeating-linear-gradient(
+        90deg,
+        var(--segment-grid-color) 0%,
+        transparent calc(0% + 1px),
+        transparent calc(var(--frame-width) * 2 - 1px),
+        var(--segment-grid-color) calc(var(--frame-width) * 2)
+    );
+}
+
+.main .label-4 .time-label {
+    background-image: repeating-linear-gradient(
+        90deg,
+        var(--segment-grid-color) 0%,
+        transparent calc(0% + 1px),
+        transparent calc(var(--frame-width) * 4 - 1px),
+        var(--segment-grid-color) calc(var(--frame-width) * 4)
+    );
+}
+
+.main .label-8 .time-label {
+    background-image: repeating-linear-gradient(
+        90deg,
+        var(--segment-grid-color) 0%,
+        transparent calc(0% + 1px),
+        transparent calc(var(--frame-width) * 8 - 1px),
+        var(--segment-grid-color) calc(var(--frame-width) * 8)
+    );
+}
+
+.main .label-16 .time-label {
+    background-image: repeating-linear-gradient(
+        90deg,
+        var(--segment-grid-color) 0%,
+        transparent calc(0% + 1px),
+        transparent calc(var(--frame-width) * 16 - 1px),
+        var(--segment-grid-color) calc(var(--frame-width) * 16)
+    );
+}
+
+
+
+.main .segment {
+    background-position: 0% var(--video-height);
+    background-image: repeating-linear-gradient(
+        90deg,
+        var(--segment-grid-color) 0%,
+        transparent calc(0% + 1px),
+        transparent calc(var(--frame-width) - 1px),
+        var(--segment-grid-color) var(--frame-width)
+    );    
+}
+
+.main .segment .block {
+    height: 100%;
+    position: absolute;
+    background-color: var(--teal-A100);
+    background: linear-gradient(to bottom, var(--teal-A100), var(--teal-A100));
+    overflow: hidden;
+    border-radius: 1vh 0 1vh 0;
+    width: 5%;
+}
+
+.main .segment .block .bar {
+    position: absolute;
+    width: 100%;
+    height: 3vh;
+    font-size: 1.5vh;
+    line-height: 3vh;
+    color: rgba(255, 255, 255, 0.7);
+    background-color: rgba(0, 0, 0, 0.2);
+    text-indent: 0.5vh;
+    cursor: pointer;
+}
+
+.main .segment .block .progress {
+    position: absolute;
+    width: 9000px;
+    height: 100%;
+    left: 0%;
+    /* transition: left 300ms ease-in; */
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.main .segment .block .scale-left{
+
+}
+
+.main .segment .block .scale-right{
+
+}
+
+/* ######### scroll-y class ######### */
+.scroll-y {
+    position: absolute;
+    right: 0;
+    width: var(--scroll-y-width);
+    height: 100%;
+    z-index: 2;
+}
+
+/* scroll reset button */
+.scroll-reset {
+    position: absolute;
+    width: var(--scroll-button-width);
+    height: var(--scroll-button-height);
+    background-color: var(--scroll-button-color);
+}
+
+.scroll-up {
+    position: absolute;
+    top: var(--scroll-button-height);
+    width: var(--scroll-button-width);
+    height: var(--scroll-button-height);
+    background-color: var(--scroll-button-color);
+}
+
+.scroll-down {
+    position: absolute;
+    bottom: 0;
+    width: var(--scroll-button-width);
+    height: var(--scroll-button-height);
+    background-color: var(--scroll-button-color);
+}
+
+.scroll-y-track {
+    position: absolute;
+    top: calc(2 * var(--scroll-button-height));
+    width: 100%;
+    height: calc(100% - 3 * var(--scroll-button-height));
+    background-color: var(--scroll-track-color);
+}
+
+.scroll-y-thumb {
+    width: 100%;
+    /* REPLACE WITH JS */
+    height: 50%;
+    position: absolute;
+    background-color: var(--scroll-button-color);
+}
+
+.scale-up {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: var(--scroll-scale-width);
+    cursor: row-resize;
+}
+
+.scale-down {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: var(--scroll-scale-width);
+    cursor: row-resize;
+}

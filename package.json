@@ -1,0 +1,24 @@
+{
+  "name": "tbp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "frontend/index.js",
+  "dependencies": {
+    "electron-ipc-stream": "^0.2.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Montag55/VisoProj-TBP.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Montag55/VisoProj-TBP/issues"
+  },
+  "homepage": "https://github.com/Montag55/VisoProj-TBP#readme"
+}

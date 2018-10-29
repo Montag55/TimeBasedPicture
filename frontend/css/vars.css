@@ -1,0 +1,60 @@
+:root {
+    --timeline-height: 45%;
+
+    --top-bar-height: 25px;
+
+    --tab-buttons-height: 4vh;
+    
+    --gray-50: #FAFAFA;
+    --gray-100: #F5F5F5;
+    --gray-200: #EEEEEE;
+    --gray-300: #E0E0E0;
+    --gray-400: #BDBDBD;
+    --gray-500: #9E9E9E;
+    --gray-600: #757575;
+    --gray-700: #616161;
+    --gray-800: #424242;
+    --gray-900: #212121;
+
+    --teal-A100:#A7FFEB;
+    --teal-A200:#64FFDA;
+    --teal-A400:#1DE9B6;
+    --teal-A700:#00BFA5;
+
+    --edit-color: var(--gray-800);
+    --player-color: var(--gray-900);
+    --image-color: var(--gray-900);
+
+    --aside-width: 13%;
+    --scroll-y-width: 2vh;
+    --scroll-x-height: var(--scroll-y-width);
+    --scroll-button-width: var(--scroll-y-width);
+    --scroll-button-height: var(--scroll-y-width);
+    --scroll-scale-width: 0.7vh;
+
+    --scroll-button-color: var(--gray-600);
+    --scroll-track-color: var(--gray-700);
+    --border-outer-color: black;
+    --border-inner-color: var(--gray-300);
+    --font-defocus-color: var(--gray-300);
+    --font-focus-color: var(--gray-50);
+    --font-color: var(--gray-50);
+    --font-color-transparent: rgba(0, 0, 0, 0.6);
+
+    --menu-font-size: calc(var(--scroll-x-height) * 0.75);
+    --debug: #ff00ff;
+
+    --time-label-height: 3vh;
+    --time-label-color: var(--gray-800);
+
+    --scroll-wrapper-color: var(--gray-900);
+
+    --segment-odd-color: var(--gray-800);
+    --segment-even-color: var(--gray-900);
+    --segment-grid-color: rgba(0, 0, 0, 0.1);
+
+    --video-height: 15%;
+    --segment-height: 20%;
+
+    --frame-width: 1%;
+}

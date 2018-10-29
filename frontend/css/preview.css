@@ -1,0 +1,289 @@
+.preview {
+    position: absolute;
+    width: 100%;
+    top: var(--top-bar-height);
+    height: calc(100% - var(--timeline-height) - var(--top-bar-height));
+}
+
+.preview .aside {
+    position: absolute;
+    height: 100%;
+    width: var(--aside-width);
+    background-color: var(--edit-color);
+    z-index: 1;
+    color: var(--font-color);
+}
+
+.preview .tab-buttons {
+    position: absolute;
+    height: var(--tab-buttons-height);
+    width: 100%;
+    text-align: center;
+}
+
+.preview .tab-buttons .tab-button {
+    width: calc(100% / 3);
+    height: 100%;
+    float: left;
+    line-height: var(--tab-buttons-height);
+    border-bottom: 2px solid var(--teal-A700);
+    opacity: 0.9;
+}
+
+.preview .tab-buttons .tab-button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    opacity: 1;
+}
+
+.preview .tab-buttons .tab-button.active{
+    background-color: var(--teal-A700);
+    opacity: 1;
+
+}
+
+
+.preview .tabs {
+    position: absolute;
+    width: 100%;
+    height: calc(100% - var(--tab-buttons-height));
+    top: var(--tab-buttons-height);
+}
+
+.preview .tabs .tab {
+    display: none;
+    width: 100%;
+    height: 100%;
+}
+
+.preview .tabs .tab.active {
+    display: block;
+}
+
+.preview .interpretations {
+    width: 95%;
+    height: 100%;
+    margin: auto;
+    margin-top: 10%;
+}
+
+.preview .interpretations .container {
+    max-height: 60%;
+    min-height: 40%;
+    background-color: var(--gray-900);
+}
+
+.preview .interpretations .container .interpretation {
+    position: relative;
+    width: 100%;
+    border-radius: 0.2vh;
+    height: 4vh;
+    background: linear-gradient(to bottom, var(--teal-A700), #28C5AF);
+}
+
+.preview .interpretations .container .interpretation .interpretation-name {
+    font-size: 1.3vh;
+    padding: 5px;
+}
+
+
+.preview .interpretations .container .interpretation .interpretation-type {
+    font-size: 1.2vh;
+    padding-right: 5px;
+    text-align: right;
+}
+
+
+.preview .interpretations .container .interpretation i {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    color: rgba(0, 0, 0, 0.07);
+    transform: translate(-50%, -50%);
+}
+
+.preview .aside select {
+    border: 0px solid red;
+    outline: 0.5px solid var(--border-outer-color);
+    box-shadow: inset 0 0 0 0.5px var(--border-inner-color);
+    background-color: var(--gray-900);
+    height: 2vh;
+    color: white;
+    width: 90%;
+}
+
+.preview .aside .add {
+    background-color: var(--teal-A700);
+    border: 2px solid var(--teal-A700);
+    color: white;
+}
+
+.preview .edit {
+    width: 95%;
+    z-index: 1;
+    margin: auto;
+    margin-top: 10%;
+}
+
+.preview .aside h1 {
+    font-weight: lighter !important;
+    margin: 0.1vh;
+    font-size: 1.5vh;
+}
+
+.preview .aside h2 {
+    font-weight: lighter !important;
+    font-size: 1.5vh;
+}
+
+.preview .aside input {
+    width: 90%;
+    border: 0px solid red;
+    outline: 0.5px solid var(--border-outer-color);
+    box-shadow: inset 0 0 0 0.5px var(--border-inner-color);
+    height: 2vh;
+    color: white;
+    background-color: var(--gray-900);
+    margin-left: 4%;
+    font-size: 1.3vh;
+    text-indent: 1vh;
+}
+
+.preview .player {
+    position: absolute;
+    height: 100%;
+    left: var(--aside-width);
+    width: calc(0.5 * (100% - var(--aside-width)));
+    background-color: var(--player-color);
+    text-align: center;
+    color: var(--font-color);
+}
+
+.preview .player .controls {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 3vh;
+    overflow: hidden;
+    text-align: center;
+    position: relative;
+    margin-top: 0.7vh;
+}
+
+.preview .player .controls i {
+    width: 19%;
+    padding: 3% 0;
+    opacity: 0.8;
+}
+
+.preview .player .controls i:hover {
+    opacity: 1;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.preview .spinner {
+    position: absolute;
+    color: white;
+    opacity: 0.5;
+    font-size: 8vh;
+    left: 50%;
+    top: 50%;
+    /* animation-name: rotate;  */
+    /* animation-duration: 2s;  */
+    /* animation-iteration-count: infinite; */
+    /* animation-timing-function: linear; */
+    transform: translate(-50%, -50%);
+    transition: opacity 200ms ease-in;
+}
+
+@keyframes rotate {
+    from {transform: translate(-50%, -50%) rotate(0deg);}
+    to {transform: translate(-50%, -50%) rotate(360deg);}
+}
+
+.preview .player .center {
+    width: 90%;
+}
+
+.preview .player canvas {
+    width: 100%;
+    background-color: black;
+}
+
+.preview .player canvas.mask {
+    width: 100%;
+    z-index: 99;
+    position: absolute;
+    left: 0;
+    top: 0;
+    background-color: transparent;
+    opacity: 0.5;
+}
+
+.preview .image {
+    position: absolute;
+    height: 100%;
+    right: 0;
+    width: calc(0.5 * (100% - var(--aside-width)));
+    background-color: var(--image-color);
+    text-align: center;
+}
+
+.preview .image .center {
+    width: 90%;
+    color: rgba(255, 255, 255, 0.2);
+}
+
+
+.preview .image img {
+    position: relative;
+    width: 100%;
+    display: block;
+    background-color: black;
+    z-index: 10;
+    margin-bottom: 0.7vh;
+}
+
+.preview .image img.fake {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 9;
+}
+
+.aside .masking {
+    width: 95%;
+    margin: auto;
+    margin-top: 10%;
+}
+
+.aside .masking .flow {
+    width: 100%;
+    height: 3vh;
+    text-align: center;
+    line-height: 3vh;
+}
+
+.aside .masking .tools {
+    text-align: center;
+}
+
+.aside .masking i {
+    width: calc(100% / 3.2);
+    opacity: 0.9;
+    height: 4vh;
+    line-height: 4vh;
+}
+.aside .masking i:hover {
+    opacity: 1;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.aside .masking i.active {
+    background-color: var(--teal-A700);
+}
+
+.aside .masking input[type="checkbox"] {
+    border: none;
+    outline: none;
+    box-shadow: none;
+    width: 25px;
+}

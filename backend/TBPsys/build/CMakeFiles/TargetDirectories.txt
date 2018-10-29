@@ -1,0 +1,3 @@
+/home/lucas/Documents/git/VisoProj-TBP/backend/TBPsys/build/CMakeFiles/rebuild_cache.dir
+/home/lucas/Documents/git/VisoProj-TBP/backend/TBPsys/build/CMakeFiles/Time_Terminal.dir
+/home/lucas/Documents/git/VisoProj-TBP/backend/TBPsys/build/CMakeFiles/edit_cache.dir
