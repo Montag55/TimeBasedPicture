@@ -11,12 +11,15 @@ and edit them yourself...
 */
 
 class Segment;
-#include <opencv2/opencv.hpp>
-#include <string.h>
-#include <vector>
-#include <segment.hpp>
-#include <thread>
 #include <mutex>
+#include <vector>
+#include <thread>
+#include <string.h>
+
+#include "segment.hpp"
+#include "interpretation.hpp"
+
+#include <opencv2/opencv.hpp>
 #include "../../OpenGL/include/glapplication.hpp"
 
 
@@ -29,9 +32,12 @@ public:
   ~Base();
 
   //ORGA::::::::::::::::::::::::::::::::::::::::::::::::
-  std::shared_ptr<Segment>            add_segment(int id);
-  std::shared_ptr<Segment>            add_segment(int start, int end, int id);
-  std::shared_ptr<Segment>            add_segment(int start, int end, float local_i, float global_i, int id);
+  int                 add_segment(int start, int end, float local_i, float global_i);
+  bool                delete_segment(int id);
+  bool                manipulate_segment(int id, int start, int end, float local_i, float global_i);
+  float               get_segment_progress(int id);
+  int                 add_interpretation(int typ_i);
+  bool                connect(int id_segment, int id_interpretation);
   void                save(std::string file);
 
   //WORK::::::::::::::::::::::::::::::::::::::::::::::::
@@ -88,7 +94,8 @@ private:
    //simple mutex solution for the start:
   std::mutex              m_mutex_update;        //m_in_calculation
   std::mutex              m_mutex_result;        //read & write update img
-  //std::vector<std::shared_ptr<Segment>> m_all_segments= std::vector<std::shared_ptr<Segment>>();
+  std::vector<std::shared_ptr<Segment>> m_segments;
+  std::vector<std::shared_ptr<Interpretation>> m_interpretations;
 };
 
 #endif

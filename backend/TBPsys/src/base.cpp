@@ -28,10 +28,11 @@ Base::Base(std::string const& video_name) :
   m_intensity{1.0f},
   m_uni_fac{0.0f},
   m_worker{&Base::thread_calc_loop, this},
-  //m_thread_GLAPP{&Base::thread_GLAPP_loop, this},
   m_update_work{false},
   m_mutex_update{},
-  m_mutex_result{}{
+  m_mutex_result{},
+  m_segments{std::vector<std::shared_ptr<Segment>>()},
+  m_interpretations{std::vector<std::shared_ptr<Interpretation>>()}{
     std::cout<<"NEW BASE\n";
     std::cout<<"video:"<<m_file<<"\n";
     std::cout<<"pnt_min:"<<m_pnt_min<<"\n";
@@ -68,7 +69,6 @@ bool Base::use_gpu(){
   return m_use_gpu;
 }
 
-
 void Base::thread_calc_loop(){ //waits for work and makes calculataion
   int wait_for_work_time=200;
   int wait_while_work= 100;
@@ -102,23 +102,93 @@ void Base::thread_calc_loop(){ //waits for work and makes calculataion
   }
 }
 
-std::shared_ptr<Segment>  Base::add_segment(int id){
-  return add_segment(0,1, id);
-}
-
-std::shared_ptr<Segment> Base::add_segment(int start, int end, int id){
-  return add_segment(start, end, 1 ,1, id);
-}
-
-std::shared_ptr<Segment> Base::add_segment(int start, int end, float local_i, float global_i, int id){
+int Base::add_segment(int start, int end, float local_i, float global_i){
+  int id = m_segments.size();
   double inten_loc = local_i;
   double inten_glo = global_i;
   end++;
+
   std::shared_ptr<Base> ptr = shared_from_this();
-  std::shared_ptr<Segment>  new_seg = std::make_shared<Segment>(m_file, m_img_type, m_pnt_min, m_pnt_max, start,
-                                                                end, inten_loc, inten_glo, ptr, m_values_abs,
-                                                                m_values_fac, m_uni_fac, id);
-  return new_seg;
+  m_segments.push_back(std::make_shared<Segment>(m_file, m_img_type, m_pnt_min, m_pnt_max, start, end, inten_loc, inten_glo, ptr, m_values_abs, m_values_fac, m_uni_fac, id));
+  return id;
+}
+
+bool Base::delete_segment(int id){
+  bool exit_status;
+
+  if(id < m_segments.size()){
+    m_segments[id]->delete_seg();
+    exit_status = true;
+    std::cout<< "Deleting segment with id: " << id << "\n";
+  }
+  else{
+    exit_status = false;
+    std::cout<<"error, wrong segment id!?\n";
+  }
+
+  return exit_status;
+}
+
+bool Base::manipulate_segment(int id, int start, int end, float local_i, float global_i){
+  m_segments[id]->manipulate(start, end, local_i, global_i);
+  return true;
+}
+
+float Base::get_segment_progress(int id){
+  return m_segments[id]->get_progress();
+}
+
+int Base::add_interpretation(int typ_i){
+  std::cout<<"addinterpretation: ";
+  int id = m_interpretations.size();
+
+  if(typ_i == 0 /*averaging*/){
+    std::cout<<"Average\n";
+    m_interpretations.push_back(std::make_shared<Average>(shared_from_this(), id));
+  }
+  else if (typ_i == 1 /*transferfunktion*/){
+    std::cout<<"Transferfunction (not implemnted) \n";
+    id = -42;
+    /*
+    args.size() ? alternativ einen vector? oder einen parameter, der length bestimmt
+    int start  = args[1]->IntegerValue();
+    int length =args.size();
+    std:shared_ptr<std::vector<float>> weights= std::make_shared<std::vector<float>>();
+    for (int i=2; i<length; i++){
+      std::istringstream iss(v[i]);
+      weights->push_back(((float)args[i]->NumberValue()));
+      }
+    }
+    interpretations.push_back(std::make_shared<Transferfunction>(base,interpret_id, start, weights));
+    */
+  }
+  else if (typ_i == 2 /*overplott*/){
+    id = -42;
+    std::cout<<"Overplott (not implemnted) \n";
+  }
+  else if (typ_i == 3 /*boost*/){
+    id = -42;
+    std::cout<<"Boost not (not implemnted)\n";
+  }
+  else{
+    id = -42;
+    std::cout<<"wrong typ?\n";
+  }
+
+  return id;
+}
+
+bool Base::connect(int id_segment, int id_interpretation){
+  bool correct = false;
+  if((id_segment <= m_segments.size() - 1) &&
+     (id_interpretation <= m_interpretations.size() - 1)) {
+
+    m_segments[id_segment]->set_interpretation(m_interpretations[id_interpretation]);
+    std::cout<< "Segment " << id_segment << " is interpreted with interpretation " << id_interpretation << "\n";
+    correct = true;
+  }
+
+  return correct;
 }
 
 void Base::save(std::string file){
