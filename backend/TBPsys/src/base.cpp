@@ -13,33 +13,33 @@ using namespace cv;
 
 
 Base::Base(std::string const& video_name) :
-m_in_calculation{false},
-m_file {video_name},
-m_work_size{100},
-m_video{std::make_shared<VideoCapture>(m_file, cv::CAP_IMAGES)},  /*!when changing to ffmpeg, change set framepos!*/
-m_img_type{CV_32FC3},//http://ninghang.blogspot.de/2012/11/list-of-mat-type-in-opencv.html
-m_pnt_min{Point(0, 0)},
-m_pnt_max{Point(m_video->get(CV_CAP_PROP_FRAME_WIDTH), m_video->get(CV_CAP_PROP_FRAME_HEIGHT))},
-m_frame_start{0},
-m_frame_last{m_video->get(CV_CAP_PROP_FRAME_COUNT)-1},
-m_values_abs{Mat(m_pnt_max.y, m_pnt_max.x, m_img_type, cv::Scalar(0,0,0))},
-m_values_fac{Mat(m_pnt_max.y, m_pnt_max.x, CV_64FC1, cv::Scalar(0))},
-m_result{Mat(m_pnt_max.y, m_pnt_max.x, m_img_type, cv::Scalar(0,0,0))},
-m_intensity{1.0f},
-m_uni_fac{0.0f},
-m_worker{&Base::thread_calc_loop, this},
-//m_thread_GLAPP{&Base::thread_GLAPP_loop, this},
-m_update_work{false},
-m_mutex_update{},
-m_mutex_result{}{
-  std::cout<<"NEW BASE\n";
-  std::cout<<"video:"<<m_file<<"\n";
-  std::cout<<"pnt_min:"<<m_pnt_min<<"\n";
-  std::cout<<"pnt_max:"<<m_pnt_max<<"\n";
-  std::cout<<"frame_start:"<<m_frame_start<<"\n";
-  std::cout<<"frame_last:"<<m_frame_last<<"\n";
-  std::cout<<"intensity:"<<m_intensity<<"\n";
-}
+  m_in_calculation{false},
+  m_file {video_name},
+  m_work_size{100},
+  m_video{std::make_shared<VideoCapture>(m_file, cv::CAP_IMAGES)},  /*!when changing to ffmpeg, change set framepos!*/
+  m_img_type{CV_32FC3},//http://ninghang.blogspot.de/2012/11/list-of-mat-type-in-opencv.html
+  m_pnt_min{Point(0, 0)},
+  m_pnt_max{Point(m_video->get(CV_CAP_PROP_FRAME_WIDTH), m_video->get(CV_CAP_PROP_FRAME_HEIGHT))},
+  m_frame_start{0},
+  m_frame_last{m_video->get(CV_CAP_PROP_FRAME_COUNT)-1},
+  m_values_abs{Mat(m_pnt_max.y, m_pnt_max.x, m_img_type, cv::Scalar(0,0,0))},
+  m_values_fac{Mat(m_pnt_max.y, m_pnt_max.x, CV_64FC1, cv::Scalar(0))},
+  m_result{Mat(m_pnt_max.y, m_pnt_max.x, m_img_type, cv::Scalar(0,0,0))},
+  m_intensity{1.0f},
+  m_uni_fac{0.0f},
+  m_worker{&Base::thread_calc_loop, this},
+  //m_thread_GLAPP{&Base::thread_GLAPP_loop, this},
+  m_update_work{false},
+  m_mutex_update{},
+  m_mutex_result{}{
+    std::cout<<"NEW BASE\n";
+    std::cout<<"video:"<<m_file<<"\n";
+    std::cout<<"pnt_min:"<<m_pnt_min<<"\n";
+    std::cout<<"pnt_max:"<<m_pnt_max<<"\n";
+    std::cout<<"frame_start:"<<m_frame_start<<"\n";
+    std::cout<<"frame_last:"<<m_frame_last<<"\n";
+    std::cout<<"intensity:"<<m_intensity<<"\n";
+  }
 
 Base::~Base(){
   std::cout << "Base-Destruction: \n";
@@ -111,11 +111,13 @@ std::shared_ptr<Segment> Base::add_segment(int start, int end, int id){
 }
 
 std::shared_ptr<Segment> Base::add_segment(int start, int end, float local_i, float global_i, int id){
-  double inten_loc=local_i;
-  double inten_glo=global_i;
+  double inten_loc = local_i;
+  double inten_glo = global_i;
   end++;
-  std::shared_ptr<Base> ptr=shared_from_this();
-  std::shared_ptr<Segment>  new_seg= std::make_shared<Segment>(m_file,m_img_type,m_pnt_min,m_pnt_max, start, end,inten_loc, inten_glo,ptr, m_values_abs,m_values_fac,m_uni_fac, id);
+  std::shared_ptr<Base> ptr = shared_from_this();
+  std::shared_ptr<Segment>  new_seg = std::make_shared<Segment>(m_file, m_img_type, m_pnt_min, m_pnt_max, start,
+                                                                end, inten_loc, inten_glo, ptr, m_values_abs,
+                                                                m_values_fac, m_uni_fac, id);
   return new_seg;
 }
 
@@ -136,7 +138,7 @@ bool Base::work_to_do(){
 }
 
 void Base::continue_work(){
-  int work_size = 7/*m_work_size*/;
+  int work_size = 7 /*m_work_size*/;
 
 
   m_mutex_result.lock();

@@ -120,7 +120,7 @@ opencv2/opencv.hpp
 vector
 -
 
-/home/lucas/Documents/git/VisoProj-TBP/backend/OpenGL/src/./../include/glapplication.hpp
+/home/lucas/Documents/git/TimeBasedPicture/backend/OpenGL/src/./../include/glapplication.hpp
 GL/glew.h
 -
 GL/gl.h
@@ -144,9 +144,9 @@ stdexcept
 streambuf
 -
 structs.hpp
-/home/lucas/Documents/git/VisoProj-TBP/backend/OpenGL/src/./../include/structs.hpp
+/home/lucas/Documents/git/TimeBasedPicture/backend/OpenGL/src/./../include/structs.hpp
 window.hpp
-/home/lucas/Documents/git/VisoProj-TBP/backend/OpenGL/src/./../include/window.hpp
+/home/lucas/Documents/git/TimeBasedPicture/backend/OpenGL/src/./../include/window.hpp
 omp.h
 -
 memory
@@ -158,7 +158,7 @@ glm/gtc/matrix_transform.hpp
 glm/gtc/matrix_access.hpp
 -
 
-/home/lucas/Documents/git/VisoProj-TBP/backend/OpenGL/src/./../include/structs.hpp
+/home/lucas/Documents/git/TimeBasedPicture/backend/OpenGL/src/./../include/structs.hpp
 iostream
 -
 glm/vec3.hpp
@@ -166,7 +166,7 @@ glm/vec3.hpp
 vector
 -
 
-/home/lucas/Documents/git/VisoProj-TBP/backend/OpenGL/src/./../include/window.hpp
+/home/lucas/Documents/git/TimeBasedPicture/backend/OpenGL/src/./../include/window.hpp
 GL/glew.h
 -
 GLFW/glfw3.h
@@ -178,19 +178,19 @@ array
 string
 -
 
-/home/lucas/Documents/git/VisoProj-TBP/backend/OpenGL/src/glapplication.cpp
+/home/lucas/Documents/git/TimeBasedPicture/backend/OpenGL/src/glapplication.cpp
 ./../include/glapplication.hpp
-/home/lucas/Documents/git/VisoProj-TBP/backend/OpenGL/src/./../include/glapplication.hpp
+/home/lucas/Documents/git/TimeBasedPicture/backend/OpenGL/src/./../include/glapplication.hpp
 
-/home/lucas/Documents/git/VisoProj-TBP/backend/OpenGL/src/window.cpp
+/home/lucas/Documents/git/TimeBasedPicture/backend/OpenGL/src/window.cpp
 ./../include/window.hpp
-/home/lucas/Documents/git/VisoProj-TBP/backend/OpenGL/src/./../include/window.hpp
+/home/lucas/Documents/git/TimeBasedPicture/backend/OpenGL/src/./../include/window.hpp
 cstring
 -
 iostream
 -
 
-/home/lucas/Documents/git/VisoProj-TBP/backend/TBPsys/src/average.cpp
+/home/lucas/Documents/git/TimeBasedPicture/backend/TBPsys/src/average.cpp
 chrono
 -
 thread
@@ -208,7 +208,7 @@ string.h
 vector
 -
 
-/home/lucas/Documents/git/VisoProj-TBP/backend/TBPsys/src/base.cpp
+/home/lucas/Documents/git/TimeBasedPicture/backend/TBPsys/src/base.cpp
 ../include/base.hpp
 -
 ../include/segment.hpp
@@ -224,7 +224,7 @@ string.h
 vector
 -
 
-/home/lucas/Documents/git/VisoProj-TBP/backend/TBPsys/src/interpretation.cpp
+/home/lucas/Documents/git/TimeBasedPicture/backend/TBPsys/src/interpretation.cpp
 chrono
 -
 thread
@@ -240,7 +240,7 @@ string.h
 vector
 -
 
-/home/lucas/Documents/git/VisoProj-TBP/backend/TBPsys/src/segment.cpp
+/home/lucas/Documents/git/TimeBasedPicture/backend/TBPsys/src/segment.cpp
 ../include/segment.hpp
 -
 ../include/base.hpp
@@ -254,7 +254,7 @@ math.h
 chrono
 -
 
-/home/lucas/Documents/git/VisoProj-TBP/backend/TBPsys/src/terminal-time.cpp
+/home/lucas/Documents/git/TimeBasedPicture/backend/TBPsys/src/terminal-time.cpp
 string
 -
 sstream
@@ -263,18 +263,20 @@ iostream
 -
 string.h
 -
+typeinfo
+-
 opencv2/opencv.hpp
 -
 base.hpp
-/home/lucas/Documents/git/VisoProj-TBP/backend/TBPsys/src/base.hpp
+/home/lucas/Documents/git/TimeBasedPicture/backend/TBPsys/src/base.hpp
 interpretation.hpp
-/home/lucas/Documents/git/VisoProj-TBP/backend/TBPsys/src/interpretation.hpp
+/home/lucas/Documents/git/TimeBasedPicture/backend/TBPsys/src/interpretation.hpp
 average.hpp
-/home/lucas/Documents/git/VisoProj-TBP/backend/TBPsys/src/average.hpp
+/home/lucas/Documents/git/TimeBasedPicture/backend/TBPsys/src/average.hpp
 transferfunction.hpp
-/home/lucas/Documents/git/VisoProj-TBP/backend/TBPsys/src/transferfunction.hpp
+/home/lucas/Documents/git/TimeBasedPicture/backend/TBPsys/src/transferfunction.hpp
 
-/home/lucas/Documents/git/VisoProj-TBP/backend/TBPsys/src/transferfunction.cpp
+/home/lucas/Documents/git/TimeBasedPicture/backend/TBPsys/src/transferfunction.cpp
 chrono
 -
 thread

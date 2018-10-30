@@ -148,7 +148,7 @@ void manipulate_segment(const v8::FunctionCallbackInfo<v8::Value>& args){
   int id;
 
   //check if values fit!?
-  id=         args[0]->IntegerValue();
+  id =        args[0]->IntegerValue();
   start =     args[1]->IntegerValue();
   end =       args[2]->IntegerValue();
   local_i=    args[3]->NumberValue(); //float works?
