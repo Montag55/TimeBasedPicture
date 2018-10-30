@@ -13,12 +13,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Montag55/VisoProj-TBP.git"
+    "url": "git+https://github.com/Montag55/TimeBasedPicture.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Montag55/VisoProj-TBP/issues"
+    "url": "https://github.com/Montag55/TimeBasedPictur/issues"
   },
-  "homepage": "https://github.com/Montag55/VisoProj-TBP#readme"
+  "homepage": "https://github.com/Montag55/TimeBasedPictur#readme"
 }
