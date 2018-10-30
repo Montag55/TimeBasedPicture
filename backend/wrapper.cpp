@@ -1,5 +1,4 @@
 #include <node.h>
-//#include <string.h>
 #include <time.h>
 #include <algorithm>
 #include <vector>
@@ -7,6 +6,7 @@
 #include <string>
 #include <sstream>
 #include <iostream>
+#include "dirent.h"
 
 #include "base.hpp"
 #include "segment.hpp"
@@ -14,18 +14,14 @@
 #include "average.hpp"
 #include "transferfunction.hpp"
 
-#include "dirent.h"
 #include <opencv2/opencv.hpp>
 #include <opencv2/cvconfig.h>
-using namespace cv;
-typedef Point3_<uint8_t> Pixel;
 
+bool log0=false;  //To log more information about opencv
 
-//////////////////////////////////
-bool log0=false;
-std::vector<std::shared_ptr<Segment>>   segments;
-std::vector<std::shared_ptr<Interpretation>> interpretations;
-std::shared_ptr<Base> base;
+std::vector<std::shared_ptr<Segment>>         segments;
+std::vector<std::shared_ptr<Interpretation>>  interpretations;
+std::shared_ptr<Base>                         base;
 
 std::vector<int> picture(1920 * 1080 * 4);
 
