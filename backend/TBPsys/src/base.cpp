@@ -127,6 +127,17 @@ void Base::save(std::string file){
   imwrite( file,out);
 }
 
+void Base::add_to_values_abs(cv::Mat new_values){
+  m_values_abs+=new_values;
+}
+
+void Base::add_to_values_fac(cv::Mat new_values){
+  m_values_abs+=new_values;
+}
+
+void Base::add_to_uni_fac(float new_value){
+  m_uni_fac+=new_value;
+}
 
 //WORK::::::::::::::::::::::::::::::::::::::::::::::::
 bool Base::work_to_do(){

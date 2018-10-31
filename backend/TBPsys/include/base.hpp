@@ -43,6 +43,10 @@ public:
   bool                get_result(Mat& out);
   Mat                 get_result();
   Mat const&          get_frame(int i);
+  void                add_to_values_abs(cv::Mat new_values);
+  void                add_to_values_fac(cv::Mat new_values);
+  void                add_to_uni_fac(float new_value);
+
   //PROT?:::::::::::::::::::::::::::::::::::::::::::::::
   void                add_work(Segment* new_seg);
 

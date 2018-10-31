@@ -62,10 +62,11 @@ void Segment::reset(){
   std::cout<<"reset segment\n";
   m_frame_start_actual=-1;
   m_frame_last_actual=-1;
-  m_m_values_abs    -=(m_values_abs*((float)1/((float) m_uni_fac)))*m_intensity_local_actual*m_intensity_global_actual;
-  m_m_uni_fac       -=m_intensity_global_actual;
+  m_mother->add_to_values_abs(-1*(m_values_abs*((float)1/((float) m_uni_fac)))*m_intensity_local_actual*m_intensity_global_actual);
+  m_mother->add_to_uni_fac(-m_intensity_global_actual);
   m_uni_fac=0;
 }
+
 bool Segment::work(int& work_size){
   //ist soll gleich ist stand?
   m_mutex_state.lock();
