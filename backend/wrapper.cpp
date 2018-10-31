@@ -19,9 +19,7 @@
 
 bool log0 = false;  //To log more information about opencv
 
-std::vector<std::shared_ptr<Segment>>         segments;
-std::vector<std::shared_ptr<Interpretation>>  interpretations;
-std::shared_ptr<Base>                         base;
+std::shared_ptr<Base> base;
 
 /**
 * init: expects a video(/imagefolder)-path[string]
@@ -71,22 +69,16 @@ void init(const v8::FunctionCallbackInfo<v8::Value>& args){
 void add_segment(const v8::FunctionCallbackInfo<v8::Value>& args){
   v8::Isolate* isolate = args.GetIsolate();
 
-  //SEGMENT PROPERTIES:
-  int id;
-  int end;
-  int start;
-  float local_i;
-  float global_i;
+  //for all properties check if values fit!?
+  int start =       args[0]->IntegerValue();
+  int end =         args[1]->IntegerValue();
+  float local_i =   args[2]->NumberValue();
+  float global_i =  args[3]->NumberValue();
 
-  //check if values fit!?
-  start =     args[0]->IntegerValue();
-  end =       args[1]->IntegerValue();
-  local_i =   args[2]->NumberValue();
-  global_i =  args[3]->NumberValue();
-
-  int exposure = end - start + 1;
-  id = segments.size();
-  segments.push_back(base->add_segment(start, end, local_i, global_i, id));
+  int id = base->add_segment(start, end, local_i, global_i);
+  if(id < 0 ){
+    std::cout << "add_segment() failed. \n";
+  }
 
   auto msg = v8::Number::New(isolate , id);
   args.GetReturnValue().Set(msg);
@@ -98,17 +90,18 @@ void add_segment(const v8::FunctionCallbackInfo<v8::Value>& args){
 */
 void delete_segment(const v8::FunctionCallbackInfo<v8::Value>& args){
   v8::Isolate* isolate = args.GetIsolate();
+
   int id = args[0]->IntegerValue();
-  
-  if(id < segments.size()){
-    segments[id]->delete_seg();
-    std::cout<< "Deleting segment with id: " << id << "\n";
+  std::string correct = "true";
+
+  if(!base->delete_segment(id)){
+    correct = "false";
   }
   else{
-    std::cout<<"error, wrong segment id!?\n";
+    std::cout << "delete_segment() failed. \n";
   }
 
-  auto msg = v8::String::NewFromUtf8( isolate , "true" );
+  auto msg = v8::String::NewFromUtf8( isolate , correct.c_str() );
   args.GetReturnValue().Set(msg);
 }
 
@@ -121,22 +114,21 @@ void delete_segment(const v8::FunctionCallbackInfo<v8::Value>& args){
 void manipulate_segment(const v8::FunctionCallbackInfo<v8::Value>& args){
   v8::Isolate* isolate = args.GetIsolate();
 
-  //SEGMENT PROPERTIES:
-  int start;
-  int end;
-  float local_i;
-  float global_i;
-  int id;
-
   //check if values fit!?
-  id =        args[0]->IntegerValue();
-  start =     args[1]->IntegerValue();
-  end =       args[2]->IntegerValue();
-  local_i =   args[3]->NumberValue();
-  global_i =  args[4]->NumberValue();
-  segments[id]->manipulate(start,end,local_i,global_i);
+  int id =          args[0]->IntegerValue();
+  int start =       args[1]->IntegerValue();
+  int end =         args[2]->IntegerValue();
+  float local_i =   args[3]->NumberValue();
+  float global_i =  args[4]->NumberValue();
+  std::string correct = "true";
 
-  auto msg = v8::String::NewFromUtf8( isolate , "true" );
+
+  if(!base->manipulate_segment(id, start, end, local_i, global_i)){
+    correct = "false";
+    std::cout << "manipulate_segment() failed. \n";
+  }
+
+  auto msg = v8::String::NewFromUtf8( isolate , correct.c_str() );
   args.GetReturnValue().Set(msg);
 }
 
@@ -147,13 +139,14 @@ void manipulate_segment(const v8::FunctionCallbackInfo<v8::Value>& args){
 void get_segment_progress(const v8::FunctionCallbackInfo<v8::Value>& args){
   v8::Isolate* isolate = args.GetIsolate();
 
-  //SEGMENT PROPERTIES:
-  int id;
-
   //check if values fit!?
-  id = args[0]->IntegerValue();
-  float progress= segments[id]->get_progress();
-  std::string output =std::to_string(progress);
+  int id = args[0]->IntegerValue();
+  float progress = base->get_segment_progress(id);
+  std::string output = std::to_string(progress);
+
+  if(progress < 0 ){
+    std::cout << "get_segment_progress() failed. \n";
+  }
 
   auto msg = v8::String::NewFromUtf8( isolate , output.c_str());
   args.GetReturnValue().Set(msg);
@@ -166,53 +159,15 @@ void get_segment_progress(const v8::FunctionCallbackInfo<v8::Value>& args){
 void add_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
   v8::Isolate* isolate = args.GetIsolate();
 
-  //SEGMENT PROPERTIES:
-  int typ_i;
-
   //check if values fit!?
-  typ_i = args[0]->IntegerValue();
-  bool correct = true;
-  int interpret_id = interpretations.size();
-  std::cout<<"addinterpretation: ";
+  int typ_i = args[0]->IntegerValue();
+  int interpret_id = base->add_interpretation(typ_i);
 
-  if(typ_i == 0 /*averaging*/){
-    std::cout<<"Average\n";
-    interpretations.push_back(std::make_shared<Average>(base, interpret_id));
-  }
-  else if (typ_i == 1 /*transferfunktion*/){
-    std::cout<<"Transferfunction (not implemnted) \n";
-    correct = false;
-    /*
-    args.size() ? alternativ einen vector? oder einen parameter, der length bestimmt
-    int start  = args[1]->IntegerValue();
-    int length =args.size();
-    std:shared_ptr<std::vector<float>> weights= std::make_shared<std::vector<float>>();
-    for (int i=2; i<length; i++){
-      std::istringstream iss(v[i]);
-      weights->push_back(((float)args[i]->NumberValue()));
-      }
-    }
-    interpretations.push_back(std::make_shared<Transferfunction>(base,interpret_id, start, weights));
-    */
-  }
-  else if (typ_i == 2 /*overplott*/){
-    correct = false;
-    std::cout<<"Overplott (not implemnted) \n";
-  }
-  else if (typ_i == 3 /*boost*/){
-    correct = false;
-    std::cout<<"Boost not (not implemnted)\n";
-  }
-  else{
-    correct = false;
-    std::cout<<"wrong typ?\n";
-  }
-
-  if(correct) {
+  if(interpret_id >= 0 ) {
     std::cout<<"\n\t > intpretation id: "<< interpret_id << "\n";
   }
   else {
-    interpret_id =-42;
+    std::cout << "add_interpretation() failed. \n";
   }
 
   auto msg = v8::Number::New(isolate, interpret_id);
@@ -229,26 +184,16 @@ void add_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
 void connect(const v8::FunctionCallbackInfo<v8::Value>& args){
   v8::Isolate* isolate = args.GetIsolate();
 
-  //SEGMENT PROPERTIES:
-  int id_segment;
-  int id_interpretation;
-  bool success;
-
   //check if values fit!?
-  id_segment        =     args[0]->IntegerValue();
-  id_interpretation =     args[1]->IntegerValue();
+  int id_segment        = args[0]->IntegerValue();
+  int id_interpretation = args[1]->IntegerValue();
+  bool correct = base->connect(id_segment, id_interpretation);
 
-  if((id_segment <= segments.size() - 1) && (id_interpretation <= interpretations.size() - 1)) {
-    segments[id_segment]->set_interpretation(interpretations[id_interpretation]);
-    std::cout<< "Segment " << id_segment << " is interpreted with interpretation " << id_interpretation << "\n";
-    success = true;
-  }
-  else{
-    std::cout<<"wrong id's?\n";
-    success=false;
+  if(!correct){
+    std::cout << "connect() failed. \n";
   }
 
-  auto msg = v8::Number::New(isolate ,success);
+  auto msg = v8::Number::New(isolate , correct);
   args.GetReturnValue().Set(msg);
 }
 
