@@ -8,31 +8,28 @@
 #include <string.h>
 #include <vector>
 
-using namespace cv;
-
-
-
 Base::Base(std::string const& video_name) :
   m_in_calculation{false},
   m_file {video_name},
   m_work_size{100},
-  m_video{std::make_shared<VideoCapture>(m_file, cv::CAP_IMAGES)},  /*!when changing to ffmpeg, change set framepos!*/
+  m_video{std::make_shared<VideoCapture>( video_name, cv::CAP_IMAGES)},  /*!when changing to ffmpeg, change set framepos!*/
   m_img_type{CV_32FC3},//http://ninghang.blogspot.de/2012/11/list-of-mat-type-in-opencv.html
-  m_pnt_min{Point(0, 0)},
-  m_pnt_max{Point(m_video->get(CV_CAP_PROP_FRAME_WIDTH), m_video->get(CV_CAP_PROP_FRAME_HEIGHT))},
   m_frame_start{0},
-  m_frame_last{m_video->get(CV_CAP_PROP_FRAME_COUNT)-1},
-  m_values_abs{Mat(m_pnt_max.y, m_pnt_max.x, m_img_type, cv::Scalar(0,0,0))},
-  m_values_fac{Mat(m_pnt_max.y, m_pnt_max.x, CV_64FC1, cv::Scalar(0))},
-  m_result{Mat(m_pnt_max.y, m_pnt_max.x, m_img_type, cv::Scalar(0,0,0))},
   m_intensity{1.0f},
   m_uni_fac{0.0f},
   m_worker{&Base::thread_calc_loop, this},
-  m_update_work{false},
   m_mutex_update{},
   m_mutex_result{},
   m_segments{std::vector<std::shared_ptr<Segment>>()},
-  m_interpretations{std::vector<std::shared_ptr<Interpretation>>()}{
+  m_interpretations{std::vector<std::shared_ptr<Interpretation>>()}
+  {
+    m_pnt_min = cv::Point(0, 0);
+    m_pnt_max = cv::Point(m_video->get(CV_CAP_PROP_FRAME_WIDTH), m_video->get(CV_CAP_PROP_FRAME_HEIGHT));
+    m_frame_last = m_video->get(CV_CAP_PROP_FRAME_COUNT) - 1;
+    m_values_abs = cv::Mat(m_pnt_max.y, m_pnt_max.x, m_img_type, cv::Scalar(0,0,0));
+    m_values_fac = cv::Mat(m_pnt_max.y, m_pnt_max.x, CV_64FC1, cv::Scalar(0));
+    m_result = cv::Mat(m_pnt_max.y, m_pnt_max.x, m_img_type, cv::Scalar(0,0,0));
+
     std::cout<<"NEW BASE\n";
     std::cout<<"video:"<<m_file<<"\n";
     std::cout<<"pnt_min:"<<m_pnt_min<<"\n";
@@ -46,7 +43,6 @@ Base::~Base(){
   std::cout << "Base-Destruction: \n";
 }
 
-//ORGA::::::::::::::::::::::::::::::::::::::::::::::::
 void Base::thread_GLAPP_loop(){ //waits for work and makes calculataion
   // std::vector<std::vector<float>*> pictures;
   // for(unsigned int i = 0; i < 5; i++){
@@ -134,10 +130,6 @@ bool Base::manipulate_segment(int id, int start, int end, float local_i, float g
   return true;
 }
 
-float Base::get_segment_progress(int id){
-  return m_segments[id]->get_progress();
-}
-
 int Base::add_interpretation(int typ_i){
   std::cout<<"addinterpretation: ";
   int id = m_interpretations.size();
@@ -214,8 +206,7 @@ void Base::add_to_uni_fac(float new_value){
   m_uni_fac+=new_value;
 }
 
-//WORK::::::::::::::::::::::::::::::::::::::::::::::::
-bool Base::work_to_do(){
+bool Base::work_to_do() {
   m_mutex_update.lock();
   bool out =m_in_calculation;
   m_mutex_update.unlock();
@@ -223,9 +214,8 @@ bool Base::work_to_do(){
   return out;
 }
 
-void Base::continue_work(){
-  int work_size = 7 /*m_work_size*/;
-
+void Base::continue_work() {
+  int work_size = m_work_size;
 
   m_mutex_result.lock();
   m_seg_in_calc.erase(std::remove_if(m_seg_in_calc.begin(), m_seg_in_calc.end(), [&work_size](Segment*& o) { return o->work(work_size); }),m_seg_in_calc.end());
@@ -239,11 +229,11 @@ void Base::continue_work(){
   this->save("state_tmp.jpg");
 }
 
-void Base::set_work_size(int i){
-  m_work_size = i;
+float Base::get_segment_progress(int id) {
+  return m_segments[id]->get_progress();
 }
 
-Mat Base::get_result() {
+cv::Mat Base::get_result() {
   m_mutex_result.lock();
   Mat out=m_result.clone();
   m_mutex_result.unlock();
@@ -251,16 +241,7 @@ Mat Base::get_result() {
   return out; //copy contructor?
 }
 
-int Base::get_width(){
-  return  m_pnt_max.y;
-}
-int Base::get_height(){
-  return  m_pnt_max.x;
-}
-int Base::get_img_type(){
-  return m_img_type;
-}
-bool Base::get_result(Mat& out) {
+bool Base::get_result(cv::Mat& out) {
   m_mutex_result.lock();
   if(m_new_output)
   {
@@ -274,23 +255,57 @@ bool Base::get_result(Mat& out) {
 
   }
 }
-string              Base::get_videopath(){
-  return m_file;
-}
 
-std::shared_ptr<VideoCapture>              Base::get_videocap(){
-  return m_video;
-}
-
-
-Mat const& Base::get_frame(int i){
+cv::Mat const& Base::get_frame(int i) {
   m_video->set(CV_CAP_PROP_POS_FRAMES,i);
   Mat output;
   m_video->read(output);
   return output;//!watchout, output is not a special mat typ!
 }
 
-//PROT?:::::::::::::::::::::::::::::::::::::::::::::::
+int Base::get_img_type() {
+  return m_img_type;
+}
+
+int Base::get_width() {
+  return  m_pnt_max.y;
+}
+
+int Base::get_height() {
+  return  m_pnt_max.x;
+}
+
+std::string Base::get_videopath() {
+  return m_file;
+}
+
+std::shared_ptr<VideoCapture> Base::get_videocap() {
+  return m_video;
+}
+
+cv::Point Base::get_max_Point(){
+  return m_pnt_max;
+}
+
+cv::Point Base::get_min_Point(){
+  return m_pnt_min;
+}
+
+int Base::get_start_frame(){
+  return m_frame_start;
+}
+
+int Base::get_last_frame(){
+  return m_frame_last;
+}
+
+float Base::get_intensity(){
+  return m_intensity;
+}
+
+void Base::set_work_size(int i) {
+  m_work_size = i;
+}
 /*
   we might set the following functions protected?
 */

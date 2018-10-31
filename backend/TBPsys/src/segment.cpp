@@ -6,14 +6,8 @@
 #include <math.h>
 #include <chrono>
 
-using namespace cv;
-using namespace std;
-
-//kill: img typ, pnt_min, pnt_max
-
 Segment::Segment(std::string file, int start_frame, int last_frame, double intensity_local, double intensity_global,std::shared_ptr<Base> mother, int id):
 m_mother{mother},
-//m_video{m_mother->get_videocap()},
 m_frame_start_destin{start_frame},
 m_frame_last_destin{last_frame},
 m_frame_start_actual{-1},
@@ -22,14 +16,15 @@ m_intensity_local_destin{intensity_local},
 m_intensity_global_destin{intensity_global},
 m_intensity_local_actual{intensity_local},
 m_intensity_global_actual{intensity_global},
-m_values_abs{Mat(mother->get_width(), mother->get_height(), mother->get_img_type(), cv::Scalar(0,0,0))},
-m_values_fac{Mat(mother->get_width(), mother->get_height(), CV_64FC1, cv::Scalar(0))},
+m_values_abs{cv::Mat(mother->get_width(), mother->get_height(), mother->get_img_type(), cv::Scalar(0,0,0))},
+m_values_fac{cv::Mat(mother->get_width(), mother->get_height(), CV_64FC1, cv::Scalar(0))},
 m_uni_fac{0.0f},
 m_interpretation{std::make_shared<Average>(mother,-8)}, //default id: -8!?
 m_mutex_soll{},
 m_mutex_state{},
+m_percent{0.0f},
 m_id{id}{
-  std::cout<<"here\n";
+
   m_interpretation->add_connection(id, this);
   ready_to_work();
 }
@@ -194,8 +189,8 @@ bool Segment::interpret_sized( int & work_size){
     revert_influence();
   }
 
-  Mat tmp_frame;
-  Mat tmp_frame_d;
+  cv::Mat tmp_frame;
+  cv::Mat tmp_frame_d;
 
   //shortcuts possible?
   int moves     = abs(dest_start-m_frame_start_actual)+abs(dest_end-m_frame_last_actual);

@@ -12,7 +12,6 @@ segment and interpretation later...
 
 #include "../../OpenGL/include/glapplication.hpp"
 
-using namespace cv;
 
 class Base;
 #include "base.hpp"
@@ -73,8 +72,8 @@ private:
   std::shared_ptr<Interpretation> m_interpretation;
 
   //local values
-  Mat           m_values_abs;
-  Mat           m_values_fac;
+  cv::Mat       m_values_abs;
+  cv::Mat       m_values_fac;
   float         m_uni_fac;
 
   //global values

@@ -32,16 +32,15 @@ void init(const v8::FunctionCallbackInfo<v8::Value>& args){
   v8::String::Utf8Value param1( args[0]->ToString() );
   std::string video_path = std::string( *param1 );
   auto msg = v8::String::NewFromUtf8( isolate , "true" );
-  String message;
 
   if( log0 ) {
-    std::cout <<"Using OpenCV version " << CV_VERSION << "\n" << std::endl;
-    std::cout << getBuildInformation();
-    std::cout<<"Video_path: "<<video_path<<"\n";
+    std::cout << "Using OpenCV version " << CV_VERSION << "\n";
+    std::cout << cv::getBuildInformation();
+    std::cout << "Video_path: " << video_path << "\n";
   }
 
   // might change image to video
-  cv::VideoCapture vid=cv::VideoCapture(video_path, cv::CAP_IMAGES /*cv::CAP_GSTREAMER*/ /*CAP_FFMPEG*/);
+  cv::VideoCapture vid = cv::VideoCapture(video_path, cv::CAP_IMAGES /*cv::CAP_GSTREAMER*/ /*CAP_FFMPEG*/);
 
   if( !vid.isOpened()) {
     msg = v8::String::NewFromUtf8( isolate , "0 0 0 0" ); //this shows failure
