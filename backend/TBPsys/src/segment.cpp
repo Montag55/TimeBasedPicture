@@ -103,9 +103,13 @@ bool Segment::work(int& work_size){
     state=interpret_sized(work_size);
     //get percentage progress
     m_mutex_soll.lock();
-    float soll=m_frame_last_destin-m_frame_start_destin;
+    float soll =m_frame_last_destin-m_frame_start_destin;
     float ist=abs(m_frame_last_actual-m_frame_last_destin)+abs(m_frame_start_actual-m_frame_start_destin);
-    float percentage=100-100.0*(ist/soll);
+
+    float percentage = 100 - 100.0 * ( ist / soll );
+    if( percentage < 0 ){
+      percentage = 0;
+    }
     //std::cout<<"status: "<<percentage<<"% of the segment work is done\n";
     m_mutex_soll.unlock();
 

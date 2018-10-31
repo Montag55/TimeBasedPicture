@@ -145,6 +145,7 @@ void get_segment_progress(const v8::FunctionCallbackInfo<v8::Value>& args){
   std::string output = std::to_string(progress);
 
   if(progress < 0 ){
+    std::cout << "progress: "<<progress<<" \n";
     std::cout << "get_segment_progress() failed. \n";
   }
 
