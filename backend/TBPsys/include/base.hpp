@@ -38,7 +38,7 @@ public:
   float               get_segment_progress(int id);
   int                 add_interpretation(int typ_i);
   bool                connect(int id_segment, int id_interpretation);
-  void                save(std::string file);
+  bool                save(std::string file);
 
   //WORK::::::::::::::::::::::::::::::::::::::::::::::::
   void                thread_calc_loop();

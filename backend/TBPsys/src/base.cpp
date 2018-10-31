@@ -172,7 +172,7 @@ int Base::add_interpretation(int typ_i){
   }
   else{
     id = -42;
-    std::cout<<"wrong typ?\n";
+    std::cout<< "Wrong interpretation. \n";
   }
 
   return id;
@@ -191,10 +191,15 @@ bool Base::connect(int id_segment, int id_interpretation){
   return correct;
 }
 
-void Base::save(std::string file){
-  Mat out=get_result();
-  //std::cout<<" before imwrite\n";
-  imwrite( file,out);
+bool Base::save(std::string file){
+  Mat out = get_result();
+  bool exit_status = false;
+
+  if(cv::imwrite(file, out)){
+    exit_status = true;
+  }
+
+  return exit_status;
 }
 
 
@@ -224,7 +229,7 @@ void Base::continue_work(){
 }
 
 void Base::set_work_size(int i){
-  m_work_size=i;
+  m_work_size = i;
 }
 
 Mat Base::get_result() {

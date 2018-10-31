@@ -163,7 +163,7 @@ void add_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
   int typ_i = args[0]->IntegerValue();
   int interpret_id = base->add_interpretation(typ_i);
 
-  if(interpret_id > 0 ) {
+  if(interpret_id >= 0 ) {
     std::cout<<"\n\t > intpretation id: "<< interpret_id << "\n";
   }
   else {
@@ -187,13 +187,13 @@ void connect(const v8::FunctionCallbackInfo<v8::Value>& args){
   //check if values fit!?
   int id_segment        = args[0]->IntegerValue();
   int id_interpretation = args[1]->IntegerValue();
-  bool success = base->connect(id_segment, id_interpretation);
+  bool correct = base->connect(id_segment, id_interpretation);
 
-  if(!success){
+  if(!correct){
     std::cout << "connect() failed. \n";
   }
 
-  auto msg = v8::Number::New(isolate , success);
+  auto msg = v8::Number::New(isolate , correct);
   args.GetReturnValue().Set(msg);
 }
 
