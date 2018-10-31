@@ -23,8 +23,7 @@ m_interpretation{std::make_shared<Average>(mother,-8)}, //default id: -8!?
 m_mutex_soll{},
 m_mutex_state{},
 m_percent{0.0f},
-m_id{id}{
-
+m_id{id} {
   m_interpretation->add_connection(id, this);
   ready_to_work();
 }

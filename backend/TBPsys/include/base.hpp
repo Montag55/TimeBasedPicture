@@ -58,15 +58,9 @@ public:
   void                add_to_uni_fac(float new_value);
 
   void                thread_calc_loop();
-  void                thread_GLAPP_loop();
   bool                work_to_do();
   void                continue_work();
 
-
-  //PROT?:::::::::::::::::::::::::::::::::::::::::::::::
-
-  GLApplication*      getGLAPP();
-  bool                use_gpu();
 
 private:
   void                update_result();
@@ -78,7 +72,6 @@ private:
   bool                    m_new_output = true;
   bool                    m_in_calculation;
   std::thread             m_worker;
-  std::thread             m_thread_GLAPP;
   std::mutex              m_mutex_update;        //m_in_calculation
   std::mutex              m_mutex_result;        //read & write update img
 
@@ -97,8 +90,6 @@ private:
   double                  m_uni_fac;
   float                   m_intensity;           //overall intensity: default: 1.0f
   cv::Mat                 m_result;
-  GLApplication*          m_GLapp;
-  bool                    m_use_gpu = false;
 };
 
 #endif

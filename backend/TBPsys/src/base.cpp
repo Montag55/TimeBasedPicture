@@ -43,28 +43,6 @@ Base::~Base(){
   std::cout << "Base-Destruction: \n";
 }
 
-void Base::thread_GLAPP_loop(){ //waits for work and makes calculataion
-  // std::vector<std::vector<float>*> pictures;
-  // for(unsigned int i = 0; i < 5; i++){
-  //   std::vector<float>* tmp = new std::vector<float>;
-  //   pictures.push_back(tmp);
-  // }
-
-
-  // std::vector<float> render = app.render(pictures);
-  // app.cleanup();
-  // std::vector<float> render2 = app.render(pictures);
-
-}
-
-GLApplication* Base::getGLAPP(){
-  return m_GLapp;
-}
-
-bool Base::use_gpu(){
-  return m_use_gpu;
-}
-
 void Base::thread_calc_loop(){ //waits for work and makes calculataion
   int wait_for_work_time=200;
   int wait_while_work= 100;
@@ -72,14 +50,9 @@ void Base::thread_calc_loop(){ //waits for work and makes calculataion
   m_mutex_update.lock();
   bool in_calc=m_in_calculation;
   m_mutex_update.unlock();
-  if(m_use_gpu)
-  {
-    m_GLapp = new GLApplication;
-  }
-  while(1)
-  {
-    while(in_calc)
-    {
+
+  while(true) {
+    while(in_calc) {
       std::this_thread::sleep_for(std::chrono::milliseconds(wait_while_work));
       continue_work();  //with size?
       m_mutex_update.lock();
@@ -87,10 +60,12 @@ void Base::thread_calc_loop(){ //waits for work and makes calculataion
       m_mutex_update.unlock();
       save_state=false;
     }
+
     if(!save_state){
       save_state=true;
       this->save("fin_state.jpg");
     }
+
     m_mutex_update.lock();
     in_calc=m_in_calculation;
     m_mutex_update.unlock();
