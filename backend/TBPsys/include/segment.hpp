@@ -83,9 +83,6 @@ private:
 
   //global values
   std::shared_ptr<Base>         m_mother;
-  Mat           m_m_values_abs;
-  Mat           m_m_values_fac;
-  double&       m_m_uni_fac;
 
   //mutex_for setter
   std::mutex    m_mutex_soll;
