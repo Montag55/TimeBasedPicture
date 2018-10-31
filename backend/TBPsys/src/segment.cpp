@@ -9,12 +9,11 @@
 using namespace cv;
 using namespace std;
 
-Segment::Segment(std::string file, int img_type, Point min, Point max, int start_frame, int last_frame, double intensity_local, double intensity_global,std::shared_ptr<Base> mother, Mat& mother_val,  Mat& mother_fac, double& mother_uni, int id):
+//kill: img typ, pnt_min, pnt_max
+
+Segment::Segment(std::string file, int start_frame, int last_frame, double intensity_local, double intensity_global,std::shared_ptr<Base> mother, int id):
 m_mother{mother},
 //m_video{m_mother->get_videocap()},
-m_img_type{img_type},
-m_pnt_min{min},
-m_pnt_max{max},
 m_frame_start_destin{start_frame},
 m_frame_last_destin{last_frame},
 m_frame_start_actual{-1},
@@ -23,13 +22,14 @@ m_intensity_local_destin{intensity_local},
 m_intensity_global_destin{intensity_global},
 m_intensity_local_actual{intensity_local},
 m_intensity_global_actual{intensity_global},
-m_values_abs{Mat(m_pnt_max.y, m_pnt_max.x, m_img_type, cv::Scalar(0,0,0))},
-m_values_fac{Mat(m_pnt_max.y, m_pnt_max.x, CV_64FC1, cv::Scalar(0))},
+m_values_abs{Mat(mother->get_width(), mother->get_height(), mother->get_img_type(), cv::Scalar(0,0,0))},
+m_values_fac{Mat(mother->get_width(), mother->get_height(), CV_64FC1, cv::Scalar(0))},
 m_uni_fac{0.0f},
 m_interpretation{std::make_shared<Average>(mother,-8)}, //default id: -8!?
 m_mutex_soll{},
 m_mutex_state{},
 m_id{id}{
+  std::cout<<"here\n";
   m_interpretation->add_connection(id, this);
   ready_to_work();
 }
@@ -59,9 +59,18 @@ void Segment::reset(){
   std::cout<<"reset segment\n";
   m_frame_start_actual=-1;
   m_frame_last_actual=-1;
+  revert_influence();
+  m_uni_fac=0;
+}
+
+void Segment::revert_influence(){
   m_mother->add_to_values_abs(-1*(m_values_abs*((float)1/((float) m_uni_fac)))*m_intensity_local_actual*m_intensity_global_actual);
   m_mother->add_to_uni_fac(-m_intensity_global_actual);
-  m_uni_fac=0;
+}
+
+void Segment::upload_influence(){
+  m_mother->add_to_values_abs((m_values_abs*((float)1/((float) m_uni_fac)))*m_intensity_local_actual*m_intensity_global_actual);
+  m_mother->add_to_uni_fac(m_intensity_global_actual);
 }
 
 bool Segment::work(int& work_size){
@@ -129,14 +138,6 @@ void Segment::set_interpretation(std::shared_ptr<Interpretation> interpret){
 
   }
 }
-int Segment::getX(){
-  return m_pnt_max.x-m_pnt_min.x;
-}
-
-int Segment::getY(){
-  return m_pnt_max.y-m_pnt_min.y;
-
-}
 
 float Segment::get_progress(){
   m_mutex_state.lock();
@@ -165,22 +166,16 @@ void Segment::update_intensity(){
     //int delta=m_frame_last_actual-m_frame_start_actual;
     if(m_intensity_local_actual!=dest_intensity_local)
     {
-        m_mother->add_to_values_abs( -1 * (m_values_abs * ( (float) 1 / ( (float) m_uni_fac ))) * m_intensity_local_actual * m_intensity_global_actual);
-
+        revert_influence();
         m_intensity_local_actual=dest_intensity_local;
-
-        m_mother->add_to_values_abs(( m_values_abs * ( (float) 1 / ( (float) m_uni_fac ))) * m_intensity_local_actual * m_intensity_global_actual);
+        upload_influence();
     }
 
     if(m_intensity_global_actual!=dest_intensity_global)
     {
-      m_mother->add_to_values_abs( -1 * ( m_values_abs * ((float) 1 / ((float) m_uni_fac ))) * m_intensity_local_actual * m_intensity_global_actual);
-      m_mother->add_to_uni_fac( -1 * m_intensity_global_actual );
-
+      revert_influence();
       m_intensity_global_actual=dest_intensity_global;
-
-      m_mother->add_to_values_abs( ( m_values_abs * ( (float) 1 / ( (float) m_uni_fac ))) * m_intensity_local_actual * m_intensity_global_actual );
-      m_mother->add_to_uni_fac( m_intensity_global_actual );
+      upload_influence();
     }
 }
 
@@ -192,8 +187,7 @@ bool Segment::interpret_sized( int & work_size){
 
   //int delta=m_frame_last_actual-m_frame_start_actual;
   if(m_uni_fac/*m_frame_start_actual*/>0) {
-    m_mother->add_to_values_abs(-1 * ( m_values_abs * ( (float) 1 /( (float) m_uni_fac ))) * m_intensity_local_actual * m_intensity_global_actual);
-    m_mother->add_to_uni_fac(-1 * m_intensity_global_actual);
+    revert_influence();
   }
 
   Mat tmp_frame;
@@ -269,9 +263,7 @@ bool Segment::interpret_sized( int & work_size){
 
   //delta =           m_frame_last_actual-m_frame_start_actual;
   if(m_uni_fac>0){
-    m_mother->add_to_values_abs(( m_values_abs * ( (float) 1 /( (float) m_uni_fac ))) * m_intensity_local_actual * m_intensity_global_actual);
-    m_mother->add_to_uni_fac(m_intensity_global_actual);
-
+    upload_influence();
   }
   std::cout<<m_uni_fac<<"munifac..............................\n";
   if((dest_start==m_frame_start_actual) && (dest_end==m_frame_last_actual))

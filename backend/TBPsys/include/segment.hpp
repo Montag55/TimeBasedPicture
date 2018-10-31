@@ -21,7 +21,7 @@ class Base;
 
 class Segment {
 public:
-  Segment(std::string file, int img_type, Point min, Point max, int start_frame, int last_frame, double intensity_local, double intensity_gloabl, std::shared_ptr<Base> mother, Mat& mother_val, Mat& mother_fac, double& mother_uni, int id);
+  Segment(std::string file, int start_frame, int last_frame, double intensity_local, double intensity_gloabl, std::shared_ptr<Base> mother, int id);
   ~Segment();
 
   bool work(int& work_size);
@@ -32,8 +32,10 @@ public:
   void boost_diff_smooth(int power);
   void boost_similarities(int power);//modal();
   */
-
+  void revert_influence();
+  void upload_influence();
   //EDIT THE SEGMENT:
+
   void move_in_time(int delta);
   void set_exposure(int new_exposure);
   void set_startframe(int imgs);
@@ -46,22 +48,16 @@ public:
   void update_interpretation();
   void delete_seg();
   void reset();
-  int getX();
-  int getY();
+
   float get_progress();
 
 private:
   void ready_to_work();
   int           m_id;
-  //int           m_interpretation_mode;
-  //VideoCapture  m_video;
-  int           m_img_type;
   bool          m_work_done=true;
   float         m_percent;
 
   //Definition of BBOX:
-  Point         m_pnt_min;
-  Point         m_pnt_max;
   int           m_frame_start_destin;
   int           m_frame_last_destin;
   int           m_frame_start_actual;
@@ -79,7 +75,7 @@ private:
   //local values
   Mat           m_values_abs;
   Mat           m_values_fac;
-  float        m_uni_fac;
+  float         m_uni_fac;
 
   //global values
   std::shared_ptr<Base>         m_mother;

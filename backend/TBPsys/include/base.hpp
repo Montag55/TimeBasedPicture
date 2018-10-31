@@ -49,6 +49,9 @@ public:
   bool                get_result(Mat& out);
   Mat                 get_result();
   Mat const&          get_frame(int i);
+  int                 get_img_type();
+  int                 get_width();
+  int                 get_height();
   void                add_to_values_abs(cv::Mat new_values);
   void                add_to_values_fac(cv::Mat new_values);
   void                add_to_uni_fac(float new_value);
@@ -60,7 +63,6 @@ public:
   bool                use_gpu();
   std::string         get_videopath();
   std::shared_ptr<VideoCapture>      get_videocap();
-  int                 get_img_type();
 
 private:
 

@@ -109,7 +109,7 @@ int Base::add_segment(int start, int end, float local_i, float global_i){
   end++;
 
   std::shared_ptr<Base> ptr = shared_from_this();
-  m_segments.push_back(std::make_shared<Segment>(m_file, m_img_type, m_pnt_min, m_pnt_max, start, end, inten_loc, inten_glo, ptr, m_values_abs, m_values_fac, m_uni_fac, id));
+  m_segments.push_back(std::make_shared<Segment>(m_file, start, end, inten_loc, inten_glo, ptr, id));
   return id;
 }
 
@@ -251,6 +251,15 @@ Mat Base::get_result() {
   return out; //copy contructor?
 }
 
+int Base::get_width(){
+  return  m_pnt_max.y;
+}
+int Base::get_height(){
+  return  m_pnt_max.x;
+}
+int Base::get_img_type(){
+  return m_img_type;
+}
 bool Base::get_result(Mat& out) {
   m_mutex_result.lock();
   if(m_new_output)
@@ -271,9 +280,6 @@ string              Base::get_videopath(){
 
 std::shared_ptr<VideoCapture>              Base::get_videocap(){
   return m_video;
-}
-int                 Base::get_img_type(){
-  return m_img_type;
 }
 
 
