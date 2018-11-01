@@ -20,7 +20,7 @@ class Base;
 
 class Segment {
 public:
-  Segment(std::string file, int start_frame, int last_frame, double intensity_local, double intensity_gloabl, std::shared_ptr<Base> mother, int id);
+  Segment(int start_frame, int last_frame, double intensity_local, double intensity_gloabl, std::shared_ptr<Base> mother, int id);
   ~Segment();
 
   bool work(int& work_size);
@@ -33,8 +33,8 @@ public:
   */
   void revert_influence();
   void upload_influence();
-  //EDIT THE SEGMENT:
 
+  //EDIT THE SEGMENT:
   void move_in_time(int delta);
   void set_exposure(int new_exposure);
   void set_startframe(int imgs);
@@ -53,8 +53,8 @@ public:
 private:
   void ready_to_work();
   int           m_id;
-  bool          m_work_done=true;
   float         m_percent;
+  bool          m_work_done;
 
   //Definition of BBOX:
   int           m_frame_start_destin;
@@ -67,9 +67,8 @@ private:
   float         m_intensity_local_actual;
   float         m_intensity_global_actual;
 
-  //
-  std::shared_ptr<Interpretation> m_new_interpretation=NULL;
   std::shared_ptr<Interpretation> m_interpretation;
+  std::shared_ptr<Interpretation> m_new_interpretation;
 
   //local values
   cv::Mat       m_values_abs;
@@ -82,7 +81,7 @@ private:
   //mutex_for setter
   std::mutex    m_mutex_soll;
   std::mutex    m_mutex_state;
-  bool m_needs_reset  =false;
+  bool m_needs_reset;
 
 };
 #endif
