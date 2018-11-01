@@ -56,18 +56,18 @@ void Base::thread_calc_loop(){ //waits for work and makes calculataion
       std::this_thread::sleep_for(std::chrono::milliseconds(wait_while_work));
       continue_work();  //with size?
       m_mutex_update.lock();
-      in_calc=m_in_calculation;
+      in_calc = m_in_calculation;
       m_mutex_update.unlock();
-      save_state=false;
+      save_state = false;
     }
 
     if(!save_state){
-      save_state=true;
+      save_state = true;
       this->save("fin_state.jpg");
     }
 
     m_mutex_update.lock();
-    in_calc=m_in_calculation;
+    in_calc = m_in_calculation;
     m_mutex_update.unlock();
     std::this_thread::sleep_for(std::chrono::milliseconds(wait_for_work_time));
   }

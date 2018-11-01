@@ -6,7 +6,7 @@
 #include <math.h>
 #include <chrono>
 
-Segment::Segment(int start_frame, int last_frame, double intensity_local, double intensity_global,std::shared_ptr<Base> mother, int id):
+Segment::Segment(int start_frame, int last_frame, double intensity_local, double intensity_global, std::shared_ptr<Base> mother, int id):
   m_mother{mother},
   m_frame_start_destin{start_frame},
   m_frame_last_destin{last_frame},
@@ -278,82 +278,82 @@ bool Segment::interpret_sized( int & work_size){
 }
 
 //EDIT THE SEGMENT:
-  void Segment::move_in_time(int delta){
-    m_mutex_soll.lock();
-    m_frame_start_destin += delta;
-    m_frame_last_destin += delta;
-    m_mutex_soll.unlock();
+void Segment::move_in_time(int delta){
+  m_mutex_soll.lock();
+  m_frame_start_destin += delta;
+  m_frame_last_destin += delta;
+  m_mutex_soll.unlock();
 
-    ready_to_work();
-  }
+  ready_to_work();
+}
 
-  void Segment::set_exposure(int new_exposure){
-    m_mutex_soll.lock();
-    m_frame_last_destin = m_frame_start_destin + new_exposure;
-    m_mutex_soll.unlock();
+void Segment::set_exposure(int new_exposure){
+  m_mutex_soll.lock();
+  m_frame_last_destin = m_frame_start_destin + new_exposure;
+  m_mutex_soll.unlock();
 
-    ready_to_work();
-  }
+  ready_to_work();
+}
 
-  void Segment::set_startframe(int imgs){
-    m_mutex_soll.lock();
-    m_frame_start_destin = imgs;
-    m_mutex_soll.unlock();
+void Segment::set_startframe(int imgs){
+  m_mutex_soll.lock();
+  m_frame_start_destin = imgs;
+  m_mutex_soll.unlock();
 
-    ready_to_work();
-  }
+  ready_to_work();
+}
 
-  void Segment::set_endframe(int imgs){
-    m_mutex_soll.lock();
-    m_frame_last_destin = imgs;
-    m_mutex_soll.unlock();
+void Segment::set_endframe(int imgs){
+  m_mutex_soll.lock();
+  m_frame_last_destin = imgs;
+  m_mutex_soll.unlock();
 
-    ready_to_work();
-  }
+  ready_to_work();
+}
 
-  void Segment::set_exposure_delta(int delta){
-    m_mutex_soll.lock();
-    m_frame_last_destin += delta;
-    m_mutex_soll.unlock();
+void Segment::set_exposure_delta(int delta){
+  m_mutex_soll.lock();
+  m_frame_last_destin += delta;
+  m_mutex_soll.unlock();
 
-    ready_to_work();
-  }
+  ready_to_work();
+}
 
-  void Segment::set_local_intensity(float i){
-    m_mutex_soll.lock();
-    m_intensity_local_destin = i;
-    m_mutex_soll.unlock();
+void Segment::set_local_intensity(float i){
+  m_mutex_soll.lock();
+  m_intensity_local_destin = i;
+  m_mutex_soll.unlock();
 
-    ready_to_work();
-  }
+  ready_to_work();
+}
 
-  void Segment::set_global_intensity(float i){
-    m_mutex_soll.lock();
-    m_intensity_global_destin = i;
-    m_mutex_soll.unlock();
+void Segment::set_global_intensity(float i){
+  m_mutex_soll.lock();
+  m_intensity_global_destin = i;
+  m_mutex_soll.unlock();
 
-    ready_to_work();
-  }
+  ready_to_work();
+}
 
-  void Segment::manipulate(int start, int end, float local_i, float global_i){
-    end += 1;//including the end frame to calculation
-    m_mutex_soll.lock();
-    m_frame_start_destin = start;
-    m_frame_last_destin = end;
-    m_intensity_local_destin = local_i;
-    m_intensity_global_destin = global_i;
-    m_mutex_soll.unlock();
+void Segment::manipulate(int start, int end, float local_i, float global_i){
+  end += 1;//including the end frame to calculation
+  m_mutex_soll.lock();
+  m_frame_start_destin = start;
+  m_frame_last_destin = end;
+  m_intensity_local_destin = local_i;
+  m_intensity_global_destin = global_i;
+  m_mutex_soll.unlock();
 
-    ready_to_work();
-  }
+  ready_to_work();
+}
 
-  void Segment::delete_seg(){
-    m_mutex_soll.lock();
-    m_intensity_global_destin=0;
-    m_mutex_soll.unlock();
+void Segment::delete_seg(){
+  m_mutex_soll.lock();
+  m_intensity_global_destin=0;
+  m_mutex_soll.unlock();
 
-    ready_to_work();
-  }
+  ready_to_work();
+}
 
 
 /*
