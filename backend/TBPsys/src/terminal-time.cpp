@@ -183,7 +183,7 @@ int main (int argc, char **argv){
         }
     }
 
-    std::cout << "done!" << endl;
+    std::cout << "done!" << std::endl;
     imwrite( "./final.jpg", base->get_result());
   }
   else {
