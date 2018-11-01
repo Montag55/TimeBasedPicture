@@ -26,8 +26,6 @@ public:
   void update_connections();
 
 protected:
-
-<<<<<<< HEAD
   std::shared_ptr< cv::VideoCapture >           m_video;
   int                                           m_img_type;
   int                                           m_id;
@@ -35,16 +33,7 @@ protected:
   bool                                          m_recompute=false;
   std::mutex                                    m_mutex_connections;
   std::shared_ptr< Base >                       m_base;
-  std::map< int , Segment* > m_all_connections= std::map< int , Segment* >();
-=======
-  std::shared_ptr<VideoCapture>  m_video;
-  int           m_img_type;
-  int           m_id;
-  bool          m_recompute=false;
-  std::mutex    m_mutex_connections;
-  std::shared_ptr<Base> m_base;
-  std::map<int, Segment*> m_all_connections = std::map<int, Segment*>();
->>>>>>> 0d33f97080839ad2bedd91d2338da88f7ed2d733
+  std::map< int, Segment* > m_all_connections= std::map< int, Segment* >();
 };
 
 #endif

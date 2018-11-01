@@ -25,7 +25,7 @@ int Boost::getTypenumber(){
   return 0;
 }
 
-int Avereage::get_calculation_specification(){
+int Boost::get_calculation_specification(){
   return 0;//standard sum-game
 }
 
@@ -36,7 +36,7 @@ void Boost::calc(int id, int start, int length, int sign, cv::Mat& result, float
   auto start_time=std::chrono::high_resolution_clock::now();
     cv::Mat tmp_frame;
     cv::Mat tmp_frame_d;
-    m_video->set( cv::CV_CAP_PROP_POS_MSEC, start/*frameTime*/);
+    m_video->set( CV_CAP_PROP_POS_MSEC, start/*frameTime*/);
 
     for(int i=0; i<length; i++){
       m_video->read(tmp_frame);

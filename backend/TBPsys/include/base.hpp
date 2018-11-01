@@ -44,7 +44,7 @@ public:
   int                 get_width();
   int                 get_height();
   std::string         get_videopath();
-  std::shared_ptr<VideoCapture> get_videocap();
+  std::shared_ptr<cv::VideoCapture> get_videocap();
   cv::Point           get_max_Point();
   cv::Point           get_min_Point();
   int                 get_start_frame();
@@ -67,7 +67,7 @@ private:
 
   std::vector<std::shared_ptr<Segment>>         m_segments;
   std::vector<std::shared_ptr<Interpretation>>  m_interpretations;
-  std::shared_ptr<VideoCapture>                 m_video;
+  std::shared_ptr<cv::VideoCapture>             m_video;
 
   bool                    m_new_output = true;
   bool                    m_in_calculation;

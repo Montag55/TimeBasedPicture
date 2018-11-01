@@ -12,7 +12,7 @@ Base::Base(std::string const& video_name) :
   m_in_calculation{false},
   m_file {video_name},
   m_work_size{100},
-  m_video{std::make_shared<VideoCapture>( video_name, cv::CAP_IMAGES)},  /*!when changing to ffmpeg, change set framepos!*/
+  m_video{std::make_shared<cv::VideoCapture>( video_name, cv::CAP_IMAGES)},  /*!when changing to ffmpeg, change set framepos!*/
   m_img_type{CV_32FC3},//http://ninghang.blogspot.de/2012/11/list-of-mat-type-in-opencv.html
   m_frame_start{0},
   m_intensity{1.0f},
@@ -159,7 +159,7 @@ bool Base::connect(int id_segment, int id_interpretation){
 }
 
 bool Base::save(std::string file){
-  Mat out = get_result();
+  cv::Mat out = get_result();
   bool exit_status = false;
 
   if(cv::imwrite(file, out)){
@@ -272,7 +272,7 @@ void Base::update_result(){
 
   cv::Mat Base::get_result() {
     m_mutex_result.lock();
-    Mat out=m_result.clone();
+    cv::Mat out=m_result.clone();
     m_mutex_result.unlock();
 
     return out; //copy contructor?
@@ -295,7 +295,7 @@ void Base::update_result(){
 
   cv::Mat const& Base::get_frame(int i) {
     m_video->set(CV_CAP_PROP_POS_FRAMES,i);
-    Mat output;
+    cv::Mat output;
     m_video->read(output);
     return output;//!watchout, output is not a special mat typ!
   }
@@ -316,7 +316,7 @@ void Base::update_result(){
     return m_file;
   }
 
-  std::shared_ptr<VideoCapture> Base::get_videocap() {
+  std::shared_ptr<cv::VideoCapture> Base::get_videocap() {
     return m_video;
   }
 
