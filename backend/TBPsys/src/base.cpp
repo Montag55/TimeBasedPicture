@@ -44,11 +44,11 @@ Base::~Base(){
 }
 
 void Base::thread_calc_loop(){ //waits for work and makes calculataion
-  int wait_for_work_time=200;
-  int wait_while_work= 100;
-  bool save_state=true;
+  int wait_for_work_time = 200;
+  int wait_while_work = 100;
+  bool save_state = true;
   m_mutex_update.lock();
-  bool in_calc=m_in_calculation;
+  bool in_calc = m_in_calculation;
   m_mutex_update.unlock();
 
   while(true) {
@@ -80,7 +80,7 @@ int Base::add_segment(int start, int end, float local_i, float global_i){
   end++;
 
   std::shared_ptr<Base> ptr = shared_from_this();
-  m_segments.push_back(std::make_shared<Segment>(m_file, start, end, inten_loc, inten_glo, ptr, id));
+  m_segments.push_back(std::make_shared<Segment>(start, end, inten_loc, inten_glo, ptr, id));
   return id;
 }
 
@@ -203,86 +203,8 @@ void Base::continue_work() {
 
   this->save("state_tmp.jpg");
 }
-
-float Base::get_segment_progress(int id) {
-  return m_segments[id]->get_progress();
-}
-
-cv::Mat Base::get_result() {
-  m_mutex_result.lock();
-  Mat out=m_result.clone();
-  m_mutex_result.unlock();
-
-  return out; //copy contructor?
-}
-
-bool Base::get_result(cv::Mat& out) {
-  m_mutex_result.lock();
-  if(m_new_output)
-  {
-    out=m_result.clone();
-    m_new_output=false;
-    m_mutex_result.unlock();
-    return true;
-  }else{
-    m_mutex_result.unlock();
-    return false;
-
-  }
-}
-
-cv::Mat const& Base::get_frame(int i) {
-  m_video->set(CV_CAP_PROP_POS_FRAMES,i);
-  Mat output;
-  m_video->read(output);
-  return output;//!watchout, output is not a special mat typ!
-}
-
-int Base::get_img_type() {
-  return m_img_type;
-}
-
-int Base::get_width() {
-  return  m_pnt_max.y;
-}
-
-int Base::get_height() {
-  return  m_pnt_max.x;
-}
-
-std::string Base::get_videopath() {
-  return m_file;
-}
-
-std::shared_ptr<VideoCapture> Base::get_videocap() {
-  return m_video;
-}
-
-cv::Point Base::get_max_Point(){
-  return m_pnt_max;
-}
-
-cv::Point Base::get_min_Point(){
-  return m_pnt_min;
-}
-
-int Base::get_start_frame(){
-  return m_frame_start;
-}
-
-int Base::get_last_frame(){
-  return m_frame_last;
-}
-
-float Base::get_intensity(){
-  return m_intensity;
-}
-
-void Base::set_work_size(int i) {
-  m_work_size = i;
-}
 /*
-  we might set the following functions protected?
+we might set the following functions protected?
 */
 void Base::add_work(Segment* new_seg){
   //it is intended that a segments uses this functions
@@ -305,42 +227,123 @@ void Base::update_result(){
   int m_img_delta=3;  //might be dependend on image mat typ
   m_new_output=true;
   for (unsigned int row = m_pnt_min.y; row < m_pnt_max.y; ++row) {
+    //ptr:
+    float *ptr_res        =  (float*)m_result.ptr(row);
+    const float *ptr_abs  =  (float*)m_values_abs.ptr(row);
+    const float *ptr_fac  =  (float*)m_values_fac.ptr(row);
+
+    for (unsigned int col = m_pnt_min.x; col < m_pnt_max.x; col++) {
       //ptr:
-      float *ptr_res        =  (float*)m_result.ptr(row);
-      const float *ptr_abs  =  (float*)m_values_abs.ptr(row);
-      const float *ptr_fac  =  (float*)m_values_fac.ptr(row);
+      float *uc_pixel_res       = ptr_res;
+      const float *uc_pixel_abs = ptr_abs;
+      const float *uc_pixel_fac = ptr_fac;
+      double factor             = uc_pixel_fac[0] + m_uni_fac;
 
-      for (unsigned int col = m_pnt_min.x; col < m_pnt_max.x; col++) {
-          //ptr:
-          float *uc_pixel_res       = ptr_res;
-          const float *uc_pixel_abs = ptr_abs;
-          const float *uc_pixel_fac = ptr_fac;
-          double factor             = uc_pixel_fac[0] + m_uni_fac;
-
-          if(factor==0.0f)
-          {
-            divzero=true;
-            for(int c=0; c<3; c++) //allow more channel!?
-            {
-              uc_pixel_res[c]=0;
-            }
-          }else{
-            for(int c=0; c<3; c++) //allow more channel!?
-            {
-              uc_pixel_res[c]=uc_pixel_abs[c]/factor;
-            }
-          }
-          //shift ptr:
-          ptr_res += m_img_delta;
-          ptr_abs += m_img_delta;
-          ptr_fac += 1;
+      if(factor==0.0f)
+      {
+        divzero=true;
+        for(int c=0; c<3; c++) //allow more channel!?
+        {
+          uc_pixel_res[c]=0;
+        }
+      }else{
+        for(int c=0; c<3; c++) //allow more channel!?
+        {
+          uc_pixel_res[c]=uc_pixel_abs[c]/factor;
+        }
       }
+      //shift ptr:
+      ptr_res += m_img_delta;
+      ptr_abs += m_img_delta;
+      ptr_fac += 1;
+    }
   }
 
   if(divzero) {
     std::cout<<"WARNING: facwaszero\n";
   }
 }
+
+
+#ifndef true //getter
+  float Base::get_segment_progress(int id) {
+    return m_segments[id]->get_progress();
+  }
+
+  cv::Mat Base::get_result() {
+    m_mutex_result.lock();
+    Mat out=m_result.clone();
+    m_mutex_result.unlock();
+
+    return out; //copy contructor?
+  }
+
+  bool Base::get_result(cv::Mat& out) {
+    m_mutex_result.lock();
+    if(m_new_output)
+    {
+      out=m_result.clone();
+      m_new_output=false;
+      m_mutex_result.unlock();
+      return true;
+    }else{
+      m_mutex_result.unlock();
+      return false;
+
+    }
+  }
+
+  cv::Mat const& Base::get_frame(int i) {
+    m_video->set(CV_CAP_PROP_POS_FRAMES,i);
+    Mat output;
+    m_video->read(output);
+    return output;//!watchout, output is not a special mat typ!
+  }
+
+  int Base::get_img_type() {
+    return m_img_type;
+  }
+
+  int Base::get_width() {
+    return  m_pnt_max.y;
+  }
+
+  int Base::get_height() {
+    return  m_pnt_max.x;
+  }
+
+  std::string Base::get_videopath() {
+    return m_file;
+  }
+
+  std::shared_ptr<VideoCapture> Base::get_videocap() {
+    return m_video;
+  }
+
+  cv::Point Base::get_max_Point(){
+    return m_pnt_max;
+  }
+
+  cv::Point Base::get_min_Point(){
+    return m_pnt_min;
+  }
+
+  int Base::get_start_frame(){
+    return m_frame_start;
+  }
+
+  int Base::get_last_frame(){
+    return m_frame_last;
+  }
+
+  float Base::get_intensity(){
+    return m_intensity;
+  }
+
+  void Base::set_work_size(int i) {
+    m_work_size = i;
+  }
+#endif
 
 /*  some getter...
 std::string const& Base::get_file() const{

@@ -29,9 +29,9 @@ protected:
   int           m_img_type;
   int           m_id;
   bool          m_recompute=false;
-  std::map< int,Segment*> m_all_connections= std::map<int , Segment*>();
   std::mutex    m_mutex_connections;
   std::shared_ptr<Base> m_base;
+  std::map<int, Segment*> m_all_connections = std::map<int, Segment*>();
 };
 
 #endif
