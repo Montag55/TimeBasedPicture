@@ -11,17 +11,16 @@ and edit them yourself...
 */
 
 class Segment;
-#include <opencv2/opencv.hpp>
-#include <string.h>
-#include <vector>
-#include <segment.hpp>
-#include <thread>
 #include <mutex>
+#include <vector>
+#include <thread>
+#include <string.h>
+
+#include "segment.hpp"
+#include "interpretation.hpp"
+
+#include <opencv2/opencv.hpp>
 #include "../../OpenGL/include/glapplication.hpp"
-
-
-using namespace cv;
-using namespace std;
 
 class Base : public std::enable_shared_from_this<Base> {
 public:
@@ -29,66 +28,68 @@ public:
   ~Base();
 
   //ORGA::::::::::::::::::::::::::::::::::::::::::::::::
-  std::shared_ptr<Segment>            add_segment(int id);
-  std::shared_ptr<Segment>            add_segment(int start, int end, int id);
-  std::shared_ptr<Segment>            add_segment(int start, int end, float local_i, float global_i, int id);
-  void                save(std::string file);
+  bool                save(std::string file);
+  bool                connect(int id_segment, int id_interpretation);
+  int                 add_segment(int start, int end, float local_i, float global_i);
+  int                 add_interpretation(int typ_i);
+  bool                delete_segment(int id);
+  bool                manipulate_segment(int id, int start, int end, float local_i, float global_i);
 
   //WORK::::::::::::::::::::::::::::::::::::::::::::::::
+  float               get_segment_progress(int id);
+  bool                get_result(cv::Mat& out);
+  cv::Mat             get_result();
+  cv::Mat const&      get_frame(int i);
+  int                 get_img_type();
+  int                 get_width();
+  int                 get_height();
+  std::string         get_videopath();
+  std::shared_ptr<cv::VideoCapture> get_videocap();
+  cv::Point           get_max_Point();
+  cv::Point           get_min_Point();
+  int                 get_start_frame();
+  int                 get_last_frame();
+  float               get_intensity();
+  void                set_work_size(int i);
+
+  void                add_work(Segment* new_seg);
+  void                add_to_values_abs(cv::Mat new_values);
+  void                add_to_values_fac(cv::Mat new_values);
+  void                add_to_uni_fac(float new_value);
+
   void                thread_calc_loop();
-  void                thread_GLAPP_loop();
   bool                work_to_do();
   void                continue_work();
-  void                set_work_size(int i);
-  bool                get_result(Mat& out);
-  Mat                 get_result();
-  Mat const&          get_frame(int i);
-  //PROT?:::::::::::::::::::::::::::::::::::::::::::::::
-  void                add_work(Segment* new_seg);
 
-  GLApplication*      getGLAPP();
-  bool                use_gpu();
-  std::string         get_videopath();
-  std::shared_ptr<VideoCapture>      get_videocap();
-  int                 get_img_type();
 
 private:
-
   void                update_result();
 
-private:
-  bool                m_in_calculation;
-  bool                m_new_output=true;
+  std::vector<std::shared_ptr<Segment>>         m_segments;
+  std::vector<std::shared_ptr<Interpretation>>  m_interpretations;
+  std::shared_ptr<cv::VideoCapture>             m_video;
 
-  //origin:
-  std::string         m_file;
-  std::shared_ptr<VideoCapture>        m_video;
-  int                 m_img_type;
-  int                 m_work_size;
-
-  //domain:
-  Point               m_pnt_min;
-  Point               m_pnt_max;
-  int                 m_frame_start;
-  int                 m_frame_last;
-
-  //daat:
-  std::vector<Segment*>   m_seg_in_calc;        //stores currently edited segments
-  Mat                     m_values_abs;
-  Mat                     m_values_fac;
-  double                  m_uni_fac;
-  float                   m_intensity;           //overall intensity: default: 1.0f
-  Mat                     m_result;
+  bool                    m_new_output = true;
+  bool                    m_in_calculation;
   std::thread             m_worker;
-  GLApplication*          m_GLapp;
-  bool                    m_use_gpu=false;
-  std::thread             m_thread_GLAPP;
-  bool                    m_update_work;
-
-   //simple mutex solution for the start:
   std::mutex              m_mutex_update;        //m_in_calculation
   std::mutex              m_mutex_result;        //read & write update img
-  //std::vector<std::shared_ptr<Segment>> m_all_segments= std::vector<std::shared_ptr<Segment>>();
+
+  std::string             m_file;
+  int                     m_img_type;
+  int                     m_work_size;
+
+  cv::Point               m_pnt_min;
+  cv::Point               m_pnt_max;
+  int                     m_frame_start;
+  int                     m_frame_last;
+
+  std::vector<Segment*>   m_seg_in_calc;        //stores currently edited segments
+  cv::Mat                 m_values_abs;
+  cv::Mat                 m_values_fac;
+  double                  m_uni_fac;
+  float                   m_intensity;           //overall intensity: default: 1.0f
+  cv::Mat                 m_result;
 };
 
 #endif

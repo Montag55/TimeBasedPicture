@@ -12,7 +12,6 @@ segment and interpretation later...
 
 #include "../../OpenGL/include/glapplication.hpp"
 
-using namespace cv;
 
 class Base;
 #include "base.hpp"
@@ -21,7 +20,7 @@ class Base;
 
 class Segment {
 public:
-  Segment(std::string file, int img_type, Point min, Point max, int start_frame, int last_frame, double intensity_local, double intensity_gloabl, std::shared_ptr<Base> mother, Mat& mother_val, Mat& mother_fac, double& mother_uni, int id);
+  Segment(int start_frame, int last_frame, double intensity_local, double intensity_gloabl, std::shared_ptr<Base> mother, int id);
   ~Segment();
 
   bool work(int& work_size);
@@ -32,6 +31,8 @@ public:
   void boost_diff_smooth(int power);
   void boost_similarities(int power);//modal();
   */
+  void revert_influence();
+  void upload_influence();
 
   //EDIT THE SEGMENT:
   void move_in_time(int delta);
@@ -46,22 +47,16 @@ public:
   void update_interpretation();
   void delete_seg();
   void reset();
-  int getX();
-  int getY();
+
   float get_progress();
 
 private:
   void ready_to_work();
   int           m_id;
-  //int           m_interpretation_mode;
-  //VideoCapture  m_video;
-  int           m_img_type;
-  bool          m_work_done=true;
   float         m_percent;
+  bool          m_work_done;
 
   //Definition of BBOX:
-  Point         m_pnt_min;
-  Point         m_pnt_max;
   int           m_frame_start_destin;
   int           m_frame_last_destin;
   int           m_frame_start_actual;
@@ -72,25 +67,21 @@ private:
   float         m_intensity_local_actual;
   float         m_intensity_global_actual;
 
-  //
-  std::shared_ptr<Interpretation> m_new_interpretation=NULL;
   std::shared_ptr<Interpretation> m_interpretation;
+  std::shared_ptr<Interpretation> m_new_interpretation;
 
   //local values
-  Mat           m_values_abs;
-  Mat           m_values_fac;
-  float        m_uni_fac;
+  cv::Mat       m_values_abs;
+  cv::Mat       m_values_fac;
+  float         m_uni_fac;
 
   //global values
   std::shared_ptr<Base>         m_mother;
-  Mat           m_m_values_abs;
-  Mat           m_m_values_fac;
-  double&       m_m_uni_fac;
 
   //mutex_for setter
   std::mutex    m_mutex_soll;
   std::mutex    m_mutex_state;
-  bool m_needs_reset  =false;
+  bool m_needs_reset;
 
 };
 #endif
