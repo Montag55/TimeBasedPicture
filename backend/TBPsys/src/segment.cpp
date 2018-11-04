@@ -92,11 +92,16 @@ bool Segment::work(int& work_size){
   m_mutex_soll.unlock();
 
   if(work_size > 0) {
-    state = interpret_sized(work_size);
+    if(m_interpretation->get_calculation_specification() == 0){
+      state = interpret_sized( work_size );
+    }
+    else{
+      std::cout<<"Other interpretation traversal not implemnted yet. \n";
+    }
+
     m_mutex_soll.lock();
     float soll = m_frame_last_destin - m_frame_start_destin;
     float ist = abs(m_frame_last_actual - m_frame_last_destin) + abs(m_frame_start_actual - m_frame_start_destin);
-
     float percentage = 100 - 100.0 * ( ist / soll );
 
     if( percentage < 0 ){
@@ -203,7 +208,7 @@ bool Segment::interpret_sized( int & work_size){
   else if(m_frame_start_actual < dest_start) {
     int length = work_size;
 
-    if(m_frame_start_actual + work_size>dest_start){
+    if(m_frame_start_actual + work_size > dest_start){
       length = dest_start - m_frame_start_actual;
     }
 
@@ -223,57 +228,62 @@ bool Segment::interpret_sized( int & work_size){
 
     int sign = 1;
     m_interpretation->calc(m_id, startpoint, length, sign, m_values_abs, m_uni_fac);
+    work_size -= length;
     m_frame_start_actual -= length;
   }
-
   //endpoint:
-  if(m_frame_last_actual == -1) {//not yet computed!
-    m_frame_last_actual = dest_start;
+  if( work_size > 0 ){
+    if(m_frame_last_actual == -1) {//not yet computed!
+       m_frame_last_actual = dest_start;
+     }
+     else if(m_frame_last_actual < dest_end) {
+       /*ffmpeg:
+       double frameRate = m_video.get(CV_CAP_PROP_FPS);
+       double frameTime = 1000.0 * m_frame_last_actual / frameRate;
+       */
+       //m_video.set(CV_CAP_PROP_POS_MSEC, m_frame_last_actual/*frameTime*/);
+       int endpoint = m_frame_last_actual + work_size;
+       int length = work_size;
+       if(endpoint > dest_end){
+         endpoint = dest_end;
+         length = dest_end - m_frame_last_actual;
+       }
+
+       int sign = 1;
+       m_interpretation->calc(m_id, m_frame_last_actual, length, sign, m_values_abs, m_uni_fac);
+       work_size -= length;
+       m_frame_last_actual += length;
+     }
+     else if(m_frame_last_actual > dest_end) {
+       int startpoint = m_frame_last_actual - work_size;
+       int length = work_size;
+
+       if(startpoint < dest_end) {
+         length = m_frame_last_actual - dest_end;
+         startpoint = dest_end;
+       }
+
+       int sign =- 1;
+       m_interpretation->calc(m_id, startpoint, length, sign, m_values_abs, m_uni_fac);
+       work_size -= length;
+       m_frame_last_actual -= length;
+     }
+
+     if(m_uni_fac > 0) {
+       upload_influence();
+     }
+
+     std::cout<<m_uni_fac<<"munifac..............................\n";
+
+     if((dest_start == m_frame_start_actual) && (dest_end == m_frame_last_actual)) {
+       exit_status = true;  //ist = soll
+     }
+     else{
+       exit_status = false; //ist != soll
+     }
   }
-  else if(m_frame_last_actual < dest_end) {
-    /*ffmpeg:
-    double frameRate = m_video.get(CV_CAP_PROP_FPS);
-    double frameTime = 1000.0 * m_frame_last_actual / frameRate;
-    */
-    //m_video.set(CV_CAP_PROP_POS_MSEC, m_frame_last_actual/*frameTime*/);
-    int endpoint = m_frame_last_actual + work_size;
-    int length = work_size;
-    if(endpoint > dest_end){
-      endpoint = dest_end;
-      length = dest_end - m_frame_last_actual;
-    }
 
-    int sign = 1;
-    m_interpretation->calc(m_id, m_frame_last_actual, length, sign, m_values_abs, m_uni_fac);
-    m_frame_last_actual += length;
-  }
-  else if(m_frame_last_actual > dest_end) {
-    int startpoint = m_frame_last_actual - work_size;
-    int length = work_size;
-
-    if(startpoint < dest_end) {
-      length = m_frame_last_actual - dest_end;
-      startpoint = dest_end;
-    }
-
-    int sign =- 1;
-    m_interpretation->calc(m_id, startpoint, length, sign, m_values_abs, m_uni_fac);
-    m_frame_last_actual -= length;
-  }
-
-  if(m_uni_fac > 0) {
-    upload_influence();
-  }
-
-  std::cout<<m_uni_fac<<"munifac..............................\n";
-
-  if((dest_start == m_frame_start_actual) && (dest_end == m_frame_last_actual)) {
-    exit_status = true;  //ist = soll
-  }
-  else{
-    exit_status = false; //ist != soll
-  }
-
+  std::cout << "worksize: " << work_size << "\n";
   return exit_status;
 }
 
