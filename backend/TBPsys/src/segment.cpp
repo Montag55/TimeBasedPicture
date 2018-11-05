@@ -110,14 +110,19 @@ bool Segment::work(int& work_size){
 
     m_mutex_soll.unlock();
 
-    m_mutex_state.lock();
+    if(percentage == 100 && state) {
+      std::string out_file = std::string("out_seg_id") + std::to_string(m_id) + ".jpg";
+      imwrite(out_file, m_values_abs * ((float) 1 / ((float) m_uni_fac)) * m_intensity_local_actual);
+      m_mutex_state.lock();
+    }
+    else {
+      m_mutex_state.lock();
+      state = false;
+    }
+
     m_work_done = state;
     m_percent = percentage;
     m_mutex_state.unlock();
-  }
-  if(state) {
-    std::string out_file = std::string("out_seg_id") + std::to_string(m_id) + ".jpg";
-    imwrite(out_file, m_values_abs * ((float) 1 / ((float) m_uni_fac)) * m_intensity_local_actual);
   }
 
   return state;

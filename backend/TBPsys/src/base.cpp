@@ -11,7 +11,7 @@
 Base::Base(std::string const& video_name) :
   m_in_calculation{false},
   m_file {video_name},
-  m_work_size{50},
+  m_work_size{10},
   m_video{std::make_shared<cv::VideoCapture>( video_name, cv::CAP_IMAGES)},  /*!when changing to ffmpeg, change set framepos!*/
   m_img_type{CV_32FC3},//http://ninghang.blogspot.de/2012/11/list-of-mat-type-in-opencv.html
   m_frame_start{0},

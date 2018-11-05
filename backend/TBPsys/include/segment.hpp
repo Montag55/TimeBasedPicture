@@ -10,9 +10,6 @@ segment and interpretation later...
 #include <string.h>
 #include <mutex>
 
-#include "../../OpenGL/include/glapplication.hpp"
-
-
 class Base;
 #include "base.hpp"
 #include "interpretation.hpp"

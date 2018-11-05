@@ -20,7 +20,6 @@ class Segment;
 #include "interpretation.hpp"
 
 #include <opencv2/opencv.hpp>
-#include "../../OpenGL/include/glapplication.hpp"
 
 class Base : public std::enable_shared_from_this<Base> {
 public:
