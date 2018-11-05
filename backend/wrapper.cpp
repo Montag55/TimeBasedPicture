@@ -147,6 +147,9 @@ void get_segment_progress(const v8::FunctionCallbackInfo<v8::Value>& args){
     std::cout << "progress: "<<progress<<" \n";
     std::cout << "get_segment_progress() failed. \n";
   }
+  else{
+    std::cout << "progress: "<< progress<< "\n";
+  }
 
   auto msg = v8::String::NewFromUtf8( isolate , output.c_str());
   args.GetReturnValue().Set(msg);

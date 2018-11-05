@@ -11,7 +11,7 @@
 Base::Base(std::string const& video_name) :
   m_in_calculation{false},
   m_file {video_name},
-  m_work_size{100},
+  m_work_size{10},
   m_video{std::make_shared<cv::VideoCapture>( video_name, cv::CAP_IMAGES)},  /*!when changing to ffmpeg, change set framepos!*/
   m_img_type{CV_32FC3},//http://ninghang.blogspot.de/2012/11/list-of-mat-type-in-opencv.html
   m_frame_start{0},
@@ -44,8 +44,8 @@ Base::~Base(){
 }
 
 void Base::thread_calc_loop(){ //waits for work and makes calculataion
-  int wait_for_work_time = 200;
-  int wait_while_work = 100;
+  int wait_for_work_time = 10;
+  int wait_while_work = 10;
   bool save_state = true;
   m_mutex_update.lock();
   bool in_calc = m_in_calculation;
@@ -53,12 +53,19 @@ void Base::thread_calc_loop(){ //waits for work and makes calculataion
 
   while(true) {
     while(in_calc) {
+      auto start_time=std::chrono::high_resolution_clock::now();
+
       std::this_thread::sleep_for(std::chrono::milliseconds(wait_while_work));
       continue_work();  //with size?
       m_mutex_update.lock();
       in_calc = m_in_calculation;
       m_mutex_update.unlock();
       save_state = false;
+
+      auto end_time = std::chrono::high_resolution_clock::now();
+      auto duration = std::chrono::duration_cast< std::chrono::milliseconds >( end_time - start_time ).count();
+      std::cout<<"WORKCYCLE took ";
+      std::cout<<duration<<" milli-seconds ------------------------------------------\n";
     }
 
     if(!save_state){
@@ -183,7 +190,7 @@ void Base::add_to_uni_fac(float new_value){
 
 bool Base::work_to_do() {
   m_mutex_update.lock();
-  bool out =m_in_calculation;
+  bool out = m_in_calculation;
   m_mutex_update.unlock();
 
   return out;
@@ -193,16 +200,20 @@ void Base::continue_work() {
   int work_size = m_work_size;
 
   m_mutex_result.lock();
+
   m_seg_in_calc.erase(std::remove_if(m_seg_in_calc.begin(), m_seg_in_calc.end(), [&work_size](Segment*& o) { return o->work(work_size); }),m_seg_in_calc.end());
   update_result();
+
 
   if(!m_seg_in_calc.size()) {
     m_in_calculation=false;
   }
+
   m_mutex_result.unlock();
 
   this->save("state_tmp.jpg");
-}
+
+  }
 /*
 we might set the following functions protected?
 */
@@ -263,7 +274,6 @@ void Base::update_result(){
     std::cout<<"WARNING: facwaszero\n";
   }
 }
-
 
 #ifndef true //getter
   float Base::get_segment_progress(int id) {
