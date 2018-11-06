@@ -14,6 +14,7 @@ Base::Base(std::string const& video_name) :
   m_work_size{10},
   m_video{std::make_shared<cv::VideoCapture>( video_name, cv::CAP_IMAGES)},  /*!when changing to ffmpeg, change set framepos!*/
   m_img_type{CV_32FC3},//http://ninghang.blogspot.de/2012/11/list-of-mat-type-in-opencv.html
+  m_img_delta{3},
   m_frame_start{0},
   m_intensity{1.0f},
   m_uni_fac{0.0f},
@@ -64,8 +65,7 @@ void Base::thread_calc_loop(){ //waits for work and makes calculataion
 
       auto end_time = std::chrono::high_resolution_clock::now();
       auto duration = std::chrono::duration_cast< std::chrono::milliseconds >( end_time - start_time ).count();
-      std::cout<<"WORKCYCLE took ";
-      std::cout<<duration<<" milli-seconds ------------------------------------------\n";
+      //std::cout<< "\t WORKCYCLE took: " << duration << " milli-seconds \n";
     }
 
     if(!save_state){
@@ -113,12 +113,12 @@ bool Base::manipulate_segment(int id, int start, int end, float local_i, float g
 }
 
 int Base::add_interpretation(int typ_i){
-  std::cout<<"addinterpretation: ";
+  std::cout<<"\t > interpretation: ";
   int id = m_interpretations.size();
 
   if(typ_i == 0 /*averaging*/){
     std::cout<<"Average\n";
-    m_interpretations.push_back(std::make_shared<Average>(shared_from_this(), id));
+    m_interpretations.push_back(std::make_shared<Average>(shared_from_this(), id, typ_i));
   }
   else if (typ_i == 1 /*transferfunktion*/){
     std::cout<<"Transferfunction (not implemnted) \n";
@@ -140,9 +140,33 @@ int Base::add_interpretation(int typ_i){
     id = -42;
     std::cout<<"Overplott (not implemnted) \n";
   }
-  else if (typ_i == 3 /*boost*/){
+  else{
     id = -42;
-    std::cout<<"Boost not (not implemnted)\n";
+    std::cout<< "Wrong interpretation. \n";
+  }
+
+  return id;
+}
+
+int Base::add_interpretation(int typ_i, int ref_id, float threshhold){
+  std::cout<<"\t > interpretation: ";
+  int id = m_interpretations.size();
+
+  if (typ_i == 3 /*boost*/){
+    std::cout<< "Boost \n";
+
+    //std::string path = "./out_seg_id" + std::to_string( ref_id ) + ".jpg";
+    std::string path = "./ref.jpg";
+    cv::Mat ref_img = cv::imread(path);
+
+    if(ref_img.empty()){
+      std::cout << "reference image not loaded. \n";
+    }
+    else {
+      ref_img.convertTo( ref_img, m_img_type );   //do this for the whole video right at the start!?
+    }
+
+    m_interpretations.push_back(std::make_shared<Boost>(shared_from_this(), id, typ_i, ref_img, threshhold));
   }
   else{
     id = -42;
@@ -158,7 +182,6 @@ bool Base::connect(int id_segment, int id_interpretation){
      (id_interpretation <= m_interpretations.size() - 1)) {
 
     m_segments[id_segment]->set_interpretation(m_interpretations[id_interpretation]);
-    std::cout<< "Segment " << id_segment << " is interpreted with interpretation " << id_interpretation << "\n";
     correct = true;
   }
 
@@ -181,11 +204,11 @@ void Base::add_to_values_abs(cv::Mat new_values){
 }
 
 void Base::add_to_values_fac(cv::Mat new_values){
-  m_values_abs+=new_values;
+  m_values_fac += new_values;
 }
 
 void Base::add_to_uni_fac(float new_value){
-  m_uni_fac+=new_value;
+  m_uni_fac += new_value;
 }
 
 bool Base::work_to_do() {
@@ -234,9 +257,8 @@ void Base::update_result(){
   calculates the outputimage using the sum and its factors
   the pixel acces is already a bit performance.. using ptrs!
   */
-  bool divzero=false;
-  int m_img_delta=3;  //might be dependend on image mat typ
-  m_new_output=true;
+  bool divzero = false;
+  m_new_output = true;
   for (unsigned int row = m_pnt_min.y; row < m_pnt_max.y; ++row) {
     //ptr:
     float *ptr_res        =  (float*)m_result.ptr(row);
@@ -263,6 +285,11 @@ void Base::update_result(){
           uc_pixel_res[c]=uc_pixel_abs[c]/factor;
         }
       }
+      /*
+      std::cout << "factor = "<< factor << " fromm: "<< uc_pixel_fac[0]<<"\n";
+      std::cout << "val: " << uc_pixel_abs[0] << "\n";
+      std::cout << "results in: " << uc_pixel_res[0] << "\n";
+*/
       //shift ptr:
       ptr_res += m_img_delta;
       ptr_abs += m_img_delta;
@@ -273,6 +300,7 @@ void Base::update_result(){
   if(divzero) {
     std::cout<<"WARNING: facwaszero\n";
   }
+  //std::cout << "Uni fac weas " << m_uni_fac << "\n";
 }
 
 #ifndef true //getter
@@ -315,11 +343,11 @@ void Base::update_result(){
   }
 
   int Base::get_width() {
-    return  m_pnt_max.y;
+    return  m_pnt_max.x;
   }
 
   int Base::get_height() {
-    return  m_pnt_max.x;
+    return m_pnt_max.y;
   }
 
   std::string Base::get_videopath() {
@@ -350,9 +378,14 @@ void Base::update_result(){
     return m_intensity;
   }
 
+  int Base::get_img_delta() {
+    return m_img_delta;
+  }
+
   void Base::set_work_size(int i) {
     m_work_size = i;
   }
+
 #endif
 
 /*  some getter...

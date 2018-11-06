@@ -16,10 +16,10 @@ Segment::Segment(int start_frame, int last_frame, double intensity_local, double
   m_intensity_global_destin{intensity_global},
   m_intensity_local_actual{intensity_local},
   m_intensity_global_actual{intensity_global},
-  m_values_abs{cv::Mat(mother->get_width(), mother->get_height(), mother->get_img_type(), cv::Scalar(0,0,0))},
-  m_values_fac{cv::Mat(mother->get_width(), mother->get_height(), CV_64FC1, cv::Scalar(0))},
+  m_values_abs{cv::Mat(mother->get_height(), mother->get_width(), mother->get_img_type(), cv::Scalar(0,0,0))},
+  m_values_fac{cv::Mat(mother->get_height(), mother->get_width(), CV_64FC1, cv::Scalar(0))},
   m_uni_fac{0.0f},
-  m_interpretation{std::make_shared<Average>(mother,-8)}, //default id: -8!?
+  m_interpretation{std::make_shared<Average>(mother, -1, 0)},
   m_mutex_soll{},
   m_mutex_state{},
   m_percent{0.0f},
@@ -49,7 +49,7 @@ void Segment::ready_to_work(){
 }
 
 void Segment::reset(){
-  std::cout << "reset segment. \n";
+  //std::cout << "\t > reset segment. \n";
   m_frame_start_actual = -1;
   m_frame_last_actual = -1;
   revert_influence();
@@ -57,12 +57,41 @@ void Segment::reset(){
 }
 
 void Segment::revert_influence(){
-  m_mother->add_to_values_abs(-1 * (m_values_abs * ((float) 1 / ((float) m_uni_fac))) * m_intensity_local_actual * m_intensity_global_actual);
-  m_mother->add_to_uni_fac( -m_intensity_global_actual);
+  cv::Mat influence;
+  if( m_interpretation->getTypenumber() == 0 ){
+    influence = (m_values_abs * ((float) 1 / ((float) m_uni_fac))) * m_intensity_local_actual * m_intensity_global_actual;
+    std::cout<<"down 0\n";
+
+  }
+  else if( m_interpretation->getTypenumber() == 3){
+    influence = m_values_abs * m_intensity_local_actual * m_intensity_global_actual;
+    std::cout<<"down 3\n";
+
+  }
+  else{
+    std::cout<< "revert influence is not allowed yet " <<m_interpretation->getTypenumber() << "\n";
+  }
+  m_mother->add_to_values_abs(-influence);
+  m_mother->add_to_values_fac(-m_values_fac);
+  m_mother->add_to_uni_fac(-m_intensity_global_actual);
 }
 
 void Segment::upload_influence(){
-  m_mother->add_to_values_abs((m_values_abs * ((float) 1 / ((float) m_uni_fac))) * m_intensity_local_actual * m_intensity_global_actual);
+
+  cv::Mat influence;
+  if( m_interpretation->getTypenumber() == 0 ){
+    influence = (m_values_abs * ((float) 1 / ((float) m_uni_fac))) * m_intensity_local_actual * m_intensity_global_actual;
+    std::cout<<"up 0\n";
+  }
+  else if(m_interpretation->getTypenumber() == 3){
+    influence = m_values_abs * m_intensity_local_actual * m_intensity_global_actual;
+    std::cout<<"up 3\n";
+  }
+  else{
+    std::cout<< "upload influence is not allowed yet " <<m_interpretation->getTypenumber() << "\n";
+  }
+  m_mother->add_to_values_abs(influence);
+  m_mother->add_to_values_fac(m_values_fac);
   m_mother->add_to_uni_fac(m_intensity_global_actual);
 }
 
@@ -77,11 +106,12 @@ bool Segment::work(int& work_size){
 
   //set new interpetation:
   if(m_new_interpretation != NULL) {
+      reset();
       m_interpretation->delete_connection(m_id);
       m_interpretation = m_new_interpretation;
       m_interpretation->add_connection(m_id, this);
       m_new_interpretation = NULL;
-      reset();
+
   }
   //interpretation need reset:
   if(m_needs_reset) {
@@ -111,8 +141,7 @@ bool Segment::work(int& work_size){
     m_mutex_soll.unlock();
 
     if(percentage == 100 && state) {
-      std::string out_file = std::string("out_seg_id") + std::to_string(m_id) + ".jpg";
-      imwrite(out_file, m_values_abs * ((float) 1 / ((float) m_uni_fac)) * m_intensity_local_actual);
+      save_segment_out();
       m_mutex_state.lock();
     }
     else {
@@ -137,7 +166,7 @@ void Segment::set_interpretation(std::shared_ptr<Interpretation> interpret){
     m_mutex_soll.lock();
     m_new_interpretation = interpret;
     m_mutex_soll.unlock();
-    std::cout << "needs to recalculate segment, because of new interpretation. \n";
+    std::cout << "   (needs to recalculate segment, because of new interpretation.) \n";
     ready_to_work();
 
   }
@@ -218,7 +247,7 @@ bool Segment::interpret_sized( int & work_size){
     }
 
     int sign = -1;
-    m_interpretation->calc(m_id, m_frame_start_actual, length, sign, m_values_abs, m_uni_fac);
+    m_interpretation->calc(m_id, m_frame_start_actual, length, sign, m_values_abs, m_uni_fac, m_values_fac);
     work_size -= length;
     m_frame_start_actual += length;
   }
@@ -232,7 +261,7 @@ bool Segment::interpret_sized( int & work_size){
     }
 
     int sign = 1;
-    m_interpretation->calc(m_id, startpoint, length, sign, m_values_abs, m_uni_fac);
+    m_interpretation->calc(m_id, startpoint, length, sign, m_values_abs, m_uni_fac, m_values_fac);
     work_size -= length;
     m_frame_start_actual -= length;
   }
@@ -255,7 +284,7 @@ bool Segment::interpret_sized( int & work_size){
        }
 
        int sign = 1;
-       m_interpretation->calc(m_id, m_frame_last_actual, length, sign, m_values_abs, m_uni_fac);
+       m_interpretation->calc(m_id, m_frame_last_actual, length, sign, m_values_abs, m_uni_fac, m_values_fac);
        work_size -= length;
        m_frame_last_actual += length;
      }
@@ -269,16 +298,14 @@ bool Segment::interpret_sized( int & work_size){
        }
 
        int sign =- 1;
-       m_interpretation->calc(m_id, startpoint, length, sign, m_values_abs, m_uni_fac);
+       m_interpretation->calc(m_id, startpoint, length, sign, m_values_abs, m_uni_fac, m_values_fac);
        work_size -= length;
        m_frame_last_actual -= length;
      }
 
-     if(m_uni_fac > 0) {
+     if(m_frame_start_actual>-1) {
        upload_influence();
      }
-
-     std::cout<<m_uni_fac<<"munifac..............................\n";
 
      if((dest_start == m_frame_start_actual) && (dest_end == m_frame_last_actual)) {
        exit_status = true;  //ist = soll
@@ -288,8 +315,49 @@ bool Segment::interpret_sized( int & work_size){
      }
   }
 
-  std::cout << "worksize: " << work_size << "\n";
   return exit_status;
+}
+
+void Segment::save_segment_out(){
+
+  int img_delta = m_mother->get_img_delta();
+  cv::Mat result_img = cv::Mat(m_mother->get_max_Point().y, m_mother->get_max_Point().x, m_mother->get_img_type(), cv::Scalar(0,0,0));
+
+  for (unsigned int row = m_mother->get_min_Point().y; row < m_mother->get_max_Point().y; ++row) {
+    //ptr:
+    float *ptr_res        =  (float*)result_img.ptr(row);
+    const float *ptr_abs  =  (float*)m_values_abs.ptr(row);
+    const float *ptr_fac  =  (float*)m_values_fac.ptr(row);
+
+    for (unsigned int col = m_mother->get_min_Point().x; col < m_mother->get_max_Point().x; ++col) {
+      //ptr:
+      float *uc_pixel_res       = ptr_res;
+      const float *uc_pixel_abs = ptr_abs;
+      const float *uc_pixel_fac = ptr_fac;
+
+      double factor             = (uc_pixel_fac[0] + m_uni_fac) *  m_intensity_local_actual;
+
+      if(factor == 0.0f) {
+        for(int c = 0; c < 3; c++) {//allow more channel!?
+          uc_pixel_res[c] = 0;
+        }
+      }
+      else{
+        for(int c = 0; c < 3; c++) { //allow more channel!?
+          uc_pixel_res[c] =  uc_pixel_abs[c] / (factor);
+        }
+        //std::cout << "IST: "<< col<< " --"<< uc_pixel_res[0] << "; " << uc_pixel_res[1] << "; " << uc_pixel_res[2] <<"\n";
+      }
+
+      //shift ptr:
+      ptr_res += img_delta;
+      ptr_abs += img_delta;
+      ptr_fac += 1;
+    }
+  }
+
+  std::string out_file = std::string("out_seg_id") + std::to_string(m_id) + ".jpg";
+  cv::imwrite(out_file, result_img);
 }
 
 //EDIT THE SEGMENT:

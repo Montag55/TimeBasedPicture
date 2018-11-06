@@ -8,15 +8,15 @@
 #include <vector>
 //Transferfunction(VideoCapture& vid, int img_type, int id, int start_pnt,  std::shared_ptr<std::vector<float>> weights);
 
-Transferfunction::Transferfunction(std::shared_ptr<Base> mother, int id, int start_pnt,  std::shared_ptr< std::vector< float > > weights):
-Interpretation{mother, id},
+Transferfunction::Transferfunction(std::shared_ptr<Base> mother, int id, int type, int start_pnt,  std::shared_ptr< std::vector< float > > weights):
+Interpretation{mother, id, type},
 m_weights{weights},
 m_start_pnt{start_pnt}
 {}
 
 
 Transferfunction::~Transferfunction(){
-  std::cout<<"deleting interpretation-avg\n";
+  std::cout<<"\t > deleting interpretation-avg\n";
 }
 int Transferfunction::getTypenumber(){
   return 1;
@@ -25,7 +25,7 @@ int Transferfunction::get_calculation_specification(){
   return 0;//standard sum-game
 }
 
-void Transferfunction::calc(int id, int start, int length, int sign, cv::Mat& result, float& factor) {
+void Transferfunction::calc(int id, int start, int length, int sign, cv::Mat& result, float& factor, cv::Mat& fac_mat) {
   //receive transfer weights, per image and calculate wieghted
   std::cout<<"TRANSFER: with work_size:"<<length<<" took ";
   auto start_time = std::chrono::high_resolution_clock::now();

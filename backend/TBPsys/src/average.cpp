@@ -10,25 +10,22 @@
 
 
 
-Average::Average(std::shared_ptr<Base> mother, int id):
-Interpretation{mother, id},
+Average::Average(std::shared_ptr<Base> mother, int id, int type):
+Interpretation{mother, id, type},
 m_test{0}
-{
-  std::cout<<"average\n";
-}
+{}
 
-Average::~Average(){
-  std::cout<<"deleting interpretation-avg\n";
-}
+Average::~Average(){}
+
 int Average::getTypenumber(){
-  return 0;
+  return m_type;
 }
 
 int Average::get_calculation_specification(){
   return 0;//standard sum-game
 }
 
-void Average::calc(int id, int start, int length, int sign, cv::Mat& result, float& factor) {
+void Average::calc(int id, int start, int length, int sign, cv::Mat& result, float& factor, cv::Mat& fac_mat) {
   auto start_time=std::chrono::high_resolution_clock::now();
 
   cv::Mat tmp_frame;
@@ -54,6 +51,6 @@ void Average::calc(int id, int start, int length, int sign, cv::Mat& result, flo
 
   auto end_time = std::chrono::high_resolution_clock::now();
   auto duration = std::chrono::duration_cast< std::chrono::milliseconds >( end_time - start_time ).count();
-  std::cout<<"AVERAGE: with work_size:"<< length <<" took ";
-  std::cout<<duration<<" milli-seconds in computation\n";
+  // std::cout<<"AVERAGE: with work_size:"<< length <<" took ";
+  // std::cout<< duration << " milli-seconds in computation\n";
 }
