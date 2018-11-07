@@ -253,44 +253,7 @@ void Base::add_work(Segment* new_seg){
 }
 
 void Base::update_result(){
-  /*
-  calculates the outputimage using the sum and its factors
-  the pixel acces is already a bit performance.. using ptrs!
-  */
-  bool divzero = false;
-  m_new_output = true;
-  for (unsigned int row = m_pnt_min.y; row < m_pnt_max.y; ++row) {
-    //ptr:
-    float *ptr_res        =  (float*)m_result.ptr(row);
-    const float *ptr_abs  =  (float*)m_values_abs.ptr(row);
-    const float *ptr_fac  =  (float*)m_values_fac.ptr(row);
-
-    for (unsigned int col = m_pnt_min.x; col < m_pnt_max.x; col++) {
-      //ptr:
-      float *uc_pixel_res       = ptr_res;
-      const float *uc_pixel_abs = ptr_abs;
-      const float *uc_pixel_fac = ptr_fac;
-
-      for(int c=0; c<3; c++) {//allow more channel!
-        if(uc_pixel_fac[c] + m_uni_fac == 0){
-          divzero=true;
-          uc_pixel_res[c] = 0.0f;
-        }
-        else{
-          uc_pixel_res[c] = uc_pixel_abs[c] / (uc_pixel_fac[c] + m_uni_fac);
-        }
-      }
-
-      //shift ptr:
-      ptr_res += m_img_delta;
-      ptr_abs += m_img_delta;
-      ptr_fac += m_img_delta;
-    }
-  }
-
-  if(divzero) {
-    //std::cout<<"WaRNING: facwaszero\n";
-  }
+  m_result = m_values_abs / (m_values_fac + cv::Scalar(m_uni_fac, m_uni_fac, m_uni_fac));
 }
 
 #ifndef true //getter
