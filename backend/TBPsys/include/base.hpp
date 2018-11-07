@@ -34,6 +34,7 @@ public:
   int                 add_interpretation(int typ_i, int ref_id, float threshhold);
   bool                delete_segment(int id);
   bool                manipulate_segment(int id, int start, int end, float local_i, float global_i);
+  bool                manipulate_interpretation(int id, int ref_id, float threshhold);
 
   //WORK::::::::::::::::::::::::::::::::::::::::::::::::
   float               get_segment_progress(int id);
@@ -43,6 +44,7 @@ public:
   int                 get_img_type();
   int                 get_width();
   int                 get_height();
+  int                 get_typ_i(int id);
   std::string         get_videopath();
   std::shared_ptr<cv::VideoCapture> get_videocap();
   cv::Point           get_max_Point();

@@ -112,6 +112,31 @@ bool Base::manipulate_segment(int id, int start, int end, float local_i, float g
   return true;
 }
 
+bool Base::manipulate_interpretation(int id, int ref_id, float threshhold){
+
+  std::string path = " ";
+
+  if(ref_id < 0){
+    path = "./ref.jpg";
+  }
+  else{
+    path = "./out_seg_id" + std::to_string( ref_id ) + ".jpg";
+  }
+
+  cv::Mat ref_img = cv::imread(path);
+
+  if(ref_img.empty()){
+    std::cout << "reference image not loaded. \n";
+  }
+  else {
+    ref_img.convertTo( ref_img, m_img_type );   //do this for the whole video right at the start!?
+  }
+
+  Boost& interpretation = dynamic_cast<Boost&>(*m_interpretations[id]);
+  interpretation.manipulate(ref_img, threshhold);
+  return true;
+}
+
 int Base::add_interpretation(int typ_i){
   std::cout<<"\t > interpretation: ";
   int id = m_interpretations.size();
@@ -287,6 +312,17 @@ void Base::update_result(){
       return false;
 
     }
+  }
+
+  int Base::get_typ_i(int id){
+    int i_id = -1;
+    if(m_interpretations.size() < id || id < 0) {
+      std::cout << "\t > interpretation id doesn't exist. \n";
+    }
+    else{
+      i_id = m_interpretations[id]->getTypenumber();
+    }
+    return i_id;
   }
 
   cv::Mat const& Base::get_frame(int i) {

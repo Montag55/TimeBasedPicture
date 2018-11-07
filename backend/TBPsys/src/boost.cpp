@@ -108,3 +108,26 @@ void Boost::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& current_fr
     }
   }
 }
+
+void Boost::manipulate(cv::Mat ref_frame, float threshhold){
+  bool update_status = false;
+  cv::Mat tmp;
+  double min = 0, max = 0;
+  cv::absdiff(m_reference, ref_frame, tmp);
+  cv::minMaxLoc(tmp, &min, &max);
+  std::cout << "max: " << max << "\n";
+  std::cout << "min: " << min<< "\n";
+
+  if(max > 0){
+    std::cout << "change ref_bild! \n";
+    m_reference = ref_frame;
+    update_status = true;
+  }
+  if(m_threshhold != threshhold){
+    m_threshhold = threshhold;
+    update_status = true;
+  }
+  if(update_status){
+    update_connections();
+  }
+}
