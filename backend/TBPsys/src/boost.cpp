@@ -50,6 +50,16 @@ void Boost::calc(int id, int start, int length, int sign, cv::Mat& result, float
 
 void Boost::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& current_frame, int sign) {
 
+  // funktioniert prime; doppelt so schnell (berechnung aber nicht selbst)
+  // cv::Mat mask;
+  // cv::absdiff(current_frame, m_reference, mask);
+  // mask = (mask > m_threshhold);
+  // mask.convertTo(mask, CV_32FC3);
+  // int from_to[] = { 0,0, 0,1, 0,2};
+  // cv::mixChannels(&mask, 1, &mask, 1, from_to, 3);
+  // result += current_frame.mul(mask) * (float) ((float)sign / ((float)255));
+  // fac_mat += mask * (float) ((float)sign / ((float)255));
+
   for (unsigned int row = m_pnt_min.y; row < m_pnt_max.y; ++row) {
     //ptr:
     float* ptr_res            =  (float*) result.ptr(row);
