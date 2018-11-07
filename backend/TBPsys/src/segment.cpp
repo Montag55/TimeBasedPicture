@@ -335,38 +335,8 @@ bool Segment::interpret_sized( int & work_size){
 }
 
 void Segment::save_segment_out(){
-
-  int img_delta = m_mother->get_img_delta();
-  cv::Mat result_img = cv::Mat(m_mother->get_max_Point().y, m_mother->get_max_Point().x, m_mother->get_img_type(), cv::Scalar(0,0,0));
-
-  for (unsigned int row = m_mother->get_min_Point().y; row < m_mother->get_max_Point().y; ++row) {
-    //ptr:
-    float *ptr_res        =  (float*)result_img.ptr(row);
-    const float *ptr_abs  =  (float*)m_values_abs.ptr(row);
-    const float *ptr_fac  =  (float*)m_values_fac.ptr(row);
-
-    for (unsigned int col = m_mother->get_min_Point().x; col < m_mother->get_max_Point().x; ++col) {
-      //ptr:
-      float *uc_pixel_res       = ptr_res;
-      const float *uc_pixel_abs = ptr_abs;
-      const float *uc_pixel_fac = ptr_fac;
-
-      for(int c = 0; c < 3; c++) { //allow more channel!?
-        if((uc_pixel_fac[c] + m_uni_fac) *  m_intensity_local_actual == 0)
-          uc_pixel_res[c] = 0.0f;
-        else
-          uc_pixel_res[c] =  uc_pixel_abs[c] / ((uc_pixel_fac[c] + m_uni_fac) *  m_intensity_local_actual);
-      }
-
-      //shift ptr:
-      ptr_res += img_delta;
-      ptr_abs += img_delta;
-      ptr_fac += img_delta;
-    }
-  }
-
   std::string out_file = std::string("out_seg_id") + std::to_string(m_id) + ".jpg";
-  cv::imwrite(out_file, result_img);
+  cv::imwrite(out_file, m_values_abs / (m_values_fac + cv::Scalar(m_uni_fac, m_uni_fac, m_uni_fac)) * m_intensity_local_actual);
 }
 
 //EDIT THE SEGMENT:
