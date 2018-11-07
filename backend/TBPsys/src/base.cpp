@@ -28,7 +28,7 @@ Base::Base(std::string const& video_name) :
     m_pnt_max = cv::Point(m_video->get(CV_CAP_PROP_FRAME_WIDTH), m_video->get(CV_CAP_PROP_FRAME_HEIGHT));
     m_frame_last = m_video->get(CV_CAP_PROP_FRAME_COUNT) - 1;
     m_values_abs = cv::Mat(m_pnt_max.y, m_pnt_max.x, m_img_type, cv::Scalar(0,0,0));
-    m_values_fac = cv::Mat(m_pnt_max.y, m_pnt_max.x, CV_64FC1, cv::Scalar(0));
+    m_values_fac = cv::Mat(m_pnt_max.y, m_pnt_max.x, m_img_type, cv::Scalar(0,0,0));
     m_result = cv::Mat(m_pnt_max.y, m_pnt_max.x, m_img_type, cv::Scalar(0,0,0));
 
     std::cout<<"NEW BASE\n";
@@ -122,7 +122,7 @@ int Base::add_interpretation(int typ_i){
   }
   else if (typ_i == 1 /*transferfunktion*/){
     std::cout<<"Transferfunction (not implemnted) \n";
-    id = -42;
+    id = -1;
     /*
     args.size() ? alternativ einen vector? oder einen parameter, der length bestimmt
     int start  = args[1]->IntegerValue();
@@ -137,11 +137,11 @@ int Base::add_interpretation(int typ_i){
     */
   }
   else if (typ_i == 2 /*overplott*/){
-    id = -42;
+    id = -1;
     std::cout<<"Overplott (not implemnted) \n";
   }
   else{
-    id = -42;
+    id = -1;
     std::cout<< "Wrong interpretation. \n";
   }
 
@@ -169,7 +169,7 @@ int Base::add_interpretation(int typ_i, int ref_id, float threshhold){
     m_interpretations.push_back(std::make_shared<Boost>(shared_from_this(), id, typ_i, ref_img, threshhold));
   }
   else{
-    id = -42;
+    id = -1;
     std::cout<< "Wrong interpretation. \n";
   }
 
@@ -270,37 +270,27 @@ void Base::update_result(){
       float *uc_pixel_res       = ptr_res;
       const float *uc_pixel_abs = ptr_abs;
       const float *uc_pixel_fac = ptr_fac;
-      double factor             = uc_pixel_fac[0] + m_uni_fac;
 
-      if(factor==0.0f)
-      {
-        divzero=true;
-        for(int c=0; c<3; c++) //allow more channel!?
-        {
-          uc_pixel_res[c]=0;
+      for(int c=0; c<3; c++) {//allow more channel!
+        if(uc_pixel_fac[c] + m_uni_fac == 0){
+          divzero=true;
+          uc_pixel_res[c] = 0.0f;
         }
-      }else{
-        for(int c=0; c<3; c++) //allow more channel!?
-        {
-          uc_pixel_res[c]=uc_pixel_abs[c]/factor;
+        else{
+          uc_pixel_res[c] = uc_pixel_abs[c] / (uc_pixel_fac[c] + m_uni_fac);
         }
       }
-      /*
-      std::cout << "factor = "<< factor << " fromm: "<< uc_pixel_fac[0]<<"\n";
-      std::cout << "val: " << uc_pixel_abs[0] << "\n";
-      std::cout << "results in: " << uc_pixel_res[0] << "\n";
-*/
+
       //shift ptr:
       ptr_res += m_img_delta;
       ptr_abs += m_img_delta;
-      ptr_fac += 1;
+      ptr_fac += m_img_delta;
     }
   }
 
   if(divzero) {
-    std::cout<<"WARNING: facwaszero\n";
+    //std::cout<<"WaRNING: facwaszero\n";
   }
-  //std::cout << "Uni fac weas " << m_uni_fac << "\n";
 }
 
 #ifndef true //getter
@@ -385,7 +375,6 @@ void Base::update_result(){
   void Base::set_work_size(int i) {
     m_work_size = i;
   }
-
 #endif
 
 /*  some getter...

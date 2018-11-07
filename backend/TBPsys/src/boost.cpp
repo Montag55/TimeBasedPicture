@@ -32,7 +32,6 @@ int Boost::get_calculation_specification(){
 }
 
 void Boost::calc(int id, int start, int length, int sign, cv::Mat& result, float& factor, cv::Mat& fac_mat) {
-  std::cout<<"FATAL:: BOOST NOT YET IMPLEMENTED!\n";
 
   cv::Mat tmp_frame;
   m_video->set( CV_CAP_PROP_POS_MSEC, start/*frameTime*/);
@@ -78,12 +77,16 @@ void Boost::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& current_fr
           uc_pixel_res[1] += uc_pixel_current[1];
           uc_pixel_res[2] += uc_pixel_current[2];
           uc_pixel_fac[0] += 1;
+          uc_pixel_fac[1] += 1;
+          uc_pixel_fac[2] += 1;
         }
         else {
           uc_pixel_res[0] -= uc_pixel_current[0];
           uc_pixel_res[1] -= uc_pixel_current[1];
           uc_pixel_res[2] -= uc_pixel_current[2];
           uc_pixel_fac[0] -= 1;
+          uc_pixel_fac[1] -= 1;
+          uc_pixel_fac[2] -= 1;
         }
       }
 
@@ -91,7 +94,7 @@ void Boost::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& current_fr
       ptr_res     += m_ptr_delta;
       ptr_current += m_ptr_delta;
       ptr_ref     += m_ptr_delta;
-      ptr_fac     += 1;
+      ptr_fac     += m_ptr_delta;
     }
   }
 }

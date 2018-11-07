@@ -90,10 +90,10 @@ int main (int argc, char **argv){
           }
         }
         else if(v[0] == "addinterpretation") {
+          int interpret_id = -1;
           int typ_i         = std::stoi (v[1]);
-          int interpret_id;
 
-          if(typ_i == (0||1||2)){
+          if(typ_i == 0 || typ_i == 1 || typ_i == 2){
             interpret_id  = base->add_interpretation(typ_i);
           }
           else if(typ_i == 3){

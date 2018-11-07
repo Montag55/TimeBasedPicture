@@ -26,31 +26,31 @@ int Average::get_calculation_specification(){
 }
 
 void Average::calc(int id, int start, int length, int sign, cv::Mat& result, float& factor, cv::Mat& fac_mat) {
-  auto start_time=std::chrono::high_resolution_clock::now();
+  auto start_time = std::chrono::high_resolution_clock::now();
 
   cv::Mat tmp_frame;
-  cv::Mat tmp_frame_d;
   m_video->set(CV_CAP_PROP_POS_MSEC, start/*frameTime*/);
 
-  for(int i=0; i<length; i++){
+  for(int i = 0; i < length; i++) {
     m_video->read(tmp_frame);
     if(tmp_frame.empty()){
       std::cout<<"empty\n";
     }
-    tmp_frame.convertTo(tmp_frame_d, m_img_type);   //do this for the whole video right at the start!?
+
+    tmp_frame.convertTo(tmp_frame, m_img_type);   //do this for the whole video right at the start!?
 
     if( sign > 0){
       factor += 1;
-      result += tmp_frame_d;
+      result += tmp_frame;
     }
     else{
       factor -= 1;
-      result -= tmp_frame_d;
+      result -= tmp_frame;
     }
   }
 
   auto end_time = std::chrono::high_resolution_clock::now();
-  auto duration = std::chrono::duration_cast< std::chrono::milliseconds >( end_time - start_time ).count();
+  auto duration = std::chrono::duration_cast< std::chrono::milliseconds > ( end_time - start_time ).count();
   // std::cout<<"AVERAGE: with work_size:"<< length <<" took ";
   // std::cout<< duration << " milli-seconds in computation\n";
 }
