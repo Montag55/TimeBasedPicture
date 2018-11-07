@@ -155,8 +155,13 @@ int Base::add_interpretation(int typ_i, int ref_id, float threshhold){
   if (typ_i == 3 /*boost*/){
     std::cout<< "Boost \n";
 
-    //std::string path = "./out_seg_id" + std::to_string( ref_id ) + ".jpg";
-    std::string path = "./ref.jpg";
+    std::string path = " ";
+    if(ref_id < 0){
+      path = "./ref.jpg";
+    }
+    else{
+      path = "./out_seg_id" + std::to_string( ref_id ) + ".jpg";
+    }
     cv::Mat ref_img = cv::imread(path);
 
     if(ref_img.empty()){
