@@ -1,17 +1,16 @@
-#ifndef BOOST_HPP
-#define BOOST_HPP
+#ifndef REDUCE_HPP
+#define REDUCE_HPP
 #include <math.h>
 #include <../include/interpretation.hpp>
 #include <../include/base.hpp>
 
 #include <opencv2/opencv.hpp>
 #include <opencv2/core/mat.hpp>
-//we could detect black pixels and print a warning, at th end of calc..?
 
-class Boost : public Interpretation{
+class Reduce : public Interpretation{
 public:
-  Boost(std::shared_ptr< Base > mother, int id, int type, cv::Mat ref, float threshhold);
-  ~Boost()                            override;
+  Reduce(std::shared_ptr< Base > mother, int id, int type, cv::Mat ref, float threshhold);
+  ~Reduce()                           override;
   int getTypenumber()                 override;
   int get_calculation_specification() override;
   void calc(int id, int start, int length, int sign, cv::Mat& result, float& factor, cv::Mat& fac_mat) override;
