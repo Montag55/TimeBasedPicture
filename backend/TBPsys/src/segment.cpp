@@ -5,6 +5,8 @@
 #include <string.h>
 #include <math.h>
 #include <chrono>
+#include <omp.h>
+
 
 Segment::Segment(int start_frame, int last_frame, double intensity_local, double intensity_global, std::shared_ptr<Base> mother, int id):
   m_mother{mother},
@@ -16,10 +18,10 @@ Segment::Segment(int start_frame, int last_frame, double intensity_local, double
   m_intensity_global_destin{intensity_global},
   m_intensity_local_actual{intensity_local},
   m_intensity_global_actual{intensity_global},
-  m_values_abs{cv::Mat(mother->get_width(), mother->get_height(), mother->get_img_type(), cv::Scalar(0,0,0))},
-  m_values_fac{cv::Mat(mother->get_width(), mother->get_height(), CV_64FC1, cv::Scalar(0))},
+  m_values_abs{cv::Mat(mother->get_height(), mother->get_width(), mother->get_img_type(), cv::Scalar(0,0,0))},
+  m_values_fac{cv::Mat(mother->get_height(), mother->get_width(), mother->get_img_type(), cv::Scalar(0,0,0))},
   m_uni_fac{0.0f},
-  m_interpretation{std::make_shared<Average>(mother,-8)}, //default id: -8!?
+  m_interpretation{std::make_shared<Average>(mother, -1, 0)},
   m_mutex_soll{},
   m_mutex_state{},
   m_percent{0.0f},
@@ -49,21 +51,66 @@ void Segment::ready_to_work(){
 }
 
 void Segment::reset(){
-  std::cout << "reset segment. \n";
+  //std::cout << "\t > reset segment. \n";
   m_frame_start_actual = -1;
   m_frame_last_actual = -1;
   revert_influence();
+  m_values_abs = cv::Mat(m_mother->get_height(), m_mother->get_width(), m_mother->get_img_type(), cv::Scalar(0,0,0));
+  m_values_fac = cv::Mat(m_mother->get_height(), m_mother->get_width(), m_mother->get_img_type(), cv::Scalar(0,0,0));
   m_uni_fac = 0;
 }
 
 void Segment::revert_influence(){
-  m_mother->add_to_values_abs(-1 * (m_values_abs * ((float) 1 / ((float) m_uni_fac))) * m_intensity_local_actual * m_intensity_global_actual);
-  m_mother->add_to_uni_fac( -m_intensity_global_actual);
+  float intensity = -1;
+  cv::Mat factors = m_values_fac.clone();
+  cv::Mat influence = m_values_abs.clone();
+
+  if( m_interpretation->getTypenumber() == 0 ){
+    influence = (m_values_abs * ((float) 1 / ((float) m_uni_fac))) * m_intensity_local_actual * m_intensity_global_actual;
+    intensity = m_intensity_global_actual;
+  }
+  else if(m_interpretation->getTypenumber() == 3){
+    normalize_factor(influence, factors);
+    influence = influence * m_intensity_local_actual * m_intensity_global_actual;
+    factors = factors * m_intensity_global_actual;
+    intensity = m_uni_fac;
+  }
+  else{
+    std::cout<< "revert influence is not allowed yet " << m_interpretation->getTypenumber() << "\n";
+  }
+
+  m_mother->add_to_values_abs(-influence);
+  m_mother->add_to_values_fac(-factors);
+  m_mother->add_to_uni_fac(-intensity);
 }
 
 void Segment::upload_influence(){
-  m_mother->add_to_values_abs((m_values_abs * ((float) 1 / ((float) m_uni_fac))) * m_intensity_local_actual * m_intensity_global_actual);
-  m_mother->add_to_uni_fac(m_intensity_global_actual);
+  float intensity = -1;
+  cv::Mat factors = m_values_fac.clone();
+  cv::Mat influence = m_values_abs.clone();
+
+  if( m_interpretation->getTypenumber() == 0 ){
+    influence = (m_values_abs * ((float) 1 / ((float) m_uni_fac))) * m_intensity_local_actual * m_intensity_global_actual;
+    intensity = m_intensity_global_actual;
+  }
+  else if(m_interpretation->getTypenumber() == 3){
+    normalize_factor(influence, factors);
+    influence = influence * m_intensity_local_actual * m_intensity_global_actual;
+    factors = factors * m_intensity_global_actual;
+    intensity = m_uni_fac;
+  }
+  else{
+    std::cout<< "upload influence is not allowed yet " << m_interpretation->getTypenumber() << "\n";
+  }
+
+  m_mother->add_to_values_abs(influence);
+  m_mother->add_to_values_fac(factors);
+  m_mother->add_to_uni_fac(intensity);
+}
+
+void Segment::normalize_factor(cv::Mat& influence, cv::Mat& factors){
+  influence = influence / factors;
+  factors = factors / factors;
 }
 
 bool Segment::work(int& work_size){
@@ -77,11 +124,11 @@ bool Segment::work(int& work_size){
 
   //set new interpetation:
   if(m_new_interpretation != NULL) {
+      reset();
       m_interpretation->delete_connection(m_id);
       m_interpretation = m_new_interpretation;
       m_interpretation->add_connection(m_id, this);
       m_new_interpretation = NULL;
-      reset();
   }
   //interpretation need reset:
   if(m_needs_reset) {
@@ -111,8 +158,7 @@ bool Segment::work(int& work_size){
     m_mutex_soll.unlock();
 
     if(percentage == 100 && state) {
-      std::string out_file = std::string("out_seg_id") + std::to_string(m_id) + ".jpg";
-      imwrite(out_file, m_values_abs * ((float) 1 / ((float) m_uni_fac)) * m_intensity_local_actual);
+      save_segment_out();
       m_mutex_state.lock();
     }
     else {
@@ -137,7 +183,7 @@ void Segment::set_interpretation(std::shared_ptr<Interpretation> interpret){
     m_mutex_soll.lock();
     m_new_interpretation = interpret;
     m_mutex_soll.unlock();
-    std::cout << "needs to recalculate segment, because of new interpretation. \n";
+    std::cout << "   (needs to recalculate segment, because of new interpretation.) \n";
     ready_to_work();
 
   }
@@ -187,7 +233,7 @@ bool Segment::interpret_sized( int & work_size){
   m_mutex_soll.unlock();
 
   //int delta=m_frame_last_actual-m_frame_start_actual;
-  if(m_uni_fac/*m_frame_start_actual*/ > 0) {
+  if(m_frame_start_actual > -1) {
     revert_influence();
   }
 
@@ -218,7 +264,7 @@ bool Segment::interpret_sized( int & work_size){
     }
 
     int sign = -1;
-    m_interpretation->calc(m_id, m_frame_start_actual, length, sign, m_values_abs, m_uni_fac);
+    m_interpretation->calc(m_id, m_frame_start_actual, length, sign, m_values_abs, m_uni_fac, m_values_fac);
     work_size -= length;
     m_frame_start_actual += length;
   }
@@ -232,7 +278,7 @@ bool Segment::interpret_sized( int & work_size){
     }
 
     int sign = 1;
-    m_interpretation->calc(m_id, startpoint, length, sign, m_values_abs, m_uni_fac);
+    m_interpretation->calc(m_id, startpoint, length, sign, m_values_abs, m_uni_fac, m_values_fac);
     work_size -= length;
     m_frame_start_actual -= length;
   }
@@ -255,7 +301,7 @@ bool Segment::interpret_sized( int & work_size){
        }
 
        int sign = 1;
-       m_interpretation->calc(m_id, m_frame_last_actual, length, sign, m_values_abs, m_uni_fac);
+       m_interpretation->calc(m_id, m_frame_last_actual, length, sign, m_values_abs, m_uni_fac, m_values_fac);
        work_size -= length;
        m_frame_last_actual += length;
      }
@@ -269,16 +315,14 @@ bool Segment::interpret_sized( int & work_size){
        }
 
        int sign =- 1;
-       m_interpretation->calc(m_id, startpoint, length, sign, m_values_abs, m_uni_fac);
+       m_interpretation->calc(m_id, startpoint, length, sign, m_values_abs, m_uni_fac, m_values_fac);
        work_size -= length;
        m_frame_last_actual -= length;
      }
 
-     if(m_uni_fac > 0) {
+     if(m_frame_start_actual > -1) {
        upload_influence();
      }
-
-     std::cout<<m_uni_fac<<"munifac..............................\n";
 
      if((dest_start == m_frame_start_actual) && (dest_end == m_frame_last_actual)) {
        exit_status = true;  //ist = soll
@@ -288,8 +332,20 @@ bool Segment::interpret_sized( int & work_size){
      }
   }
 
-  std::cout << "worksize: " << work_size << "\n";
   return exit_status;
+}
+
+void Segment::save_segment_out(){
+  auto start_time = std::chrono::high_resolution_clock::now();
+
+  std::string out_file = std::string("out_seg_id") + std::to_string(m_id) + ".jpg";
+  cv::imwrite(out_file, m_values_abs / (m_values_fac + cv::Scalar(m_uni_fac, m_uni_fac, m_uni_fac)) * m_intensity_local_actual);
+
+  auto end_time = std::chrono::high_resolution_clock::now();
+  auto duration = std::chrono::duration_cast< std::chrono::milliseconds >( end_time - start_time ).count();
+  #ifdef show_time
+      std::cout << "\t\t * Segment_save_time: \t" << duration << std::endl;
+  #endif
 }
 
 //EDIT THE SEGMENT:

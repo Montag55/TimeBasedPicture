@@ -8,11 +8,11 @@
 
 class Average : public Interpretation{
 public:
-  Average(std::shared_ptr< Base > mother, int id);
+  Average(std::shared_ptr< Base > mother, int id, int type);
   ~Average()                          override;
   int getTypenumber()                 override;
   int get_calculation_specification() override;
-  void calc(int id, int start, int length, int sign, cv::Mat& result, float& factor) override;
+  void calc(int id, int start, int length, int sign, cv::Mat& result, float& factor, cv::Mat& fac_mat) override;
 
 private:
   int m_test;

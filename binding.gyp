@@ -8,7 +8,8 @@
             "backend/TBPsys/src/segment.cpp",
             "backend/TBPsys/src/interpretation.cpp",
             "backend/TBPsys/src/average.cpp",
-            "backend/TBPsys/src/transferfunction.cpp"
+            "backend/TBPsys/src/transferfunction.cpp",
+            "backend/TBPsys/src/boost.cpp"
        ],
        "include_dirs": [
          "backend/TBPsys/include/"

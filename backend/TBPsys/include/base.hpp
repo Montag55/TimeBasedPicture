@@ -31,8 +31,10 @@ public:
   bool                connect(int id_segment, int id_interpretation);
   int                 add_segment(int start, int end, float local_i, float global_i);
   int                 add_interpretation(int typ_i);
+  int                 add_interpretation(int typ_i, int ref_id, float threshhold);
   bool                delete_segment(int id);
   bool                manipulate_segment(int id, int start, int end, float local_i, float global_i);
+  bool                manipulate_interpretation(int id, int ref_id, float threshhold);
 
   //WORK::::::::::::::::::::::::::::::::::::::::::::::::
   float               get_segment_progress(int id);
@@ -42,12 +44,14 @@ public:
   int                 get_img_type();
   int                 get_width();
   int                 get_height();
+  int                 get_typ_i(int id);
   std::string         get_videopath();
   std::shared_ptr<cv::VideoCapture> get_videocap();
   cv::Point           get_max_Point();
   cv::Point           get_min_Point();
   int                 get_start_frame();
   int                 get_last_frame();
+  int                 get_img_delta();
   float               get_intensity();
   void                set_work_size(int i);
 
@@ -82,6 +86,7 @@ private:
   cv::Point               m_pnt_max;
   int                     m_frame_start;
   int                     m_frame_last;
+  int                     m_img_delta;
 
   std::vector<Segment*>   m_seg_in_calc;        //stores currently edited segments
   cv::Mat                 m_values_abs;

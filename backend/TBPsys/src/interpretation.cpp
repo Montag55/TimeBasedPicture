@@ -8,14 +8,13 @@
 #include <string.h>
 #include <vector>
 
-Interpretation::Interpretation( std::shared_ptr<Base> mother, int id):
+Interpretation::Interpretation( std::shared_ptr<Base> mother, int id, int type):
 m_base{mother},
+m_id{id},
+m_type{type},
 m_video{mother->get_videocap()},
-m_img_type{mother->get_img_type()},
-m_id{id}
-{
-  std::cout<<"interpretation\n";
-}
+m_img_type{mother->get_img_type()}
+{}
 
 int Interpretation::get_id()
 {
@@ -23,7 +22,7 @@ int Interpretation::get_id()
 }
 
 Interpretation::~Interpretation(){
-  std::cout<<"deleting interpretation id:" << m_id << "\n";
+  //std::cout<<"\t > deleting interpretation id:" << m_id << "\n";
 }
 
 void Interpretation::add_connection( int id, Segment* segment){

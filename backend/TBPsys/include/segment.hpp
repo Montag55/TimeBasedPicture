@@ -14,6 +14,8 @@ class Base;
 #include "base.hpp"
 #include "interpretation.hpp"
 #include "average.hpp"
+#include "boost.hpp"
+#include "transferfunction.hpp"
 
 class Segment {
 public:
@@ -49,6 +51,9 @@ public:
 
 private:
   void ready_to_work();
+  void save_segment_out();
+  void normalize_factor(cv::Mat& influence, cv::Mat& factors);
+
   int           m_id;
   float         m_percent;
   bool          m_work_done;

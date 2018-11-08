@@ -8,12 +8,14 @@
 #include <string.h>
 #include <vector>
 
+
 Base::Base(std::string const& video_name) :
   m_in_calculation{false},
   m_file {video_name},
   m_work_size{10},
   m_video{std::make_shared<cv::VideoCapture>( video_name, cv::CAP_IMAGES)},  /*!when changing to ffmpeg, change set framepos!*/
   m_img_type{CV_32FC3},//http://ninghang.blogspot.de/2012/11/list-of-mat-type-in-opencv.html
+  m_img_delta{3},
   m_frame_start{0},
   m_intensity{1.0f},
   m_uni_fac{0.0f},
@@ -27,7 +29,7 @@ Base::Base(std::string const& video_name) :
     m_pnt_max = cv::Point(m_video->get(CV_CAP_PROP_FRAME_WIDTH), m_video->get(CV_CAP_PROP_FRAME_HEIGHT));
     m_frame_last = m_video->get(CV_CAP_PROP_FRAME_COUNT) - 1;
     m_values_abs = cv::Mat(m_pnt_max.y, m_pnt_max.x, m_img_type, cv::Scalar(0,0,0));
-    m_values_fac = cv::Mat(m_pnt_max.y, m_pnt_max.x, CV_64FC1, cv::Scalar(0));
+    m_values_fac = cv::Mat(m_pnt_max.y, m_pnt_max.x, m_img_type, cv::Scalar(0,0,0));
     m_result = cv::Mat(m_pnt_max.y, m_pnt_max.x, m_img_type, cv::Scalar(0,0,0));
 
     std::cout<<"NEW BASE\n";
@@ -64,8 +66,9 @@ void Base::thread_calc_loop(){ //waits for work and makes calculataion
 
       auto end_time = std::chrono::high_resolution_clock::now();
       auto duration = std::chrono::duration_cast< std::chrono::milliseconds >( end_time - start_time ).count();
-      std::cout<<"WORKCYCLE took ";
-      std::cout<<duration<<" milli-seconds ------------------------------------------\n";
+      #ifdef show_time
+          std::cout << "\t # Base_full_calc_cycle_time: \t" << duration << "\n\n";
+      #endif
     }
 
     if(!save_state){
@@ -112,17 +115,42 @@ bool Base::manipulate_segment(int id, int start, int end, float local_i, float g
   return true;
 }
 
+bool Base::manipulate_interpretation(int id, int ref_id, float threshhold){
+
+  std::string path = " ";
+
+  if(ref_id < 0){
+    path = "./ref.jpg";
+  }
+  else{
+    path = "./out_seg_id" + std::to_string( ref_id ) + ".jpg";
+  }
+
+  cv::Mat ref_img = cv::imread(path);
+
+  if(ref_img.empty()){
+    std::cout << "reference image not loaded. \n";
+  }
+  else {
+    ref_img.convertTo( ref_img, m_img_type );   //do this for the whole video right at the start!?
+  }
+
+  Boost& interpretation = dynamic_cast<Boost&>(*m_interpretations[id]);
+  interpretation.manipulate(ref_img, threshhold);
+  return true;
+}
+
 int Base::add_interpretation(int typ_i){
-  std::cout<<"addinterpretation: ";
+  std::cout<<"\t > interpretation: ";
   int id = m_interpretations.size();
 
   if(typ_i == 0 /*averaging*/){
     std::cout<<"Average\n";
-    m_interpretations.push_back(std::make_shared<Average>(shared_from_this(), id));
+    m_interpretations.push_back(std::make_shared<Average>(shared_from_this(), id, typ_i));
   }
   else if (typ_i == 1 /*transferfunktion*/){
     std::cout<<"Transferfunction (not implemnted) \n";
-    id = -42;
+    id = -1;
     /*
     args.size() ? alternativ einen vector? oder einen parameter, der length bestimmt
     int start  = args[1]->IntegerValue();
@@ -137,15 +165,44 @@ int Base::add_interpretation(int typ_i){
     */
   }
   else if (typ_i == 2 /*overplott*/){
-    id = -42;
+    id = -1;
     std::cout<<"Overplott (not implemnted) \n";
   }
-  else if (typ_i == 3 /*boost*/){
-    id = -42;
-    std::cout<<"Boost not (not implemnted)\n";
+  else{
+    id = -1;
+    std::cout<< "Wrong interpretation. \n";
+  }
+
+  return id;
+}
+
+int Base::add_interpretation(int typ_i, int ref_id, float threshhold){
+  std::cout<<"\t > interpretation: ";
+  int id = m_interpretations.size();
+
+  if (typ_i == 3 /*boost*/){
+    std::cout<< "Boost \n";
+
+    std::string path = " ";
+    if(ref_id < 0){
+      path = "./ref.jpg";
+    }
+    else{
+      path = "./out_seg_id" + std::to_string( ref_id ) + ".jpg";
+    }
+    cv::Mat ref_img = cv::imread(path);
+
+    if(ref_img.empty()){
+      std::cout << "reference image not loaded. \n";
+    }
+    else {
+      ref_img.convertTo( ref_img, m_img_type );   //do this for the whole video right at the start!?
+    }
+
+    m_interpretations.push_back(std::make_shared<Boost>(shared_from_this(), id, typ_i, ref_img, threshhold));
   }
   else{
-    id = -42;
+    id = -1;
     std::cout<< "Wrong interpretation. \n";
   }
 
@@ -158,7 +215,6 @@ bool Base::connect(int id_segment, int id_interpretation){
      (id_interpretation <= m_interpretations.size() - 1)) {
 
     m_segments[id_segment]->set_interpretation(m_interpretations[id_interpretation]);
-    std::cout<< "Segment " << id_segment << " is interpreted with interpretation " << id_interpretation << "\n";
     correct = true;
   }
 
@@ -166,13 +222,19 @@ bool Base::connect(int id_segment, int id_interpretation){
 }
 
 bool Base::save(std::string file){
+  auto start_time = std::chrono::high_resolution_clock::now();
+
   cv::Mat out = get_result();
   bool exit_status = false;
 
   if(cv::imwrite(file, out)){
     exit_status = true;
   }
-
+  auto end_time = std::chrono::high_resolution_clock::now();
+  auto duration = std::chrono::duration_cast< std::chrono::milliseconds >( end_time - start_time ).count();
+  #ifdef show_time
+      std::cout << "\t\t * Base_save_to_file: \t" << duration << std::endl;
+  #endif
   return exit_status;
 }
 
@@ -181,11 +243,11 @@ void Base::add_to_values_abs(cv::Mat new_values){
 }
 
 void Base::add_to_values_fac(cv::Mat new_values){
-  m_values_abs+=new_values;
+  m_values_fac += new_values;
 }
 
 void Base::add_to_uni_fac(float new_value){
-  m_uni_fac+=new_value;
+  m_uni_fac += new_value;
 }
 
 bool Base::work_to_do() {
@@ -197,11 +259,18 @@ bool Base::work_to_do() {
 }
 
 void Base::continue_work() {
-  int work_size = m_work_size;
+  auto start_time = std::chrono::high_resolution_clock::now();
 
+  int work_size = m_work_size;
   m_mutex_result.lock();
 
   m_seg_in_calc.erase(std::remove_if(m_seg_in_calc.begin(), m_seg_in_calc.end(), [&work_size](Segment*& o) { return o->work(work_size); }),m_seg_in_calc.end());
+
+  auto end_time = std::chrono::high_resolution_clock::now();
+  auto duration = std::chrono::duration_cast< std::chrono::milliseconds >( end_time - start_time ).count();
+  #ifdef show_time
+      std::cout << "\t\t * Base_work_que_time: \t" << duration << std::endl;
+  #endif
   update_result();
 
 
@@ -230,49 +299,15 @@ void Base::add_work(Segment* new_seg){
 }
 
 void Base::update_result(){
-  /*
-  calculates the outputimage using the sum and its factors
-  the pixel acces is already a bit performance.. using ptrs!
-  */
-  bool divzero=false;
-  int m_img_delta=3;  //might be dependend on image mat typ
-  m_new_output=true;
-  for (unsigned int row = m_pnt_min.y; row < m_pnt_max.y; ++row) {
-    //ptr:
-    float *ptr_res        =  (float*)m_result.ptr(row);
-    const float *ptr_abs  =  (float*)m_values_abs.ptr(row);
-    const float *ptr_fac  =  (float*)m_values_fac.ptr(row);
+  auto start_time = std::chrono::high_resolution_clock::now();
 
-    for (unsigned int col = m_pnt_min.x; col < m_pnt_max.x; col++) {
-      //ptr:
-      float *uc_pixel_res       = ptr_res;
-      const float *uc_pixel_abs = ptr_abs;
-      const float *uc_pixel_fac = ptr_fac;
-      double factor             = uc_pixel_fac[0] + m_uni_fac;
+  m_result = m_values_abs / (m_values_fac + cv::Scalar(m_uni_fac, m_uni_fac, m_uni_fac));
 
-      if(factor==0.0f)
-      {
-        divzero=true;
-        for(int c=0; c<3; c++) //allow more channel!?
-        {
-          uc_pixel_res[c]=0;
-        }
-      }else{
-        for(int c=0; c<3; c++) //allow more channel!?
-        {
-          uc_pixel_res[c]=uc_pixel_abs[c]/factor;
-        }
-      }
-      //shift ptr:
-      ptr_res += m_img_delta;
-      ptr_abs += m_img_delta;
-      ptr_fac += 1;
-    }
-  }
-
-  if(divzero) {
-    std::cout<<"WARNING: facwaszero\n";
-  }
+  auto end_time = std::chrono::high_resolution_clock::now();
+  auto duration = std::chrono::duration_cast< std::chrono::milliseconds >( end_time - start_time ).count();
+  #ifdef show_time
+      std::cout << "\t\t * Base_update_time: \t" << duration << std::endl;
+  #endif
 }
 
 #ifndef true //getter
@@ -303,6 +338,17 @@ void Base::update_result(){
     }
   }
 
+  int Base::get_typ_i(int id){
+    int i_id = -1;
+    if(m_interpretations.size() < id || id < 0) {
+      std::cout << "\t > interpretation id doesn't exist. \n";
+    }
+    else{
+      i_id = m_interpretations[id]->getTypenumber();
+    }
+    return i_id;
+  }
+
   cv::Mat const& Base::get_frame(int i) {
     m_video->set(CV_CAP_PROP_POS_FRAMES,i);
     cv::Mat output;
@@ -315,11 +361,11 @@ void Base::update_result(){
   }
 
   int Base::get_width() {
-    return  m_pnt_max.y;
+    return  m_pnt_max.x;
   }
 
   int Base::get_height() {
-    return  m_pnt_max.x;
+    return m_pnt_max.y;
   }
 
   std::string Base::get_videopath() {
@@ -348,6 +394,10 @@ void Base::update_result(){
 
   float Base::get_intensity(){
     return m_intensity;
+  }
+
+  int Base::get_img_delta() {
+    return m_img_delta;
   }
 
   void Base::set_work_size(int i) {
