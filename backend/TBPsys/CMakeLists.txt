@@ -8,10 +8,7 @@ if(("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang") OR ("${CMAKE_CXX_COMPILER_ID}" 
 endif()
 
 
-
-
 set(SOURCES src/terminal-time.cpp src/base.cpp src/segment.cpp src/interpretation.cpp src/average.cpp src/transferfunction.cpp src/boost.cpp)
-
 
 ################################################################################
 # search
@@ -25,7 +22,6 @@ if (OPENMP_FOUND)
     set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
 endif()
 
-
 ################################################################################
 # include dir
 ################################################################################
@@ -35,5 +31,10 @@ include_directories(SYSTEM ${OpenCV_INCLUDE_DIRS})
 ################################################################################
 # add the executable
 ################################################################################
+
 add_executable(Time_Terminal ${SOURCES})
 target_link_libraries(Time_Terminal ${OpenCV_LIBS})
+
+if(show_time)
+  add_definitions(-Dshow_time)
+endif()

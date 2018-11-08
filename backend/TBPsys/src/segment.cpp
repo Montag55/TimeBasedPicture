@@ -7,6 +7,7 @@
 #include <chrono>
 #include <omp.h>
 
+
 Segment::Segment(int start_frame, int last_frame, double intensity_local, double intensity_global, std::shared_ptr<Base> mother, int id):
   m_mother{mother},
   m_frame_start_destin{start_frame},
@@ -335,8 +336,16 @@ bool Segment::interpret_sized( int & work_size){
 }
 
 void Segment::save_segment_out(){
+  auto start_time = std::chrono::high_resolution_clock::now();
+
   std::string out_file = std::string("out_seg_id") + std::to_string(m_id) + ".jpg";
   cv::imwrite(out_file, m_values_abs / (m_values_fac + cv::Scalar(m_uni_fac, m_uni_fac, m_uni_fac)) * m_intensity_local_actual);
+
+  auto end_time = std::chrono::high_resolution_clock::now();
+  auto duration = std::chrono::duration_cast< std::chrono::milliseconds >( end_time - start_time ).count();
+  #ifdef show_time
+      std::cout << "\t\t * Segment_save_time: \t" << duration << std::endl;
+  #endif
 }
 
 //EDIT THE SEGMENT:

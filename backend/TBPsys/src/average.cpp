@@ -8,8 +8,6 @@
 #include <../include/average.hpp>
 #include <../include/base.hpp>
 
-
-
 Average::Average(std::shared_ptr<Base> mother, int id, int type):
 Interpretation{mother, id, type},
 m_test{0}
@@ -51,6 +49,7 @@ void Average::calc(int id, int start, int length, int sign, cv::Mat& result, flo
 
   auto end_time = std::chrono::high_resolution_clock::now();
   auto duration = std::chrono::duration_cast< std::chrono::milliseconds > ( end_time - start_time ).count();
-  // std::cout<<"AVERAGE: with work_size:"<< length <<" took ";
-  // std::cout<< duration << " milli-seconds in computation\n";
+  #ifdef show_time
+      std::cout << "\t\t + Average ("<<length<<"): time: \t" << duration << std::endl;
+  #endif
 }

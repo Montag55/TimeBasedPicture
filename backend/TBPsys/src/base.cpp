@@ -8,6 +8,7 @@
 #include <string.h>
 #include <vector>
 
+
 Base::Base(std::string const& video_name) :
   m_in_calculation{false},
   m_file {video_name},
@@ -65,7 +66,9 @@ void Base::thread_calc_loop(){ //waits for work and makes calculataion
 
       auto end_time = std::chrono::high_resolution_clock::now();
       auto duration = std::chrono::duration_cast< std::chrono::milliseconds >( end_time - start_time ).count();
-      //std::cout<< "\t WORKCYCLE took: " << duration << " milli-seconds \n";
+      #ifdef show_time
+          std::cout << "\t # Base_full_calc_cycle_time: \t" << duration << "\n\n";
+      #endif
     }
 
     if(!save_state){
@@ -219,13 +222,19 @@ bool Base::connect(int id_segment, int id_interpretation){
 }
 
 bool Base::save(std::string file){
+  auto start_time = std::chrono::high_resolution_clock::now();
+
   cv::Mat out = get_result();
   bool exit_status = false;
 
   if(cv::imwrite(file, out)){
     exit_status = true;
   }
-
+  auto end_time = std::chrono::high_resolution_clock::now();
+  auto duration = std::chrono::duration_cast< std::chrono::milliseconds >( end_time - start_time ).count();
+  #ifdef show_time
+      std::cout << "\t\t * Base_save_to_file: \t" << duration << std::endl;
+  #endif
   return exit_status;
 }
 
@@ -250,11 +259,18 @@ bool Base::work_to_do() {
 }
 
 void Base::continue_work() {
-  int work_size = m_work_size;
+  auto start_time = std::chrono::high_resolution_clock::now();
 
+  int work_size = m_work_size;
   m_mutex_result.lock();
 
   m_seg_in_calc.erase(std::remove_if(m_seg_in_calc.begin(), m_seg_in_calc.end(), [&work_size](Segment*& o) { return o->work(work_size); }),m_seg_in_calc.end());
+
+  auto end_time = std::chrono::high_resolution_clock::now();
+  auto duration = std::chrono::duration_cast< std::chrono::milliseconds >( end_time - start_time ).count();
+  #ifdef show_time
+      std::cout << "\t\t * Base_work_que_time: \t" << duration << std::endl;
+  #endif
   update_result();
 
 
@@ -283,7 +299,15 @@ void Base::add_work(Segment* new_seg){
 }
 
 void Base::update_result(){
+  auto start_time = std::chrono::high_resolution_clock::now();
+
   m_result = m_values_abs / (m_values_fac + cv::Scalar(m_uni_fac, m_uni_fac, m_uni_fac));
+
+  auto end_time = std::chrono::high_resolution_clock::now();
+  auto duration = std::chrono::duration_cast< std::chrono::milliseconds >( end_time - start_time ).count();
+  #ifdef show_time
+      std::cout << "\t\t * Base_update_time: \t" << duration << std::endl;
+  #endif
 }
 
 #ifndef true //getter

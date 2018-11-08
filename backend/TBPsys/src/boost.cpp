@@ -9,7 +9,6 @@
 #include <../include/base.hpp>
 
 
-
 Boost::Boost( std::shared_ptr<Base> mother, int id, int type, cv::Mat ref, float threshhold):
 Interpretation{ mother, id, type},
 m_reference{ref},
@@ -32,7 +31,7 @@ int Boost::get_calculation_specification(){
 }
 
 void Boost::calc(int id, int start, int length, int sign, cv::Mat& result, float& factor, cv::Mat& fac_mat) {
-
+  auto start_time = std::chrono::high_resolution_clock::now();
   cv::Mat tmp_frame;
   m_video->set( CV_CAP_PROP_POS_MSEC, start/*frameTime*/);
 
@@ -46,6 +45,12 @@ void Boost::calc(int id, int start, int length, int sign, cv::Mat& result, float
     tmp_frame.convertTo(tmp_frame, m_img_type);   //do this for the whole video right at the start!?
     compute_frame(result, fac_mat, tmp_frame, sign);
   }
+
+  auto end_time = std::chrono::high_resolution_clock::now();
+  auto duration = std::chrono::duration_cast< std::chrono::milliseconds >( end_time - start_time ).count();
+  #ifdef show_time
+      std::cout << "\t\t + Boost ("<<length<<") time: \t" << duration << std::endl;
+  #endif
 }
 
 void Boost::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& current_frame, int sign) {
@@ -59,7 +64,6 @@ void Boost::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& current_fr
   // cv::mixChannels(&mask, 1, &mask, 1, from_to, 3);
   // result += current_frame.mul(mask) * (float) ((float)sign / ((float)255));
   // fac_mat += mask * (float) ((float)sign / ((float)255));
-
   for (unsigned int row = m_pnt_min.y; row < m_pnt_max.y; ++row) {
     //ptr:
     float* ptr_res            =  (float*) result.ptr(row);
