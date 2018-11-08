@@ -147,9 +147,6 @@ void get_segment_progress(const v8::FunctionCallbackInfo<v8::Value>& args){
     std::cout << "progress: "<<progress<<" \n";
     std::cout << "get_segment_progress() failed. \n";
   }
-  else{
-    std::cout << "progress: "<< progress<< "\n";
-  }
 
   auto msg = v8::String::NewFromUtf8( isolate , output.c_str());
   args.GetReturnValue().Set(msg);
@@ -163,8 +160,35 @@ void add_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
   v8::Isolate* isolate = args.GetIsolate();
 
   //check if values fit!?
+  int interpret_id = -1;
   int typ_i = args[0]->IntegerValue();
-  int interpret_id = base->add_interpretation(typ_i);
+
+  if(typ_i == 0 || typ_i == 1 || typ_i == 2){
+    interpret_id = base->add_interpretation(typ_i);
+  }
+  else if(typ_i == 3){
+    int ref_id        = args[1]->IntegerValue();
+    float threshhold  = args[2]->NumberValue();
+    interpret_id = base->add_interpretation(typ_i, ref_id, threshhold);
+  }
+  else if(typ_i == 4){
+    std::vector<float> colors;
+    float threshhold  = args[1]->NumberValue();
+
+    for(int idx = 2; idx < args.Length(); idx++){
+      colors.push_back(args[idx]->NumberValue());
+    }
+
+    if(colors.size()%3 == 0)
+      interpret_id = base->add_interpretation(typ_i, threshhold, colors);
+    else
+      std::cout << "\t too few arguments (tpye, float, [r, g, b]*n) \n";
+  }
+  else if(typ_i == 5){
+    int ref_id        = args[1]->IntegerValue();
+    float threshhold  = args[2]->NumberValue();
+    interpret_id = base->add_interpretation(typ_i, ref_id, threshhold);
+  }
 
   if(interpret_id >= 0 ) {
     std::cout<<"\n\t > intpretation id: "<< interpret_id << "\n";

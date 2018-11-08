@@ -9,7 +9,9 @@
             "backend/TBPsys/src/interpretation.cpp",
             "backend/TBPsys/src/average.cpp",
             "backend/TBPsys/src/transferfunction.cpp",
-            "backend/TBPsys/src/boost.cpp"
+            "backend/TBPsys/src/boost.cpp",
+            "backend/TBPsys/src/boostColor.cpp",
+            "backend/TBPsys/src/reduce.cpp"
        ],
        "include_dirs": [
          "backend/TBPsys/include/"
