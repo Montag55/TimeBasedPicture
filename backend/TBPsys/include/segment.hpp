@@ -16,6 +16,7 @@ class Base;
 #include "average.hpp"
 #include "boost.hpp"
 #include "reduce.hpp"
+#include "boostColor.hpp"
 #include "transferfunction.hpp"
 
 class Segment {
