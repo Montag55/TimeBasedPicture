@@ -49,7 +49,7 @@ void BoostColor::calc(int id, int start, int length, int sign, cv::Mat& result, 
   auto end_time = std::chrono::high_resolution_clock::now();
   auto duration = std::chrono::duration_cast< std::chrono::milliseconds >( end_time - start_time ).count();
   #ifdef show_time
-      std::cout << "\t\t + BoostColor ("<<length<<") time: \t" << duration << std::endl;
+      std::cout << "\t\t + B_Color ("<<length<<") time: \t" << duration << std::endl;
   #endif
 }
 
