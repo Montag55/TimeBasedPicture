@@ -90,7 +90,7 @@ int main (int argc, char **argv){
           }
         }
         else if(v[0] == "addinterpretation") {
-          int interpret_id = -1;
+          int interpret_id  = -1;
           int typ_i         = std::stoi (v[1]);
 
           if(typ_i == 0 || typ_i == 1 || typ_i == 2){
@@ -98,8 +98,29 @@ int main (int argc, char **argv){
           }
           else if(typ_i == 3){
             int ref_id        = std::stoi (v[2]);
-            float threshhold  = std::stoi (v[3]);
+            float threshhold  = std::stof (v[3]);
+
             interpret_id  = base->add_interpretation(typ_i, ref_id, threshhold);
+          }
+          else if(typ_i == 4){
+            std::vector<float> colors;
+            float threshhold  = std::stoi (v[2]);
+
+            for(int idx = 3; idx < v.size(); idx++){
+              colors.push_back(std::stof(v[idx]));
+            }
+
+            if(colors.size()%3 == 0){
+              interpret_id = base->add_interpretation(typ_i, threshhold, colors);
+              std::cout << "\t > threshhold: " << threshhold << "\n";
+              std::cout << "\t > colors: ";
+              for(unsigned int i = 0; i < colors.size(); i+=3){
+                std::cout << "[" << colors[i] << ", " << colors[i+1] << ", " <<colors[i+2] << "], ";
+              }
+              std::cout << "\n";
+            }
+            else
+              std::cout << "\t too few arguments (tpye, float, [r, g, b]*n) \n";
           }
 
           if(interpret_id >= 0 ) {
@@ -107,7 +128,7 @@ int main (int argc, char **argv){
             std::cout << "\t > typ: " << typ_i << "\n\n";
           }
           else {
-            std::cout << "\t add_interpretation() failed. \n";
+            std::cout << "\t add_interpretation() failed. \n\n";
           }
 
         }
@@ -166,6 +187,32 @@ int main (int argc, char **argv){
               }
 
             }
+            else if(typ_i == 4){
+              std::vector<float> colors;
+              float threshhold = std::stof(v[3]);
+
+              for(int idx = 4; idx < v.size(); idx++){
+                colors.push_back(std::stof(v[idx]));
+              }
+
+              if(colors.size()%3 != 0)
+                std::cout << "\t too few arguments (tpye, float, [r, g, b]*n) \n";
+
+              if(base->manipulate_interpretation(id, threshhold, colors)){
+                std::cout << "\t > interpretation id: " << id << "\n";
+                std::cout << "\t > typ: " << typ_i << "\n";
+                std::cout << "\t > threshhold: " << threshhold << "\n";
+                std::cout << "\t > colors: ";
+                for(unsigned int i = 0; i < colors.size(); i+=3){
+                  std::cout << "[" << colors[i] << ", " << colors[i+1] << ", " <<colors[i+2] << "], ";
+                }
+                std::cout << "\n\n";
+              }
+              else{
+                std::cout << "\t > manipulate interpretation id: " << id << " failed. \n";
+              }
+
+            }
             else {
               std::cout<<"not yet implemented manipulation\n";
             }
@@ -173,7 +220,6 @@ int main (int argc, char **argv){
           else{
             std::cout << "manipulate either segment or interpretation. \n";
           }
-
         }
         else if(v[0] == "connect") {
           int id_segment        = std::stoi (v[1]);

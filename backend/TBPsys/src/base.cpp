@@ -1,6 +1,7 @@
 #include <../include/base.hpp>
 #include <../include/segment.hpp>
 
+
 #include <chrono>
 #include <thread>
 
@@ -140,6 +141,12 @@ bool Base::manipulate_interpretation(int id, int ref_id, float threshhold){
   return true;
 }
 
+bool Base::manipulate_interpretation(int id, float threshhold, std::vector<float> colors){
+  BoostColor& interpretation = dynamic_cast<BoostColor&>(*m_interpretations[id]);
+  interpretation.manipulate(threshhold, colors);
+  return true;
+}
+
 int Base::add_interpretation(int typ_i){
   std::cout<<"\t > interpretation: ";
   int id = m_interpretations.size();
@@ -200,6 +207,22 @@ int Base::add_interpretation(int typ_i, int ref_id, float threshhold){
     }
 
     m_interpretations.push_back(std::make_shared<Boost>(shared_from_this(), id, typ_i, ref_img, threshhold));
+  }
+  else{
+    id = -1;
+    std::cout<< "Wrong interpretation. \n";
+  }
+
+  return id;
+}
+
+int Base::add_interpretation(int typ_i, float threshhold, std::vector<float> colors){
+  std::cout<<"\t > interpretation: ";
+  int id = m_interpretations.size();
+
+  if(typ_i == 4){
+    std::cout << "BoostColor \n";
+    m_interpretations.push_back(std::make_shared<BoostColor>(shared_from_this(), id, typ_i, threshhold, colors));
   }
   else{
     id = -1;
