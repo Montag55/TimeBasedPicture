@@ -15,6 +15,7 @@ class Base;
 #include "interpretation.hpp"
 #include "average.hpp"
 #include "boost.hpp"
+#include "reduce.hpp"
 #include "boostColor.hpp"
 #include "transferfunction.hpp"
 

@@ -101,6 +101,10 @@ int main (int argc, char **argv){
             float threshhold  = std::stof (v[3]);
 
             interpret_id  = base->add_interpretation(typ_i, ref_id, threshhold);
+          }else if(typ_i == 5){
+            int ref_id        = std::stoi (v[2]);
+            float threshhold  = std::stoi (v[3]);
+            interpret_id  = base->add_interpretation(typ_i, ref_id, threshhold);
           }
           else if(typ_i == 4){
             std::vector<float> colors;
@@ -173,7 +177,7 @@ int main (int argc, char **argv){
             //   Transferfunction& x = dynamic_cast<Transferfunction&>(*interpretations[id]);
             //   x.set_weights(start, weights);
             // }
-            else if(typ_i == 3){
+            else if(typ_i == 3 || typ_i == 5){
               int ref_id = std::stoi(v[3]);
               float threshhold = std::stoi(v[4]);
               if(base->manipulate_interpretation(id, ref_id, threshhold)){
