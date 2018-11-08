@@ -69,7 +69,7 @@ void Segment::revert_influence(){
     influence = (m_values_abs * ((float) 1 / ((float) m_uni_fac))) * m_intensity_local_actual * m_intensity_global_actual;
     intensity = m_intensity_global_actual;
   }
-  else if(m_interpretation->getTypenumber() == 3){
+  else if(m_interpretation->getTypenumber() == 3 || m_interpretation->getTypenumber() == 5){
     normalize_factor(influence, factors);
     influence = influence * m_intensity_local_actual * m_intensity_global_actual;
     factors = factors * m_intensity_global_actual;
@@ -93,7 +93,7 @@ void Segment::upload_influence(){
     influence = (m_values_abs * ((float) 1 / ((float) m_uni_fac))) * m_intensity_local_actual * m_intensity_global_actual;
     intensity = m_intensity_global_actual;
   }
-  else if(m_interpretation->getTypenumber() == 3){
+  else if(m_interpretation->getTypenumber() == 3 || m_interpretation->getTypenumber() == 5){
     normalize_factor(influence, factors);
     influence = influence * m_intensity_local_actual * m_intensity_global_actual;
     factors = factors * m_intensity_global_actual;
@@ -248,6 +248,7 @@ bool Segment::interpret_sized( int & work_size){
     m_frame_start_actual = dest_start;
     m_frame_last_actual = dest_start;
     m_values_abs -= m_values_abs;
+    m_values_fac -= m_values_fac;
     m_uni_fac -= m_uni_fac;
   }
 

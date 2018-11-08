@@ -6,6 +6,7 @@
 
 #include <opencv2/opencv.hpp>
 #include <opencv2/core/mat.hpp>
+//we could detect black pixels and print a warning, at th end of calc..?
 
 class Boost : public Interpretation{
 public:

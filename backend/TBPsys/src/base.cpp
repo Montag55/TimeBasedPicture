@@ -134,9 +134,15 @@ bool Base::manipulate_interpretation(int id, int ref_id, float threshhold){
   else {
     ref_img.convertTo( ref_img, m_img_type );   //do this for the whole video right at the start!?
   }
+  if(m_interpretations[id]->getTypenumber()==3){
+    Boost& interpretation = dynamic_cast<Boost&>(*m_interpretations[id]);
+    interpretation.manipulate(ref_img, threshhold);
+  }
+  else if(m_interpretations[id]->getTypenumber()==5){
+    Reduce& interpretation = dynamic_cast<Reduce&>(*m_interpretations[id]);
+    interpretation.manipulate(ref_img, threshhold);
+  }
 
-  Boost& interpretation = dynamic_cast<Boost&>(*m_interpretations[id]);
-  interpretation.manipulate(ref_img, threshhold);
   return true;
 }
 
@@ -200,6 +206,27 @@ int Base::add_interpretation(int typ_i, int ref_id, float threshhold){
     }
 
     m_interpretations.push_back(std::make_shared<Boost>(shared_from_this(), id, typ_i, ref_img, threshhold));
+  }
+  else if(typ_i == 5){
+    std::cout<< "Reduce \n";
+
+    std::string path = " ";
+    if(ref_id < 0){
+      path = "./ref.jpg";
+    }
+    else{
+      path = "./out_seg_id" + std::to_string( ref_id ) + ".jpg";
+    }
+    cv::Mat ref_img = cv::imread(path);
+
+    if(ref_img.empty()){
+      std::cout << "reference image not loaded. \n";
+    }
+    else {
+      ref_img.convertTo( ref_img, m_img_type );   //do this for the whole video right at the start!?
+    }
+
+    m_interpretations.push_back(std::make_shared<Reduce>(shared_from_this(), id, typ_i, ref_img, threshhold));
   }
   else{
     id = -1;
