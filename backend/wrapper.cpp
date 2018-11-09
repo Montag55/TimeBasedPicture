@@ -163,8 +163,18 @@ void add_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
   int interpret_id = -1;
   int typ_i = args[0]->IntegerValue();
 
-  if(typ_i == 0 || typ_i == 1 || typ_i == 2){
+  if(typ_i == 0 || typ_i == 2){
     interpret_id = base->add_interpretation(typ_i);
+  }
+  else if(typ_i == 1){
+    std::vector<float> weights;
+    float start  = args[1]->NumberValue();
+
+    for(int idx = 2; idx < args.Length(); idx++){
+      weights.push_back(args[idx]->NumberValue());
+    }
+
+    interpret_id = base->add_interpretation(typ_i, start, weights);
   }
   else if(typ_i == 3){
     int ref_id        = args[1]->IntegerValue();
