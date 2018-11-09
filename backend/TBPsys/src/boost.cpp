@@ -83,24 +83,43 @@ void Boost::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& current_fr
                                 pow(uc_pixel_ref[1] - uc_pixel_current[1], 2) +
                                 pow(uc_pixel_ref[2] - uc_pixel_current[2], 2));
 
+      //new:
+      // if(distance_RGB > m_threshhold){
+      //   if(sign > 0) {
+      //     uc_pixel_res[0] +=  distance_RGB *uc_pixel_current[0];
+      //     uc_pixel_res[1] +=  distance_RGB *uc_pixel_current[1];
+      //     uc_pixel_res[2] +=  distance_RGB *uc_pixel_current[2];
+      //     uc_pixel_fac[0] +=  distance_RGB ;
+      //     uc_pixel_fac[1] +=  distance_RGB ;
+      //     uc_pixel_fac[2] +=  distance_RGB ;
+      //   }
+      //   else {
+      //     uc_pixel_res[0] -=  distance_RGB *uc_pixel_current[0];
+      //     uc_pixel_res[1] -=  distance_RGB *uc_pixel_current[1];
+      //     uc_pixel_res[2] -=  distance_RGB *uc_pixel_current[2];
+      //     uc_pixel_fac[0] -=  distance_RGB ;
+      //     uc_pixel_fac[1] -=  distance_RGB ;
+      //     uc_pixel_fac[2] -=  distance_RGB ;
+      //   }
+      // }
 
-      //std::cout<<" distance: "<<distance_RGB <<"\n";
+      //old
       if(distance_RGB > m_threshhold){
         if(sign > 0) {
-          uc_pixel_res[0] += uc_pixel_current[0];
-          uc_pixel_res[1] += uc_pixel_current[1];
-          uc_pixel_res[2] += uc_pixel_current[2];
-          uc_pixel_fac[0] += 1;
-          uc_pixel_fac[1] += 1;
-          uc_pixel_fac[2] += 1;
+          uc_pixel_res[0] +=  1 *uc_pixel_current[0];
+          uc_pixel_res[1] +=  1 *uc_pixel_current[1];
+          uc_pixel_res[2] +=  1 *uc_pixel_current[2];
+          uc_pixel_fac[0] +=  1 ;
+          uc_pixel_fac[1] +=  1 ;
+          uc_pixel_fac[2] +=  1 ;
         }
         else {
-          uc_pixel_res[0] -= uc_pixel_current[0];
-          uc_pixel_res[1] -= uc_pixel_current[1];
-          uc_pixel_res[2] -= uc_pixel_current[2];
-          uc_pixel_fac[0] -= 1;
-          uc_pixel_fac[1] -= 1;
-          uc_pixel_fac[2] -= 1;
+          uc_pixel_res[0] -=  1 *uc_pixel_current[0];
+          uc_pixel_res[1] -=  1 *uc_pixel_current[1];
+          uc_pixel_res[2] -=  1 *uc_pixel_current[2];
+          uc_pixel_fac[0] -=  1 ;
+          uc_pixel_fac[1] -=  1 ;
+          uc_pixel_fac[2] -=  1 ;
         }
       }
 
