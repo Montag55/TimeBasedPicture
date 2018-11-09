@@ -17,7 +17,10 @@ m_threshhold{threshhold},
 m_ptr_delta{mother->get_img_delta()},
 m_pnt_min{mother->get_min_Point()},
 m_pnt_max{mother->get_max_Point()}
-{}
+{
+// std::cout << "CIELAB Distance: " << utils::dE2000(cv::Scalar(50, 3.1571, -77.2803), cv::Scalar(50, 0, -82.7485), 1.0f, 1.0f, 1.0f) << std::endl;
+// std::cout << "CIELAB Distance: " << utils::not_mine(cv::Scalar(50, 3.1571, -77.2803), cv::Scalar(50, 0, -82.7485), 1.0f, 1.0f, 1.0f) << std::endl;
+}
 
 BoostColor::~BoostColor(){
   //std::cout<<"deleting interpretation-boost\n";
@@ -56,9 +59,11 @@ void BoostColor::calc(int id, int start, int length, int sign, cv::Mat& result, 
 
 void BoostColor::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& current_frame, int sign) {
 
-cv::Mat tmp;
-cv::cvtColor(current_frame, tmp, cv::COLOR_BGR2Lab);
-std::cout << "CIELAB Distance: " << utils::dE2000(cv::Scalar(100, 0, 20), cv::Scalar(100, 20, 10), 1, 1, 1) << std::endl;
+  cv::Mat tmp;
+  cv::cvtColor(current_frame, tmp, cv::COLOR_BGR2Lab);
+
+  cv::Scalar tmp_2 = cv::Scalar(50, 3.1571, -77.2803);
+  cv::cvtColor(tmp_2, tmp_2, cv::COLOR_RGB2Lab);
 
   for (unsigned int row = m_pnt_min.y; row < m_pnt_max.y; ++row) {
     //ptr:
@@ -106,6 +111,7 @@ std::cout << "CIELAB Distance: " << utils::dE2000(cv::Scalar(100, 0, 20), cv::Sc
           uc_pixel_fac[2] -= 1;
         }
       }
+
 
       //shift ptr:
       ptr_res     += m_ptr_delta;
