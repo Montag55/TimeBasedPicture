@@ -9,7 +9,7 @@
 #include <../include/base.hpp>
 
 
-BoostColor::BoostColor( std::shared_ptr<Base> mother, int id, int type, float threshhold, std::vector<float> colors):
+BoostColor::BoostColor( std::shared_ptr<Base> mother, int id, int type, float threshhold, std::shared_ptr<std::vector<float>> colors):
 Interpretation{ mother, id, type},
 m_colors{colors},
 m_threshhold{threshhold},
@@ -68,10 +68,10 @@ void BoostColor::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& curre
       const float *uc_pixel_current = ptr_current;
 
       float distance_RGB = -1;
-      for(unsigned int i = 0; i < m_colors.size(); i+=3){
-        float distance_tmp  = sqrt(pow(m_colors[i] - uc_pixel_current[0], 2) +
-                                   pow(m_colors[i+1] - uc_pixel_current[1], 2) +
-                                   pow(m_colors[i+2] - uc_pixel_current[2], 2));
+      for(unsigned int i = 0; i < m_colors->size(); i+=3){
+        float distance_tmp  = sqrt(pow((*m_colors)[i] - uc_pixel_current[0], 2) +
+                                   pow((*m_colors)[i+1] - uc_pixel_current[1], 2) +
+                                   pow((*m_colors)[i+2] - uc_pixel_current[2], 2));
 
         if(distance_tmp <= m_threshhold){
           distance_RGB = distance_tmp;
@@ -108,10 +108,10 @@ void BoostColor::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& curre
   }
 }
 
-void BoostColor::manipulate(float threshhold, std::vector<float> colors){
+void BoostColor::manipulate(float threshhold, std::shared_ptr<std::vector<float>> colors){
 
   bool update_status = false;
-  if(m_colors != colors){
+  if((*m_colors) != (*colors)){
     m_colors = colors;
     update_status = true;
   }
