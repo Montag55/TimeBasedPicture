@@ -19,6 +19,7 @@ exposure_delta  [int]id   [int]delta
 #include <sstream>
 #include <iostream>
 #include <string.h>
+#include <cctype>
 
 #include "base.hpp"
 #include "average.hpp"
@@ -112,9 +113,17 @@ int main (int argc, char **argv){
             interpret_id  = base->add_interpretation(typ_i, start, weights);
           }
           else if(typ_i == 3){
-            int ref_id        = std::stoi (v[2]);
-            float threshhold  = std::stof (v[3]);
-            interpret_id  = base->add_interpretation(typ_i, ref_id, threshhold);
+
+            if(std::any_of(v[2].begin(), v[2].begin() + 2, ::isdigit)){
+              int ref_id        = std::stoi (v[2]);
+              float threshhold  = std::stof (v[3]);
+              interpret_id  = base->add_interpretation(typ_i, ref_id, threshhold);
+            }
+            else{
+              std::string ref_file_path = v[2];
+              float threshhold = std::stof(v[3]);
+              interpret_id = base->add_interpretation(typ_i, ref_file_path, threshhold);
+            }
           }
           else if(typ_i == 4){
             std::shared_ptr<std::vector<float>> colors = std::make_shared<std::vector<float>>();
@@ -137,9 +146,18 @@ int main (int argc, char **argv){
               std::cout << "\t too few arguments (tpye, float, [r, g, b]*n) \n";
           }
           else if(typ_i == 5){
-            int ref_id        = std::stoi (v[2]);
-            float threshhold  = std::stoi (v[3]);
-            interpret_id  = base->add_interpretation(typ_i, ref_id, threshhold);
+
+            if(std::any_of(v[2].begin(), v[2].begin() + 2, ::isdigit)){
+              int ref_id        = std::stoi (v[2]);
+              float threshhold  = std::stof (v[3]);
+              interpret_id  = base->add_interpretation(typ_i, ref_id, threshhold);
+            }
+            else{
+              std::string ref_file_path = v[2];
+              std::cout << ref_file_path << std::endl;
+              float threshhold = std::stof(v[3]);
+              interpret_id = base->add_interpretation(typ_i, ref_file_path, threshhold);
+            }
           }
 
 

@@ -180,6 +180,42 @@ int Base::add_interpretation(int typ_i){
   return id;
 }
 
+int Base::add_interpretation(int typ_i, std::string ref_file_path, float threshhold){
+  std::cout<<"\t > interpretation: ";
+  int id = m_interpretations.size();
+
+  if (typ_i == 3){
+    std::cout<< "Boost \n";
+
+    cv::Mat ref_img = cv::imread(ref_file_path);
+
+    if(ref_img.empty()){
+      std::cout << "reference image not loaded. \n";
+    }
+    else {
+      ref_img.convertTo( ref_img, m_img_type );   //do this for the whole video right at the start!?
+    }
+
+    m_interpretations.push_back(std::make_shared<Boost>(shared_from_this(), id, typ_i, ref_img, threshhold));
+  }
+  else if(typ_i == 5){
+    std::cout<< "Reduce \n";
+
+    cv::Mat ref_img = cv::imread(ref_file_path);
+
+    if(ref_img.empty()){
+      std::cout << "reference image not loaded. \n";
+    }
+    else {
+      ref_img.convertTo( ref_img, m_img_type );   //do this for the whole video right at the start!?
+    }
+
+    m_interpretations.push_back(std::make_shared<Reduce>(shared_from_this(), id, typ_i, ref_img, threshhold));
+  }
+  
+  return id;
+}
+
 int Base::add_interpretation(int typ_i, int ref_id, float threshhold){
   std::cout<<"\t > interpretation: ";
   int id = m_interpretations.size();
