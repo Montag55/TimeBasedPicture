@@ -167,11 +167,11 @@ void add_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
     interpret_id = base->add_interpretation(typ_i);
   }
   else if(typ_i == 1){
-    std::vector<float> weights;
+    std::shared_ptr<std::vector<float>> weights = std::make_shared<std::vector<float>>();
     float start  = args[1]->NumberValue();
 
     for(int idx = 2; idx < args.Length(); idx++){
-      weights.push_back(args[idx]->NumberValue());
+      weights->push_back(args[idx]->NumberValue());
     }
 
     interpret_id = base->add_interpretation(typ_i, start, weights);
@@ -182,14 +182,14 @@ void add_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
     interpret_id = base->add_interpretation(typ_i, ref_id, threshhold);
   }
   else if(typ_i == 4){
-    std::vector<float> colors;
+    std::shared_ptr<std::vector<float>> colors = std::make_shared<std::vector<float>>();
     float threshhold  = args[1]->NumberValue();
 
     for(int idx = 2; idx < args.Length(); idx++){
-      colors.push_back(args[idx]->NumberValue());
+      colors->push_back(args[idx]->NumberValue());
     }
 
-    if(colors.size()%3 == 0)
+    if(colors->size()%3 == 0)
       interpret_id = base->add_interpretation(typ_i, threshhold, colors);
     else
       std::cout << "\t too few arguments (tpye, float, [r, g, b]*n) \n";
