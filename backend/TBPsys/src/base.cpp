@@ -147,9 +147,16 @@ bool Base::manipulate_interpretation(int id, int ref_id, float threshhold){
   return true;
 }
 
-bool Base::manipulate_interpretation(int id, float threshhold, std::vector<float> colors){
-  BoostColor& interpretation = dynamic_cast<BoostColor&>(*m_interpretations[id]);
-  interpretation.manipulate(threshhold, colors);
+bool Base::manipulate_interpretation(int id, float threshhold, std::shared_ptr<std::vector<float>> values){
+
+  if(m_interpretations[id]->getTypenumber() == 1){
+    Transferfunction& interpretation = dynamic_cast<Transferfunction&>(*m_interpretations[id]);
+    interpretation.manipulate(threshhold, values);
+  }
+  else if(m_interpretations[id]->getTypenumber() == 4){
+    BoostColor& interpretation = dynamic_cast<BoostColor&>(*m_interpretations[id]);
+    interpretation.manipulate(threshhold, values);
+  }
   return true;
 }
 
@@ -161,22 +168,6 @@ int Base::add_interpretation(int typ_i){
     std::cout<<"Average\n";
     m_interpretations.push_back(std::make_shared<Average>(shared_from_this(), id, typ_i));
   }
-  else if (typ_i == 1 /*transferfunktion*/){
-    std::cout<<"Transferfunction (not implemnted) \n";
-    id = -1;
-    /*
-    args.size() ? alternativ einen vector? oder einen parameter, der length bestimmt
-    int start  = args[1]->IntegerValue();
-    int length =args.size();
-    std:shared_ptr<std::vector<float>> weights= std::make_shared<std::vector<float>>();
-    for (int i=2; i<length; i++){
-      std::istringstream iss(v[i]);
-      weights->push_back(((float)args[i]->NumberValue()));
-      }
-    }
-    interpretations.push_back(std::make_shared<Transferfunction>(base,interpret_id, start, weights));
-    */
-  }
   else if (typ_i == 2 /*overplott*/){
     id = -1;
     std::cout<<"Overplott (not implemnted) \n";
@@ -186,6 +177,42 @@ int Base::add_interpretation(int typ_i){
     std::cout<< "Wrong interpretation. \n";
   }
 
+  return id;
+}
+
+int Base::add_interpretation(int typ_i, std::string ref_file_path, float threshhold){
+  std::cout<<"\t > interpretation: ";
+  int id = m_interpretations.size();
+
+  if (typ_i == 3){
+    std::cout<< "Boost \n";
+
+    cv::Mat ref_img = cv::imread(ref_file_path);
+
+    if(ref_img.empty()){
+      std::cout << "reference image not loaded. \n";
+    }
+    else {
+      ref_img.convertTo( ref_img, m_img_type );   //do this for the whole video right at the start!?
+    }
+
+    m_interpretations.push_back(std::make_shared<Boost>(shared_from_this(), id, typ_i, ref_img, threshhold));
+  }
+  else if(typ_i == 5){
+    std::cout<< "Reduce \n";
+
+    cv::Mat ref_img = cv::imread(ref_file_path);
+
+    if(ref_img.empty()){
+      std::cout << "reference image not loaded. \n";
+    }
+    else {
+      ref_img.convertTo( ref_img, m_img_type );   //do this for the whole video right at the start!?
+    }
+
+    m_interpretations.push_back(std::make_shared<Reduce>(shared_from_this(), id, typ_i, ref_img, threshhold));
+  }
+  
   return id;
 }
 
@@ -243,13 +270,17 @@ int Base::add_interpretation(int typ_i, int ref_id, float threshhold){
   return id;
 }
 
-int Base::add_interpretation(int typ_i, float threshhold, std::vector<float> colors){
+int Base::add_interpretation(int typ_i, float threshhold, std::shared_ptr<std::vector<float>> values){
   std::cout<<"\t > interpretation: ";
   int id = m_interpretations.size();
 
-  if(typ_i == 4){
+  if (typ_i == 1 ){
+    std::cout<<"Transferfunction \n";
+    m_interpretations.push_back(std::make_shared<Transferfunction>(shared_from_this(), id, typ_i, threshhold, values));
+  }
+  else if(typ_i == 4){
     std::cout << "BoostColor \n";
-    m_interpretations.push_back(std::make_shared<BoostColor>(shared_from_this(), id, typ_i, threshhold, colors));
+    m_interpretations.push_back(std::make_shared<BoostColor>(shared_from_this(), id, typ_i, threshhold, values));
   }
   else{
     id = -1;

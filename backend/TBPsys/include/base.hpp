@@ -32,11 +32,12 @@ public:
   int                 add_segment(int start, int end, float local_i, float global_i);
   int                 add_interpretation(int typ_i);
   int                 add_interpretation(int typ_i, int ref_id, float threshhold);
-  int                 add_interpretation(int typ_i, float threshhold, std::vector<float> colors);
+  int                 add_interpretation(int typ_i, std::string ref_file_path, float threshhold);
+  int                 add_interpretation(int typ_i, float threshhold, std::shared_ptr<std::vector<float>> values);
   bool                delete_segment(int id);
   bool                manipulate_segment(int id, int start, int end, float local_i, float global_i);
   bool                manipulate_interpretation(int id, int ref_id, float threshhold);
-  bool                manipulate_interpretation(int id, float threshhold, std::vector<float> colors);
+  bool                manipulate_interpretation(int id, float threshhold, std::shared_ptr<std::vector<float>> values);
 
   //WORK::::::::::::::::::::::::::::::::::::::::::::::::
   float               get_segment_progress(int id);

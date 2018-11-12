@@ -18,16 +18,18 @@ m_start_pnt{start_pnt}
 Transferfunction::~Transferfunction(){
   std::cout<<"\t > deleting interpretation-avg\n";
 }
+
 int Transferfunction::getTypenumber(){
   return 1;
 }
+
 int Transferfunction::get_calculation_specification(){
   return 0;//standard sum-game
 }
 
 void Transferfunction::calc(int id, int start, int length, int sign, cv::Mat& result, float& factor, cv::Mat& fac_mat) {
   //receive transfer weights, per image and calculate wieghted
-  std::cout<<"TRANSFER: with work_size:"<<length<<" took ";
+
   auto start_time = std::chrono::high_resolution_clock::now();
   cv::Mat tmp_frame;
   cv::Mat tmp_frame_d;
@@ -57,14 +59,22 @@ void Transferfunction::calc(int id, int start, int length, int sign, cv::Mat& re
 
   auto end_time = std::chrono::high_resolution_clock::now();
   auto duration = std::chrono::duration_cast<std::chrono::milliseconds>( end_time - start_time ).count();
-  std::cout<< duration <<" milli-seconds in computation\n";
+  #ifdef show_time
+      std::cout << "\t\t + TransfF. ("<<m_weights->size()<<"): time: \t" << duration << std::endl;
+  #endif
 }
 
-void Transferfunction::set_weights(int start_pnt, std::shared_ptr< std::vector< float > > weigths)
-{
-  //mutex: m_all_connections
-  //mutex: set_recompute!
-  m_start_pnt = start_pnt;
-  m_weights = weigths;
-  update_connections();
+void Transferfunction::manipulate(int start_pnt, std::shared_ptr< std::vector<float>> weights) {
+  bool update_status = false;
+  if(m_start_pnt != start_pnt){
+    m_start_pnt = start_pnt;
+    update_status = true;
+  }
+  if((*m_weights) != (*weights)){
+    m_weights = weights;
+    update_status = true;
+  }
+  if(update_status){
+    update_connections();
+  }
 }
