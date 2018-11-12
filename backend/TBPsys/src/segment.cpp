@@ -52,15 +52,17 @@ void Segment::ready_to_work(){
 
 void Segment::reset(){
   //std::cout << "\t > reset segment. \n";
+  std::cout<<"reset\n";
   m_frame_start_actual = -1;
   m_frame_last_actual = -1;
-  revert_influence();
   m_values_abs = cv::Mat(m_mother->get_height(), m_mother->get_width(), m_mother->get_img_type(), cv::Scalar(0,0,0));
   m_values_fac = cv::Mat(m_mother->get_height(), m_mother->get_width(), m_mother->get_img_type(), cv::Scalar(0,0,0));
   m_uni_fac = 0;
+
 }
 
 void Segment::revert_influence(){
+  std::cout<<"revert\n";
   float intensity = -1;
   cv::Mat factors = m_values_fac.clone();
   cv::Mat influence = m_values_abs.clone();
@@ -85,6 +87,7 @@ void Segment::revert_influence(){
 }
 
 void Segment::upload_influence(){
+  std::cout<<"upload\n";
   float intensity = -1;
   cv::Mat factors = m_values_fac.clone();
   cv::Mat influence = m_values_abs.clone();
@@ -124,6 +127,8 @@ bool Segment::work(int& work_size){
 
   //set new interpetation:
   if(m_new_interpretation != NULL) {
+
+      revert_influence();
       reset();
       m_interpretation->delete_connection(m_id);
       m_interpretation = m_new_interpretation;
@@ -132,6 +137,7 @@ bool Segment::work(int& work_size){
   }
   //interpretation need reset:
   if(m_needs_reset) {
+    revert_influence();
     reset();
     m_needs_reset = false;
   }
@@ -244,20 +250,16 @@ bool Segment::interpret_sized( int & work_size){
   int moves     = abs(dest_start - m_frame_start_actual) + abs(dest_end - m_frame_last_actual);
   int alt_moves = dest_end - dest_start;
 
-  if(alt_moves <= moves) {
-    m_frame_start_actual = dest_start;
-    m_frame_last_actual = dest_start;
-    m_values_abs -= m_values_abs;
-    m_values_fac -= m_values_fac;
-    m_uni_fac -= m_uni_fac;
+  if(alt_moves < moves && m_frame_start_actual>-1) {
+    reset();
   }
 
   //startingpoint:
   if(m_frame_start_actual == -1) {//not yet computed!
     m_frame_start_actual = dest_start;
-
   }
-  else if(m_frame_start_actual < dest_start) {
+
+  if(m_frame_start_actual < dest_start) {
     int length = work_size;
 
     if(m_frame_start_actual + work_size > dest_start){
@@ -288,7 +290,8 @@ bool Segment::interpret_sized( int & work_size){
     if(m_frame_last_actual == -1) {//not yet computed!
        m_frame_last_actual = dest_start;
      }
-     else if(m_frame_last_actual < dest_end) {
+
+     if(m_frame_last_actual < dest_end) {
        /*ffmpeg:
        double frameRate = m_video.get(CV_CAP_PROP_FPS);
        double frameTime = 1000.0 * m_frame_last_actual / frameRate;
@@ -320,17 +323,18 @@ bool Segment::interpret_sized( int & work_size){
        work_size -= length;
        m_frame_last_actual -= length;
      }
+  }
+  if(m_frame_start_actual > -1) {
 
-     if(m_frame_start_actual > -1) {
-       upload_influence();
-     }
+    upload_influence();
+  }
 
-     if((dest_start == m_frame_start_actual) && (dest_end == m_frame_last_actual)) {
-       exit_status = true;  //ist = soll
-     }
-     else{
-       exit_status = false; //ist != soll
-     }
+
+  if((dest_start == m_frame_start_actual) && (dest_end == m_frame_last_actual)) {
+    exit_status = true;  //ist = soll
+  }
+  else{
+    exit_status = false; //ist != soll
   }
 
   return exit_status;
