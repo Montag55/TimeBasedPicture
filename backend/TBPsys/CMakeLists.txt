@@ -10,8 +10,8 @@ endif()
 
 
 
-set(SOURCES src/terminal-time.cpp src/base.cpp src/segment.cpp src/interpretation.cpp src/average.cpp src/transferfunction.cpp src/boost.cpp src/reduce.cpp src/boostColor.cpp)
-set(SOURCES src/testlab.cpp src/base.cpp src/segment.cpp src/interpretation.cpp src/average.cpp src/transferfunction.cpp src/boost.cpp src/reduce.cpp src/boostColor.cpp)
+set(SOURCES1 src/terminal-time.cpp src/base.cpp src/segment.cpp src/interpretation.cpp src/average.cpp src/transferfunction.cpp src/boost.cpp src/reduce.cpp src/boostColor.cpp)
+set(SOURCES2 src/testlab.cpp src/base.cpp src/segment.cpp src/interpretation.cpp src/average.cpp src/transferfunction.cpp src/boost.cpp src/reduce.cpp src/boostColor.cpp)
 ################################################################################
 # search
 ################################################################################
@@ -34,8 +34,8 @@ include_directories(SYSTEM ${OpenCV_INCLUDE_DIRS})
 # add the executable
 ################################################################################
 
-add_executable(Time_Terminal ${SOURCES})
-add_executable(Lab ${SOURCES})
+add_executable(Time_Terminal ${SOURCES1})
+add_executable(Lab ${SOURCES2})
 target_link_libraries(Time_Terminal ${OpenCV_LIBS})
 target_link_libraries(Lab ${OpenCV_LIBS})
 
