@@ -52,7 +52,6 @@ void Segment::ready_to_work(){
 
 void Segment::reset(){
   //std::cout << "\t > reset segment. \n";
-  std::cout<<"reset\n";
   m_frame_start_actual = -1;
   m_frame_last_actual = -1;
   m_values_abs = cv::Mat(m_mother->get_height(), m_mother->get_width(), m_mother->get_img_type(), cv::Scalar(0,0,0));
@@ -62,7 +61,6 @@ void Segment::reset(){
 }
 
 void Segment::revert_influence(){
-  std::cout<<"revert\n";
   float intensity = -1;
   cv::Mat factors = m_values_fac.clone();
   cv::Mat influence = m_values_abs.clone();
@@ -87,7 +85,6 @@ void Segment::revert_influence(){
 }
 
 void Segment::upload_influence(){
-  std::cout<<"upload\n";
   float intensity = -1;
   cv::Mat factors = m_values_fac.clone();
   cv::Mat influence = m_values_abs.clone();
@@ -135,18 +132,21 @@ bool Segment::work(int& work_size){
       m_interpretation->add_connection(m_id, this);
       m_new_interpretation = NULL;
   }
+
   //interpretation need reset:
   if(m_needs_reset) {
-    revert_influence();
+    revert_influence(); //dont know?
     reset();
     m_needs_reset = false;
   }
+
 
   m_mutex_soll.unlock();
 
   if(work_size > 0) {
     if(m_interpretation->get_calculation_specification() == 0){
       state = interpret_sized( work_size );
+
     }
     else{
       std::cout<<"Other interpretation traversal not implemnted yet. \n";
@@ -239,6 +239,7 @@ bool Segment::interpret_sized( int & work_size){
   m_mutex_soll.unlock();
 
   //int delta=m_frame_last_actual-m_frame_start_actual;
+
   if(m_frame_start_actual > -1) {
     revert_influence();
   }
@@ -253,7 +254,6 @@ bool Segment::interpret_sized( int & work_size){
   if(alt_moves < moves && m_frame_start_actual>-1) {
     reset();
   }
-
   //startingpoint:
   if(m_frame_start_actual == -1) {//not yet computed!
     m_frame_start_actual = dest_start;
@@ -324,11 +324,11 @@ bool Segment::interpret_sized( int & work_size){
        m_frame_last_actual -= length;
      }
   }
+
   if(m_frame_start_actual > -1) {
 
     upload_influence();
   }
-
 
   if((dest_start == m_frame_start_actual) && (dest_end == m_frame_last_actual)) {
     exit_status = true;  //ist = soll

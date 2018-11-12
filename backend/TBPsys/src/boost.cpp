@@ -119,11 +119,8 @@ void Boost::manipulate(cv::Mat ref_frame, float threshhold){
   double min = 0, max = 0;
   cv::absdiff(m_reference, ref_frame, tmp);
   cv::minMaxLoc(tmp, &min, &max);
-  std::cout << "max: " << max << "\n";
-  std::cout << "min: " << min<< "\n";
 
   if(max > 0){
-    std::cout << "change ref_bild! \n";
     m_reference = ref_frame;
     update_status = true;
   }

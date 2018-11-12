@@ -212,7 +212,7 @@ int Base::add_interpretation(int typ_i, std::string ref_file_path, float threshh
 
     m_interpretations.push_back(std::make_shared<Reduce>(shared_from_this(), id, typ_i, ref_img, threshhold));
   }
-  
+
   return id;
 }
 
@@ -225,6 +225,7 @@ int Base::add_interpretation(int typ_i, int ref_id, float threshhold){
 
     std::string path = " ";
     if(ref_id < 0){
+      std::cout<<"refimg!\n";
       path = "./ref.jpg";
     }
     else{
