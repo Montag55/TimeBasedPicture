@@ -18,7 +18,7 @@ function createWindow () {
   tmpfile = '/tmp/mainfile'
   // Create the browser window.
   win = new BrowserWindow({width: 800, height: 1000})
-  win.setMenu(null)
+  // win.setMenu(null)
    // and load the index.html of the app.
   win.loadURL(`file://${__dirname}/index.html`)
 
@@ -53,7 +53,7 @@ ipcMain.on('manipulateSegment', (event, arg) => {
 
 
 ipcMain.on('update', (event, arg) => {
-  
+
   event.sender.send('update', '')
 })
 
@@ -74,6 +74,6 @@ ipcMain.on('load-result', (event, arg) => {
 ipcMain.on('add_segm', (event, arg) => {
   var start=Math.floor((Math.random() * 330) + 0)
   var end = (Math.floor((Math.random() * (330-start)) + start))
-  global.shared.random = wrapper.add_segment(start, end, 1.0, 1.0) 
-  
+  global.shared.random = wrapper.add_segment(start, end, 1.0, 1.0)
+
 })
