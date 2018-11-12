@@ -92,7 +92,6 @@ void delete_segment(const v8::FunctionCallbackInfo<v8::Value>& args){
 
   int id = args[0]->IntegerValue();
   std::string correct = "true";
-
   if(!base->delete_segment(id)){
     correct = "false";
   }
@@ -120,7 +119,6 @@ void manipulate_segment(const v8::FunctionCallbackInfo<v8::Value>& args){
   float local_i =   args[3]->NumberValue();
   float global_i =  args[4]->NumberValue();
   std::string correct = "true";
-
 
   if(!base->manipulate_segment(id, start, end, local_i, global_i)){
     correct = "false";
@@ -155,6 +153,13 @@ void get_segment_progress(const v8::FunctionCallbackInfo<v8::Value>& args){
 /**
 * add_interpretation: expects a full interpretation definition(type dependet)
 * returns: interpretation id
+* Type 0: in  (int type)
+* Type 1: in  (int type, int start, float weight1, float weight2, ...)
+* Type 3: in  (int type, int ref_id, float threshhold)
+*             (int type, string file_path, float threshhold)
+* Type 4: in  (int type, float threshhold, float color_R, float color_G, float color_B, ... )
+* Type 5: in  (int type, int ref_id, float threshhold)
+*             (int type, string file_path, float threshhold)
 */
 void add_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
   v8::Isolate* isolate = args.GetIsolate();
