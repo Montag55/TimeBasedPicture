@@ -96,6 +96,7 @@ namespace utils {
     return deltaE2000;
   }
 
+  // https://www.easyrgb.com/en/math.php
   cv::Scalar rgb2lab(float r, float g, float b){
     float x, y, z;
     r = r / 255.0f;
@@ -116,6 +117,10 @@ namespace utils {
       b = b / 12.92;
     else
       b = pow((b + 0.055) / 1.055, 2.4);
+
+    r = r * 100;
+    g = g * 100;
+    b = b * 100;
 
     x = (r * 0.4124564 + g * 0.3575761 + b * 0.1804375) / 0.95047;
     y = (r * 0.2126729 + g * 0.7151522 + b * 0.0721750) / 1.00000;
