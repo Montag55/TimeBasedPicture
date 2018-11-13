@@ -18,8 +18,7 @@ m_ptr_delta{mother->get_img_delta()},
 m_pnt_min{mother->get_min_Point()},
 m_pnt_max{mother->get_max_Point()}
 {
-// std::cout << "CIELAB Distance: " << utils::dE2000(cv::Scalar(50, 3.1571, -77.2803), cv::Scalar(50, 0, -82.7485), 1.0f, 1.0f, 1.0f) << std::endl;
-// std::cout << "CIELAB Distance: " << utils::not_mine(cv::Scalar(50, 3.1571, -77.2803), cv::Scalar(50, 0, -82.7485), 1.0f, 1.0f, 1.0f) << std::endl;
+  //std::cout << "CIELAB Distance: " << utils::dE2000(cv::Scalar(50, 3.1571, -77.2803), cv::Scalar(50, 0, -82.7485), 1.0f, 1.0f, 1.0f) << std::endl;
 }
 
 BoostColor::~BoostColor(){

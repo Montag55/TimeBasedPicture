@@ -31,15 +31,20 @@ namespace utils {
     float h1_strich = -1;
     if(b1 == 0 && a1_strich == 0)
       h1_strich = 0;
-    else
-      h1_strich = fmod(atan2(b1, a1_strich), (2 * M_PI));
+    else{
+      h1_strich = atan2(b1, a1_strich);
+      if(h1_strich < 0)
+        h1_strich += (2 * M_PI);
+    }
 
     float h2_strich = -1;
     if(b2 == 0 && a2_strich == 0)
       h2_strich = 0;
-    else
-      h2_strich = fmod(atan2(b2, a2_strich), (2 * M_PI));
-
+    else{
+      h2_strich = atan2(b2, a2_strich);
+      if(h2_strich < 0)
+        h2_strich += (2 * M_PI);
+    }
 
     float delta_h_strich = -1;
     if(abs(h1_strich - h2_strich) <=  (M_PI)){
@@ -89,144 +94,6 @@ namespace utils {
                             RT * (delta_C_strich / (kc * Sc)) * (delta_H_strich / (kh * Sh)));
 
     return deltaE2000;
-  }
-
-  float not_mine(cv::Scalar color1, cv::Scalar color2, float k_L, float k_C, float k_H){
-      /*
-  	 * "For these and all other numerical/graphical 􏰀delta E00 values
-  	 * reported in this article, we set the parametric weighting factors
-  	 * to unity(i.e., k_L = k_C = k_H = 1.0)." (Page 27).
-  	 */
-  	const double deg360InRad = 2*M_PI;
-  	const double deg180InRad = M_PI;
-  	const double pow25To7 = 6103515625.0;
-
-    float l1 = color1[0];
-    float l2 = color2[0];
-
-    float a1 = color1[1];
-    float a2 = color2[1];
-
-    float b1 = color1[2];
-    float b2 = color2[2];
-
-  	/*
-  	 * Step 1
-  	 */
-  	/* Equation 2 */
-  	double C1 = sqrt((a1 * a1) + (b1 * b1));
-  	double C2 = sqrt((a2 * a2) + (b2 * b2));
-  	/* Equation 3 */
-  	double barC = (C1 + C2) / 2.0;
-  	/* Equation 4 */
-  	double G = 0.5 * (1 - sqrt(pow(barC, 7) / (pow(barC, 7) + pow25To7)));
-  	/* Equation 5 */
-  	double a1Prime = (1.0 + G) * a1;
-  	double a2Prime = (1.0 + G) * a2;
-  	/* Equation 6 */
-  	double CPrime1 = sqrt((a1Prime * a1Prime) + (b1 * b1));
-  	double CPrime2 = sqrt((a2Prime * a2Prime) + (b2 * b2));
-  	/* Equation 7 */
-  	double hPrime1;
-  	if (b1 == 0 && a1Prime == 0)
-  		hPrime1 = 0.0;
-  	else {
-  		hPrime1 = atan2(b1, a1Prime);
-  		/*
-  		 * This must be converted to a hue angle in degrees between 0
-  		 * and 360 by addition of 2􏰏 to negative hue angles.
-  		 */
-  		if (hPrime1 < 0)
-  			hPrime1 += deg360InRad;
-  	}
-  	double hPrime2;
-  	if (b2 == 0 && a2Prime == 0)
-  		hPrime2 = 0.0;
-  	else {
-  		hPrime2 = atan2(b2, a2Prime);
-  		/*
-  		 * This must be converted to a hue angle in degrees between 0
-  		 * and 360 by addition of 2􏰏 to negative hue angles.
-  		 */
-  		if (hPrime2 < 0)
-  			hPrime2 += deg360InRad;
-  	}
-
-  	/*
-  	 * Step 2
-  	 */
-  	/* Equation 8 */
-  	double deltaLPrime = l2 - l1;
-  	/* Equation 9 */
-  	double deltaCPrime = CPrime2 - CPrime1;
-  	/* Equation 10 */
-  	double deltahPrime;
-  	double CPrimeProduct = CPrime1 * CPrime2;
-  	if (CPrimeProduct == 0)
-  		deltahPrime = 0;
-  	else {
-  		/* Avoid the fabs() call */
-  		deltahPrime = hPrime2 - hPrime1;
-  		if (deltahPrime < -deg180InRad)
-  			deltahPrime += deg360InRad;
-  		else if (deltahPrime > deg180InRad)
-  			deltahPrime -= deg360InRad;
-  	}
-  	/* Equation 11 */
-  	double deltaHPrime = 2.0 * sqrt(CPrimeProduct) *
-  	    sin(deltahPrime / 2.0);
-
-  	/*
-  	 * Step 3
-  	 */
-  	/* Equation 12 */
-  	double barLPrime = (l1 + l2) / 2.0;
-  	/* Equation 13 */
-  	double barCPrime = (CPrime1 + CPrime2) / 2.0;
-  	/* Equation 14 */
-  	double barhPrime, hPrimeSum = hPrime1 + hPrime2;
-  	if (CPrime1 * CPrime2 == 0) {
-  		barhPrime = hPrimeSum;
-  	}
-    else {
-  		if (fabs(hPrime1 - hPrime2) <= deg180InRad)
-  			barhPrime = hPrimeSum / 2.0;
-  		else {
-  			if (hPrimeSum < deg360InRad)
-  				barhPrime = (hPrimeSum + deg360InRad) / 2.0;
-  			else
-  				barhPrime = (hPrimeSum - deg360InRad) / 2.0;
-  		}
-  	}
-  	/* Equation 15 */
-  	double T = 1.0 - (0.17 * cos(barhPrime - 30.0 * M_PI/180)) +
-  	    (0.24 * cos(2.0 * barhPrime)) +
-  	    (0.32 * cos((3.0 * barhPrime) + 06.0 * M_PI/180)) -
-  	    (0.20 * cos((4.0 * barhPrime) - 63.0 * M_PI/180));
-  	/* Equation 16 */
-  	double deltaTheta = 30.0 * M_PI/180 *
-  	    exp(-pow((barhPrime - (275.0 * M_PI/180)) / (25.0 * M_PI/180), 2.0));
-  	/* Equation 17 */
-  	double R_C = 2.0 * sqrt(pow(barCPrime, 7.0) /
-  	    (pow(barCPrime, 7.0) + pow25To7));
-  	/* Equation 18 */
-  	double S_L = 1 + ((0.015 * pow(barLPrime - 50.0, 2.0)) /
-  	    sqrt(20 + pow(barLPrime - 50.0, 2.0)));
-  	/* Equation 19 */
-  	double S_C = 1 + (0.045 * barCPrime);
-  	/* Equation 20 */
-  	double S_H = 1 + (0.015 * barCPrime * T);
-  	/* Equation 21 */
-  	double R_T = (-sin(2.0 * deltaTheta)) * R_C;
-
-  	/* Equation 22 */
-  	double deltaE = sqrt(
-  	    pow(deltaLPrime / (k_L * S_L), 2.0) +
-  	    pow(deltaCPrime / (k_C * S_C), 2.0) +
-  	    pow(deltaHPrime / (k_H * S_H), 2.0) +
-  	    (R_T * (deltaCPrime / (k_C * S_C)) * (deltaHPrime / (k_H * S_H))));
-
-    return (deltaE);
   }
 
   cv::Scalar rgb2lab(float r, float g, float b){
