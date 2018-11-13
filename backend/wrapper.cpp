@@ -130,7 +130,7 @@ void manipulate_segment(const v8::FunctionCallbackInfo<v8::Value>& args){
 }
 
  /**
- ype 0: in  (int type)
+ * Type 0: in  (int id)
  * Type 1: in  (int id, int start, float weight1, float weight2, ...)
  * Type 2: in  (int id)
  * Type 3: in  (int id, int ref_id, float threshhold)
