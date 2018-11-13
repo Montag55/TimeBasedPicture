@@ -106,7 +106,6 @@ void Boost::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& current_fr
       }
 
       //shift ptr:
-      ptr_out     += m_ptr_delta;
       ptr_res     += m_ptr_delta;
       ptr_current += m_ptr_delta;
       ptr_ref     += m_ptr_delta;
