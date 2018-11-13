@@ -19,6 +19,7 @@ exposure_delta  [int]id   [int]delta
 #include <sstream>
 #include <iostream>
 #include <string.h>
+#include <cctype>
 
 #include "base.hpp"
 #include "average.hpp"
@@ -93,39 +94,71 @@ int main (int argc, char **argv){
           int interpret_id  = -1;
           int typ_i         = std::stoi (v[1]);
 
-          if(typ_i == 0 || typ_i == 1 || typ_i == 2){
+          if(typ_i == 0 || typ_i == 2){
             interpret_id  = base->add_interpretation(typ_i);
           }
-          else if(typ_i == 3){
-            int ref_id        = std::stoi (v[2]);
-            float threshhold  = std::stof (v[3]);
+          else if(typ_i == 1){
+            std::shared_ptr<std::vector<float>> weights = std::make_shared<std::vector<float>>();
+            float start = std::stoi (v[2]);
 
-            interpret_id  = base->add_interpretation(typ_i, ref_id, threshhold);
-          }else if(typ_i == 5){
-            int ref_id        = std::stoi (v[2]);
-            float threshhold  = std::stoi (v[3]);
-            interpret_id  = base->add_interpretation(typ_i, ref_id, threshhold);
+            for(int idx = 3; idx < v.size(); idx++){
+              weights->push_back(std::stof(v[idx]));
+            }
+            std::cout << "\t > start_frame: " << start << "\n";
+            std::cout << "\t > weights: [";
+            for(unsigned int i = 0; i < weights->size(); i++){
+              std::cout << (*weights)[i] << ", ";
+            }
+            std::cout << "]\n";
+            interpret_id  = base->add_interpretation(typ_i, start, weights);
+          }
+          else if(typ_i == 3){
+
+            if(std::any_of(v[2].begin(), v[2].begin() + 2, ::isdigit)){
+              int ref_id        = std::stoi (v[2]);
+              float threshhold  = std::stof (v[3]);
+              interpret_id  = base->add_interpretation(typ_i, ref_id, threshhold);
+            }
+            else{
+              std::string ref_file_path = v[2];
+              float threshhold = std::stof(v[3]);
+              interpret_id = base->add_interpretation(typ_i, ref_file_path, threshhold);
+            }
           }
           else if(typ_i == 4){
-            std::vector<float> colors;
+            std::shared_ptr<std::vector<float>> colors = std::make_shared<std::vector<float>>();
             float threshhold  = std::stoi (v[2]);
 
             for(int idx = 3; idx < v.size(); idx++){
-              colors.push_back(std::stof(v[idx]));
+              colors->push_back(std::stof(v[idx]));
             }
 
-            if(colors.size()%3 == 0){
+            if(colors->size()%3 == 0){
               interpret_id = base->add_interpretation(typ_i, threshhold, colors);
               std::cout << "\t > threshhold: " << threshhold << "\n";
               std::cout << "\t > colors: ";
-              for(unsigned int i = 0; i < colors.size(); i+=3){
-                std::cout << "[" << colors[i] << ", " << colors[i+1] << ", " <<colors[i+2] << "], ";
+              for(unsigned int i = 0; i < colors->size(); i+=3){
+                std::cout << "[" << (*colors)[i] << ", " << (*colors)[i+1] << ", " << (*colors)[i+2] << "], ";
               }
               std::cout << "\n";
             }
             else
               std::cout << "\t too few arguments (tpye, float, [r, g, b]*n) \n";
           }
+          else if(typ_i == 5){
+
+            if(std::any_of(v[2].begin(), v[2].begin() + 2, ::isdigit)){
+              int ref_id        = std::stoi (v[2]);
+              float threshhold  = std::stof (v[3]);
+              interpret_id  = base->add_interpretation(typ_i, ref_id, threshhold);
+            }
+            else{
+              std::string ref_file_path = v[2];
+              float threshhold = std::stof(v[3]);
+              interpret_id = base->add_interpretation(typ_i, ref_file_path, threshhold);
+            }
+          }
+
 
           if(interpret_id >= 0 ) {
             std::cout << "\t > intpretation id: "<< interpret_id << "\n";
@@ -159,47 +192,68 @@ int main (int argc, char **argv){
             if(typ_i == 0 /*average*/ ) {
                 std::cout<<"\t > you fool. The Average-interpretation needs no manipulation. \n";
             }
-            // else if(typ_i == 1 /*transferfunction*/ ) {
-            //   int start  = std::stoi (v[3]);
-            //   int length = v.size();
-            //   std::shared_ptr<std::vector<float>> weights = std::make_shared<std::vector<float>>();
-            //
-            //   for (int i=4; i<length; i++) {
-            //     std::istringstream iss(v[i]);
-            //     float val;
-            //     iss>> noskipws >> val;
-            //     if(iss.eof() && !iss.fail()){   //to compensate input errors with to much blanks
-            //       std::cout<<"weight"<<val<<"\n";
-            //       weights->push_back(val);
-            //     }
-            //   }
-            //   //ist folgende zeile in ordnung?!:
-            //   Transferfunction& x = dynamic_cast<Transferfunction&>(*interpretations[id]);
-            //   x.set_weights(start, weights);
-            // }
-            else if(typ_i == 3 || typ_i == 5){
-              int ref_id = std::stoi(v[3]);
-              float threshhold = std::stoi(v[4]);
-              if(base->manipulate_interpretation(id, ref_id, threshhold)){
+            else if(typ_i == 1) {
+              float start  = std::stoi (v[3]);
+              std::shared_ptr<std::vector<float>> weights = std::make_shared<std::vector<float>>();
+
+              for(int idx = 4; idx < v.size(); idx++){
+                weights->push_back(std::stof(v[idx]));
+              }
+
+              if(base->manipulate_interpretation(id, start, weights)){
                 std::cout << "\t > interpretation id: " << id << "\n";
                 std::cout << "\t > typ: " << typ_i << "\n";
-                std::cout << "\t > reference id: " << ref_id << "\n";
-                std::cout << "\t > threshhold: " << threshhold << "\n";
+                std::cout << "\t > start_frame: " << start << "\n";
+                std::cout << "\t > weights: [";
+                for(unsigned int i = 0; i < weights->size(); i++){
+                  std::cout << (*weights)[i]  << "," ;
+                }
+                std::cout << "]\n\n";
               }
               else{
                 std::cout << "\t > manipulate interpretation id: " << id << " failed. \n";
               }
+            }
+            else if(typ_i == 3 || typ_i == 5){
 
+              if(std::any_of(v[3].begin(), v[3].begin() + 2, ::isdigit)){
+                int ref_id        = std::stoi (v[3]);
+                float threshhold  = std::stof (v[4]);
+
+                if(base->manipulate_interpretation(id, ref_id, threshhold)){
+                  std::cout << "\t > interpretation id: " << id << "\n";
+                  std::cout << "\t > typ: " << typ_i << "\n";
+                  std::cout << "\t > reference id: " << ref_id << "\n";
+                  std::cout << "\t > threshhold: " << threshhold << "\n";
+                }
+                else{
+                  std::cout << "\t > manipulate interpretation id: " << id << " failed. \n";
+                }
+              }
+              else{
+                std::string ref_file_path = v[3];
+                float threshhold = std::stof(v[4]);
+
+                if(base->manipulate_interpretation(id, ref_file_path, threshhold)){
+                  std::cout << "\t > interpretation id: " << id << "\n";
+                  std::cout << "\t > typ: " << typ_i << "\n";
+                  std::cout << "\t > reference path: " << ref_file_path << "\n";
+                  std::cout << "\t > threshhold: " << threshhold << "\n";
+                }
+                else{
+                  std::cout << "\t > manipulate interpretation id: " << id << " failed. \n";
+                }
+              }
             }
             else if(typ_i == 4){
-              std::vector<float> colors;
+              std::shared_ptr<std::vector<float>> colors = std::make_shared<std::vector<float>>();
               float threshhold = std::stof(v[3]);
 
               for(int idx = 4; idx < v.size(); idx++){
-                colors.push_back(std::stof(v[idx]));
+                colors->push_back(std::stof(v[idx]));
               }
 
-              if(colors.size()%3 != 0)
+              if(colors->size()%3 != 0)
                 std::cout << "\t too few arguments (tpye, float, [r, g, b]*n) \n";
 
               if(base->manipulate_interpretation(id, threshhold, colors)){
@@ -207,8 +261,8 @@ int main (int argc, char **argv){
                 std::cout << "\t > typ: " << typ_i << "\n";
                 std::cout << "\t > threshhold: " << threshhold << "\n";
                 std::cout << "\t > colors: ";
-                for(unsigned int i = 0; i < colors.size(); i+=3){
-                  std::cout << "[" << colors[i] << ", " << colors[i+1] << ", " <<colors[i+2] << "], ";
+                for(unsigned int i = 0; i < colors->size(); i+=3){
+                  std::cout << "[" << (*colors)[i] << ", " << (*colors)[i+1] << ", " << (*colors)[i+2] << "], ";
                 }
                 std::cout << "\n\n";
               }
