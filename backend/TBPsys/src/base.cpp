@@ -147,6 +147,28 @@ bool Base::manipulate_interpretation(int id, int ref_id, float threshhold){
   return true;
 }
 
+bool Base::manipulate_interpretation(int id, std::string ref_file_path, float threshhold){
+
+  cv::Mat ref_img = cv::imread(ref_file_path);
+
+  if(ref_img.empty()){
+    std::cout << "reference image not loaded. \n";
+  }
+  else {
+    ref_img.convertTo( ref_img, m_img_type );   //do this for the whole video right at the start!?
+  }
+  if(m_interpretations[id]->getTypenumber()==3){
+    Boost& interpretation = dynamic_cast<Boost&>(*m_interpretations[id]);
+    interpretation.manipulate(ref_img, threshhold);
+  }
+  else if(m_interpretations[id]->getTypenumber()==5){
+    Reduce& interpretation = dynamic_cast<Reduce&>(*m_interpretations[id]);
+    interpretation.manipulate(ref_img, threshhold);
+  }
+
+  return true;
+}
+
 bool Base::manipulate_interpretation(int id, float threshhold, std::shared_ptr<std::vector<float>> values){
 
   if(m_interpretations[id]->getTypenumber() == 1){

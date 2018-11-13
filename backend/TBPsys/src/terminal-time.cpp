@@ -154,7 +154,6 @@ int main (int argc, char **argv){
             }
             else{
               std::string ref_file_path = v[2];
-              std::cout << ref_file_path << std::endl;
               float threshhold = std::stof(v[3]);
               interpret_id = base->add_interpretation(typ_i, ref_file_path, threshhold);
             }
@@ -216,19 +215,35 @@ int main (int argc, char **argv){
               }
             }
             else if(typ_i == 3 || typ_i == 5){
-              int ref_id = std::stoi(v[3]);
-              float threshhold = std::stoi(v[4]);
 
-              if(base->manipulate_interpretation(id, ref_id, threshhold)){
-                std::cout << "\t > interpretation id: " << id << "\n";
-                std::cout << "\t > typ: " << typ_i << "\n";
-                std::cout << "\t > reference id: " << ref_id << "\n";
-                std::cout << "\t > threshhold: " << threshhold << "\n";
+              if(std::any_of(v[3].begin(), v[3].begin() + 2, ::isdigit)){
+                int ref_id        = std::stoi (v[3]);
+                float threshhold  = std::stof (v[4]);
+
+                if(base->manipulate_interpretation(id, ref_id, threshhold)){
+                  std::cout << "\t > interpretation id: " << id << "\n";
+                  std::cout << "\t > typ: " << typ_i << "\n";
+                  std::cout << "\t > reference id: " << ref_id << "\n";
+                  std::cout << "\t > threshhold: " << threshhold << "\n";
+                }
+                else{
+                  std::cout << "\t > manipulate interpretation id: " << id << " failed. \n";
+                }
               }
               else{
-                std::cout << "\t > manipulate interpretation id: " << id << " failed. \n";
-              }
+                std::string ref_file_path = v[3];
+                float threshhold = std::stof(v[4]);
 
+                if(base->manipulate_interpretation(id, ref_file_path, threshhold)){
+                  std::cout << "\t > interpretation id: " << id << "\n";
+                  std::cout << "\t > typ: " << typ_i << "\n";
+                  std::cout << "\t > reference path: " << ref_file_path << "\n";
+                  std::cout << "\t > threshhold: " << threshhold << "\n";
+                }
+                else{
+                  std::cout << "\t > manipulate interpretation id: " << id << " failed. \n";
+                }
+              }
             }
             else if(typ_i == 4){
               std::shared_ptr<std::vector<float>> colors = std::make_shared<std::vector<float>>();
