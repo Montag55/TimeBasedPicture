@@ -247,7 +247,6 @@ int Base::add_interpretation(int typ_i, int ref_id, float threshhold){
 
     std::string path = " ";
     if(ref_id < 0){
-      std::cout<<"refimg!\n";
       path = "./ref.jpg";
     }
     else{

@@ -39,7 +39,7 @@ int main (int argc, char **argv){
 
   int   typ_i       = 3;
   int   ref_id      = -1;
-  float threshhold  = 10;
+  float threshhold  = 0;
   std::cout<<"here\n";
   base->add_interpretation(typ_i, ref_id, threshhold);
   std::this_thread::sleep_for(std::chrono::milliseconds(1000)); //safety reason
@@ -51,10 +51,10 @@ int main (int argc, char **argv){
   std::this_thread::sleep_for(std::chrono::milliseconds(2000)); //safety reason
   std::cout<<"here\n";
 
-  for (int i= 1; i<=20; i++){
+  for (int i= 1; i<=125; i++){
     std::cout<<"cycle: "<<i<<"\n";
-    base->manipulate_interpretation(interpret_id, ref_id, threshhold*i);
-    std::this_thread::sleep_for(std::chrono::milliseconds(2000)); //safety reason
+    base->manipulate_interpretation(interpret_id, ref_id, threshhold++);
+    std::this_thread::sleep_for(std::chrono::milliseconds(3000)); //safety reason
     bool wait=true;
     float progress=0;
     while(wait)

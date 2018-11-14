@@ -57,7 +57,7 @@ void Segment::reset(){
   m_values_abs = cv::Mat(m_mother->get_height(), m_mother->get_width(), m_mother->get_img_type(), cv::Scalar(0,0,0));
   m_values_fac = cv::Mat(m_mother->get_height(), m_mother->get_width(), m_mother->get_img_type(), cv::Scalar(0,0,0));
   m_uni_fac = 0;
-
+  m_percent= 0;
 }
 
 void Segment::revert_influence(){

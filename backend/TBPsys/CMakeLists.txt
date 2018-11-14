@@ -11,7 +11,7 @@ endif()
 
 
 set(SOURCES1 src/terminal-time.cpp src/base.cpp src/segment.cpp src/interpretation.cpp src/average.cpp src/transferfunction.cpp src/boost.cpp src/reduce.cpp src/boostColor.cpp src/utils.cpp)
-set(SOURCES2 src/testlab.cpp src/base.cpp src/segment.cpp src/interpretation.cpp src/average.cpp src/transferfunction.cpp src/boost.cpp src/reduce.cpp src/boostColor.cpp)
+set(SOURCES2 src/testlab.cpp       src/base.cpp src/segment.cpp src/interpretation.cpp src/average.cpp src/transferfunction.cpp src/boost.cpp src/reduce.cpp src/boostColor.cpp src/utils.cpp)
 
 ################################################################################
 # search
