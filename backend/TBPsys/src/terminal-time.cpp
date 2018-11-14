@@ -305,8 +305,8 @@ int main (int argc, char **argv){
              }
         }
         else if(v[0] == "save") {
-             if(base->save("out"+v[1]+".jpg")){
-               std::cout << "Saved as ./build/out" << v[1] << ".jpg \n";
+             if(base->save("out"+v[1]+".png")){
+               std::cout << "Saved as ./build/out" << v[1] << ".png \n";
              }
              else{
                std::cout << "save() failed. \n";
@@ -315,7 +315,7 @@ int main (int argc, char **argv){
     }
 
     std::cout << "done!" << std::endl;
-    imwrite( "./final.jpg", base->get_result());
+    imwrite( "./final.png", base->get_result());
   }
   else {
     std::cout<<"Videopfad angeben?\n";

@@ -343,7 +343,7 @@ bool Segment::interpret_sized( int & work_size){
 void Segment::save_segment_out(){
   auto start_time = std::chrono::high_resolution_clock::now();
 
-  std::string out_file = std::string("out_seg_id") + std::to_string(m_id) + ".jpg";
+  std::string out_file = std::string("out_seg_id") + std::to_string(m_id) + ".png";
   cv::imwrite(out_file, m_values_abs / (m_values_fac + cv::Scalar(m_uni_fac, m_uni_fac, m_uni_fac)) * m_intensity_local_actual);
 
   auto end_time = std::chrono::high_resolution_clock::now();

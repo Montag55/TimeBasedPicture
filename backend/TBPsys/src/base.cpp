@@ -74,7 +74,7 @@ void Base::thread_calc_loop(){ //waits for work and makes calculataion
 
     if(!save_state){
       save_state = true;
-      this->save("fin_state.jpg");
+      this->save("fin_state.png");
     }
 
     m_mutex_update.lock();
@@ -121,10 +121,10 @@ bool Base::manipulate_interpretation(int id, int ref_id, float threshhold){
   std::string path = " ";
 
   if(ref_id < 0){
-    path = "./ref.jpg";
+    path = "./ref.png";
   }
   else{
-    path = "./out_seg_id" + std::to_string( ref_id ) + ".jpg";
+    path = "./out_seg_id" + std::to_string( ref_id ) + ".png";
   }
 
   cv::Mat ref_img = cv::imread(path);
@@ -247,10 +247,10 @@ int Base::add_interpretation(int typ_i, int ref_id, float threshhold){
 
     std::string path = " ";
     if(ref_id < 0){
-      path = "./ref.jpg";
+      path = "./ref.png";
     }
     else{
-      path = "./out_seg_id" + std::to_string( ref_id ) + ".jpg";
+      path = "./out_seg_id" + std::to_string( ref_id ) + ".png";
     }
     cv::Mat ref_img = cv::imread(path);
 
@@ -268,10 +268,10 @@ int Base::add_interpretation(int typ_i, int ref_id, float threshhold){
 
     std::string path = " ";
     if(ref_id < 0){
-      path = "./ref.jpg";
+      path = "./ref.png";
     }
     else{
-      path = "./out_seg_id" + std::to_string( ref_id ) + ".jpg";
+      path = "./out_seg_id" + std::to_string( ref_id ) + ".png";
     }
     cv::Mat ref_img = cv::imread(path);
 
@@ -383,7 +383,7 @@ void Base::continue_work() {
 
   m_mutex_result.unlock();
 
-  this->save("state_tmp.jpg");
+  this->save("state_tmp.png");
 
   }
 /*

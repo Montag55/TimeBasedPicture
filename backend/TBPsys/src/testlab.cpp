@@ -16,7 +16,7 @@ test lab to generate fast output of different settings
 int main (int argc, char **argv){
 
 #ifndef true //Common Variables:
-  std::string file_path = "./../../../videos/street/frame%01d.jpg";
+  std::string file_path = "./../../../videos/street/frame%01d.png";
   bool exit_status = true;
   std::shared_ptr<Base> base ;
 #endif
@@ -67,7 +67,7 @@ int main (int argc, char **argv){
       }
       else{
         std::cout<<"Segment["<<0<<"] Progress: "<<progress<<" ->save\n";
-        base->save("boost_cyc_"+std::to_string(i*10)+".jpg");
+        base->save("boost_cyc_"+std::to_string(i*10)+".png");
         std::this_thread::sleep_for(std::chrono::milliseconds(1000)); //safety reason
         wait= false;
       }
@@ -101,7 +101,7 @@ int main (int argc, char **argv){
       }
       else{
         std::cout<<"Segment["<<0<<"] Progress: "<<progress<<" ->save\n";
-        base->save("reduce_cyc_"+std::to_string(i*10)+".jpg");
+        base->save("reduce_cyc_"+std::to_string(i*10)+".png");
         std::this_thread::sleep_for(std::chrono::milliseconds(1000)); //safety reason
         wait= false;
       }

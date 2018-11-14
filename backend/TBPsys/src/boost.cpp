@@ -65,6 +65,7 @@ void Boost::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& current_fr
   // cv::mixChannels(&mask, 1, &mask, 1, from_to, 3);
   // result += current_frame.mul(mask) * (float) ((float)sign / ((float)255));
   // fac_mat += mask * (float) ((float)sign / ((float)255));
+
   cv::Mat out = cv::Mat(m_pnt_max.y, m_pnt_max.x, m_img_type, cv::Scalar(0,0,0));
   for (unsigned int row = m_pnt_min.y; row < m_pnt_max.y; ++row) {
     //ptr:
@@ -86,9 +87,12 @@ void Boost::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& current_fr
       // float distance_RGB = sqrt(pow(uc_pixel_ref[0] - uc_pixel_current[0], 2) +
       //                           pow(uc_pixel_ref[1] - uc_pixel_current[1], 2) +
       //                           pow(uc_pixel_ref[2] - uc_pixel_current[2], 2));
+
       cv::Scalar ref = utils::rgb2lab(uc_pixel_ref[0], uc_pixel_ref[1], uc_pixel_ref[2]);
       cv::Scalar current = utils::rgb2lab(uc_pixel_current[0], uc_pixel_current[1], uc_pixel_current[2]);
-      float distance_RGB = utils::dE2000(ref, current, 0.1f, 0.5f, 0.8f);
+      float distance_RGB = utils::dE2000(ref, current, 0.1f, 100.0f, 100.0f);
+      //float distance_RGB = utils::CIE76(ref, current, 1.0f, 0.0f, 0.0f);
+      //float distance_RGB = utils::CIE94(ref, current, 5.0f, 100.0f, 100.0f);
 
       uc_pixel_out[0] = distance_RGB;
       uc_pixel_out[1] = distance_RGB;
@@ -114,14 +118,14 @@ void Boost::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& current_fr
       }
 
       //shift ptr:
-      ptr_out += m_ptr_delta;
+      ptr_out     += m_ptr_delta;
       ptr_res     += m_ptr_delta;
       ptr_current += m_ptr_delta;
       ptr_ref     += m_ptr_delta;
       ptr_fac     += m_ptr_delta;
     }
   }
-  cv::imwrite("./pimmel.jpg", out);
+  cv::imwrite("./pimmel.png", out);
 }
 
 void Boost::manipulate(cv::Mat ref_frame, float threshhold){
