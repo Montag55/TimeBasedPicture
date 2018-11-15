@@ -13,6 +13,8 @@ public:
   int getTypenumber()                 override;
   int get_calculation_specification() override;
   void calc(int id, int start, int length, int sign, cv::Mat& result, float& factor, cv::Mat& fac_mat) override;
+  void manipulate(int offset, int stride);
+
 
 private:
   int m_test;

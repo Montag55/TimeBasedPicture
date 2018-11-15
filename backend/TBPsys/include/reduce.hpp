@@ -15,7 +15,7 @@ public:
   int get_calculation_specification() override;
   void calc(int id, int start, int length, int sign, cv::Mat& result, float& factor, cv::Mat& fac_mat) override;
   void compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& current_frame, int sign);
-  void manipulate(cv::Mat ref_frame, float threshhold);
+  void manipulate(cv::Mat ref_frame, float threshhold, int offset, int stride);
 
 private:
   float m_threshhold;

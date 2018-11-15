@@ -116,7 +116,13 @@ bool Base::manipulate_segment(int id, int start, int end, float local_i, float g
   return true;
 }
 
-bool Base::manipulate_interpretation(int id, int ref_id, float threshhold){
+bool Base::manipulate_interpretation(int id, int offset, int stride){
+  Average& interpretation = dynamic_cast<Average&>(*m_interpretations[id]);
+  interpretation.manipulate(offset, stride);
+  return true;
+}
+
+bool Base::manipulate_interpretation(int id, int ref_id, float threshhold, int offset, int stride){
 
   std::string path = " ";
 
@@ -137,17 +143,17 @@ bool Base::manipulate_interpretation(int id, int ref_id, float threshhold){
   }
   if(m_interpretations[id]->getTypenumber()==3){
     Boost& interpretation = dynamic_cast<Boost&>(*m_interpretations[id]);
-    interpretation.manipulate(ref_img, threshhold);
+    interpretation.manipulate(ref_img, threshhold, offset, stride);
   }
   else if(m_interpretations[id]->getTypenumber()==5){
     Reduce& interpretation = dynamic_cast<Reduce&>(*m_interpretations[id]);
-    interpretation.manipulate(ref_img, threshhold);
+    interpretation.manipulate(ref_img, threshhold, offset, stride);
   }
 
   return true;
 }
 
-bool Base::manipulate_interpretation(int id, std::string ref_file_path, float threshhold){
+bool Base::manipulate_interpretation(int id, std::string ref_file_path, float threshhold, int offset, int stride){
 
   cv::Mat ref_img = cv::imread(ref_file_path);
 
@@ -159,25 +165,25 @@ bool Base::manipulate_interpretation(int id, std::string ref_file_path, float th
   }
   if(m_interpretations[id]->getTypenumber()==3){
     Boost& interpretation = dynamic_cast<Boost&>(*m_interpretations[id]);
-    interpretation.manipulate(ref_img, threshhold);
+    interpretation.manipulate(ref_img, threshhold, offset, stride);
   }
   else if(m_interpretations[id]->getTypenumber()==5){
     Reduce& interpretation = dynamic_cast<Reduce&>(*m_interpretations[id]);
-    interpretation.manipulate(ref_img, threshhold);
+    interpretation.manipulate(ref_img, threshhold, offset, stride);
   }
 
   return true;
 }
 
-bool Base::manipulate_interpretation(int id, float threshhold, std::shared_ptr<std::vector<float>> values){
+bool Base::manipulate_interpretation(int id, float threshhold, std::shared_ptr<std::vector<float>> values, int offset, int stride){
 
   if(m_interpretations[id]->getTypenumber() == 1){
     Transferfunction& interpretation = dynamic_cast<Transferfunction&>(*m_interpretations[id]);
-    interpretation.manipulate(threshhold, values);
+    interpretation.manipulate(threshhold, values, offset, stride);
   }
   else if(m_interpretations[id]->getTypenumber() == 4){
     BoostColor& interpretation = dynamic_cast<BoostColor&>(*m_interpretations[id]);
-    interpretation.manipulate(threshhold, values);
+    interpretation.manipulate(threshhold, values, offset, stride);
   }
   return true;
 }

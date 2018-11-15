@@ -162,6 +162,8 @@ int main (int argc, char **argv){
 
 
           if(interpret_id >= 0 ) {
+            std::cout << "\t > offset: " << offset << "\n";
+            std::cout << "\t > stride: " << stride << "\n";
             std::cout << "\t > intpretation id: "<< interpret_id << "\n";
             std::cout << "\t > typ: " << typ_i << "\n\n";
           }
@@ -188,23 +190,37 @@ int main (int argc, char **argv){
           else if(v[1] == "interpretation") {
             //all segments need to recalculate!
             int id = std::stoi(v[2]);
+            int offset = std::stoi(v[3]);
+            int stride = std::stoi(v[4]);
 
             int typ_i = base->get_typ_i(id);
             if(typ_i == 0 /*average*/ ) {
-                std::cout<<"\t > you fool. The Average-interpretation needs no manipulation. \n";
+              if(base->manipulate_interpretation(id, offset, stride)){
+                std::cout << "\t > you fool. The Average-interpretation needs no manipulation. \n";
+                std::cout << "\t > ... maybe it actually does ... \n";
+                std::cout << "\t > interpretation id: " << id << "\n";
+                std::cout << "\t > typ: " << typ_i << "\n";
+                std::cout << "\t > offset: " << offset << "\n";
+                std::cout << "\t > stride: " << stride << "\n";
+              }
+              else{
+                std::cout << "\t > manipulate interpretation id: " << id << " failed. \n";
+              }
             }
             else if(typ_i == 1) {
-              float start  = std::stoi (v[3]);
+              float start  = std::stoi (v[5]);
               std::shared_ptr<std::vector<float>> weights = std::make_shared<std::vector<float>>();
 
-              for(int idx = 4; idx < v.size(); idx++){
+              for(int idx = 6; idx < v.size(); idx++){
                 weights->push_back(std::stof(v[idx]));
               }
 
-              if(base->manipulate_interpretation(id, start, weights)){
+              if(base->manipulate_interpretation(id, start, weights, offset, stride)){
                 std::cout << "\t > interpretation id: " << id << "\n";
                 std::cout << "\t > typ: " << typ_i << "\n";
                 std::cout << "\t > start_frame: " << start << "\n";
+                std::cout << "\t > offset: " << offset << "\n";
+                std::cout << "\t > stride: " << stride << "\n";
                 std::cout << "\t > weights: [";
                 for(unsigned int i = 0; i < weights->size(); i++){
                   std::cout << (*weights)[i]  << "," ;
@@ -217,29 +233,33 @@ int main (int argc, char **argv){
             }
             else if(typ_i == 3 || typ_i == 5){
 
-              if(std::any_of(v[3].begin(), v[3].begin() + 2, ::isdigit)){
-                int ref_id        = std::stoi (v[3]);
-                float threshhold  = std::stof (v[4]);
+              if(std::any_of(v[5].begin(), v[5].begin() + 2, ::isdigit)){
+                int ref_id        = std::stoi (v[5]);
+                float threshhold  = std::stof (v[6]);
 
-                if(base->manipulate_interpretation(id, ref_id, threshhold)){
+                if(base->manipulate_interpretation(id, ref_id, threshhold, offset, stride)){
                   std::cout << "\t > interpretation id: " << id << "\n";
                   std::cout << "\t > typ: " << typ_i << "\n";
                   std::cout << "\t > reference id: " << ref_id << "\n";
                   std::cout << "\t > threshhold: " << threshhold << "\n";
+                  std::cout << "\t > offset: " << offset << "\n";
+                  std::cout << "\t > stride: " << stride << "\n";
                 }
                 else{
                   std::cout << "\t > manipulate interpretation id: " << id << " failed. \n";
                 }
               }
               else{
-                std::string ref_file_path = v[3];
-                float threshhold = std::stof(v[4]);
+                std::string ref_file_path = v[5];
+                float threshhold = std::stof(v[6]);
 
-                if(base->manipulate_interpretation(id, ref_file_path, threshhold)){
+                if(base->manipulate_interpretation(id, ref_file_path, threshhold, offset, stride)){
                   std::cout << "\t > interpretation id: " << id << "\n";
                   std::cout << "\t > typ: " << typ_i << "\n";
                   std::cout << "\t > reference path: " << ref_file_path << "\n";
                   std::cout << "\t > threshhold: " << threshhold << "\n";
+                  std::cout << "\t > offset: " << offset << "\n";
+                  std::cout << "\t > stride: " << stride << "\n";
                 }
                 else{
                   std::cout << "\t > manipulate interpretation id: " << id << " failed. \n";
@@ -248,19 +268,21 @@ int main (int argc, char **argv){
             }
             else if(typ_i == 4){
               std::shared_ptr<std::vector<float>> colors = std::make_shared<std::vector<float>>();
-              float threshhold = std::stof(v[3]);
+              float threshhold = std::stof(v[5]);
 
-              for(int idx = 4; idx < v.size(); idx++){
+              for(int idx = 6; idx < v.size(); idx++){
                 colors->push_back(std::stof(v[idx]));
               }
 
               if(colors->size()%3 != 0)
                 std::cout << "\t too few arguments (tpye, float, [r, g, b]*n) \n";
 
-              if(base->manipulate_interpretation(id, threshhold, colors)){
+              if(base->manipulate_interpretation(id, threshhold, colors, offset, stride)){
                 std::cout << "\t > interpretation id: " << id << "\n";
                 std::cout << "\t > typ: " << typ_i << "\n";
                 std::cout << "\t > threshhold: " << threshhold << "\n";
+                std::cout << "\t > offset: " << offset << "\n";
+                std::cout << "\t > stride: " << stride << "\n";
                 std::cout << "\t > colors: ";
                 for(unsigned int i = 0; i < colors->size(); i+=3){
                   std::cout << "[" << (*colors)[i] << ", " << (*colors)[i+1] << ", " << (*colors)[i+2] << "], ";
