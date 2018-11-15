@@ -162,7 +162,7 @@ void manipulate_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
     }
   }
   else if(typ_i == 3 || typ_i == 5){
-    if(args[1].IsNumber()){
+    if(args[1]->IsNumber()){
       int ref_id = args[1]->IntegerValue();
       float threshhold = args[2]->NumberValue();
 
