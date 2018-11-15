@@ -39,9 +39,11 @@ int main (int argc, char **argv){
 
   int   typ_i       = 3;
   int   ref_id      = -1;
+  int   offset      = 0;
+  int   stride      = 0;
   float threshhold  = 0;
   std::cout<<"here\n";
-  base->add_interpretation(typ_i, ref_id, threshhold);
+  base->add_interpretation(typ_i, offset, stride, ref_id, threshhold);
   std::this_thread::sleep_for(std::chrono::milliseconds(1000)); //safety reason
   std::cout<<"here\n";
 
