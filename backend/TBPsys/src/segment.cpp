@@ -21,7 +21,7 @@ Segment::Segment(int start_frame, int last_frame, double intensity_local, double
   m_values_abs{cv::Mat(mother->get_height(), mother->get_width(), mother->get_img_type(), cv::Scalar(0,0,0))},
   m_values_fac{cv::Mat(mother->get_height(), mother->get_width(), mother->get_img_type(), cv::Scalar(0,0,0))},
   m_uni_fac{0.0f},
-  m_interpretation{std::make_shared<Average>(mother, -1, 0)},
+  m_interpretation{std::make_shared<Average>(mother, -1, 0, 0, 0)},
   m_mutex_soll{},
   m_mutex_state{},
   m_percent{0.0f},
@@ -62,11 +62,16 @@ void Segment::reset(){
 
 void Segment::revert_influence(){
   float intensity = -1;
+  bool skip = false;
   cv::Mat factors = m_values_fac.clone();
   cv::Mat influence = m_values_abs.clone();
 
+
   if( m_interpretation->getTypenumber() == 0 || m_interpretation->getTypenumber() == 1){
-    influence = (m_values_abs * ((float) 1 / ((float) m_uni_fac))) * m_intensity_local_actual * m_intensity_global_actual;
+    if(m_uni_fac != 0)
+      influence = (m_values_abs * ((float) 1 / ((float) m_uni_fac))) * m_intensity_local_actual * m_intensity_global_actual;
+    else
+      skip = true;
     intensity = m_intensity_global_actual;
   }
   else if(m_interpretation->getTypenumber() == 3 || m_interpretation->getTypenumber() == 4 || m_interpretation->getTypenumber() == 5){
@@ -78,19 +83,26 @@ void Segment::revert_influence(){
   else{
     std::cout<< "revert influence is not allowed yet " << m_interpretation->getTypenumber() << "\n";
   }
-
-  m_mother->add_to_values_abs(-influence);
-  m_mother->add_to_values_fac(-factors);
-  m_mother->add_to_uni_fac(-intensity);
+  
+  if(!skip){
+    m_mother->add_to_values_abs(-influence);
+    m_mother->add_to_values_fac(-factors);
+    m_mother->add_to_uni_fac(-intensity);
+  }
 }
 
 void Segment::upload_influence(){
   float intensity = -1;
+  bool skip = false;
   cv::Mat factors = m_values_fac.clone();
   cv::Mat influence = m_values_abs.clone();
 
   if( m_interpretation->getTypenumber() == 0 || m_interpretation->getTypenumber() == 1){
-    influence = (m_values_abs * ((float) 1 / ((float) m_uni_fac))) * m_intensity_local_actual * m_intensity_global_actual;
+    if(m_uni_fac != 0)
+      influence = (m_values_abs * ((float) 1 / ((float) m_uni_fac))) * m_intensity_local_actual * m_intensity_global_actual;
+    else
+      skip = true;
+
     intensity = m_intensity_global_actual;
   }
   else if(m_interpretation->getTypenumber() == 3 || m_interpretation->getTypenumber() == 4 || m_interpretation->getTypenumber() == 5){
@@ -103,9 +115,11 @@ void Segment::upload_influence(){
     std::cout<< "upload influence is not allowed yet " << m_interpretation->getTypenumber() << "\n";
   }
 
-  m_mother->add_to_values_abs(influence);
-  m_mother->add_to_values_fac(factors);
-  m_mother->add_to_uni_fac(intensity);
+  if(!skip){
+    m_mother->add_to_values_abs(influence);
+    m_mother->add_to_values_fac(factors);
+    m_mother->add_to_uni_fac(intensity);
+  }
 }
 
 void Segment::normalize_factor(cv::Mat& influence, cv::Mat& factors){

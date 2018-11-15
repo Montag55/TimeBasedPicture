@@ -10,8 +10,8 @@
 #include <../include/utils.hpp>
 
 
-BoostColor::BoostColor( std::shared_ptr<Base> mother, int id, int type, float threshhold, std::shared_ptr<std::vector<float>> colors):
-Interpretation{ mother, id, type},
+BoostColor::BoostColor( std::shared_ptr<Base> mother, int id, int type, float threshhold, std::shared_ptr<std::vector<float>> colors, int offset, int stride):
+Interpretation{ mother, id, type, offset, stride},
 m_colors{colors},
 m_threshhold{threshhold},
 m_ptr_delta{mother->get_img_delta()},
@@ -39,21 +39,25 @@ void BoostColor::calc(int id, int start, int length, int sign, cv::Mat& result, 
   m_video->set( CV_CAP_PROP_POS_MSEC, start/*frameTime*/);
 
   for(int i = 0; i < length; i++){
-    m_video->read(tmp_frame);
+    if(start + i < m_offset || (start - m_offset + i) % (m_stride + 1) != 0 ){
+      m_video->grab();
+    }
+    else{
+      m_video->read(tmp_frame);
+      if(tmp_frame.empty()){
+        std::cout << "frame not loaded. \n";
+      }
 
-    if(tmp_frame.empty()){
-      std::cout << "frame not loaded. \n";
+      tmp_frame.convertTo(tmp_frame, m_img_type);   //do this for the whole video right at the start!?
+      compute_frame(result, fac_mat, tmp_frame, sign);
     }
 
-    tmp_frame.convertTo(tmp_frame, m_img_type);   //do this for the whole video right at the start!?
-    compute_frame(result, fac_mat, tmp_frame, sign);
+    auto end_time = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast< std::chrono::milliseconds >( end_time - start_time ).count();
+    #ifdef show_time
+        std::cout << "\t\t + B_Color ("<<length<<") time: \t" << duration << std::endl;
+    #endif
   }
-
-  auto end_time = std::chrono::high_resolution_clock::now();
-  auto duration = std::chrono::duration_cast< std::chrono::milliseconds >( end_time - start_time ).count();
-  #ifdef show_time
-      std::cout << "\t\t + B_Color ("<<length<<") time: \t" << duration << std::endl;
-  #endif
 }
 
 void BoostColor::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& current_frame, int sign) {
@@ -120,7 +124,7 @@ void BoostColor::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& curre
   }
 }
 
-void BoostColor::manipulate(float threshhold, std::shared_ptr<std::vector<float>> colors){
+void BoostColor::manipulate(float threshhold, std::shared_ptr<std::vector<float>> colors, int offset, int stride){
 
   bool update_status = false;
   if((*m_colors) != (*colors)){
@@ -129,6 +133,14 @@ void BoostColor::manipulate(float threshhold, std::shared_ptr<std::vector<float>
   }
   if(m_threshhold != threshhold){
     m_threshhold = threshhold;
+    update_status = true;
+  }
+  if(offset != m_offset){
+    m_offset = offset;
+    update_status = true;
+  }
+  if(stride != m_stride){
+    m_stride = stride;
     update_status = true;
   }
   if(update_status){

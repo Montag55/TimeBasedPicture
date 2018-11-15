@@ -13,8 +13,10 @@ class Interpretation {
 public:
 
   //KONSTRUTOREN----------------------------------------------------------------------
-  Interpretation(std::shared_ptr<Base> mother, int id, int type);
+  Interpretation(std::shared_ptr<Base> mother, int id, int type, int offset, int stride);
   int get_id();
+  int get_offset();
+  int get_stride();
   virtual ~Interpretation();
   //FUNKTIONEN------------------------------------------------------------------------
   virtual int getTypenumber() = 0 ;
@@ -26,6 +28,8 @@ public:
   void update_connections();
 
 protected:
+  int                                           m_offset;
+  int                                           m_stride;
   std::shared_ptr< cv::VideoCapture >           m_video;
   int                                           m_img_type;
   int                                           m_id;
