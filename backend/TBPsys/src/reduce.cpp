@@ -9,8 +9,8 @@
 #include <../include/base.hpp>
 
 
-Reduce::Reduce( std::shared_ptr<Base> mother, int id, int type, cv::Mat ref, float threshhold):
-Interpretation{ mother, id, type},
+Reduce::Reduce( std::shared_ptr<Base> mother, int id, int type, cv::Mat ref, float threshhold, int offset, int stride):
+Interpretation{ mother, id, type, offset, stride},
 m_reference{ref},
 m_threshhold{threshhold},
 m_ptr_delta{mother->get_img_delta()},

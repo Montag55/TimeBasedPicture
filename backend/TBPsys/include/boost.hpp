@@ -10,7 +10,7 @@
 
 class Boost : public Interpretation{
 public:
-  Boost(std::shared_ptr< Base > mother, int id, int type, cv::Mat ref, float threshhold);
+  Boost(std::shared_ptr< Base > mother, int id, int type, cv::Mat ref, float threshhold, int offset, int stride);
   ~Boost()                            override;
   int getTypenumber()                 override;
   int get_calculation_specification() override;

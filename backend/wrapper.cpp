@@ -243,9 +243,10 @@ void add_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
   //check if values fit!?
   int interpret_id = -1;
   int typ_i = args[0]->IntegerValue();
-
+  int offset =0;
+  int stride = 0;
   if(typ_i == 0 || typ_i == 2){
-    interpret_id = base->add_interpretation(typ_i);
+    interpret_id = base->add_interpretation(typ_i, offset, stride);
   }
   else if(typ_i == 1){
     std::shared_ptr<std::vector<float>> weights = std::make_shared<std::vector<float>>();
@@ -255,12 +256,12 @@ void add_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
       weights->push_back(args[idx]->NumberValue());
     }
 
-    interpret_id = base->add_interpretation(typ_i, start, weights);
+    interpret_id = base->add_interpretation(typ_i, offset, stride, start, weights);
   }
   else if(typ_i == 3){
     int ref_id        = args[1]->IntegerValue();
     float threshhold  = args[2]->NumberValue();
-    interpret_id = base->add_interpretation(typ_i, ref_id, threshhold);
+    interpret_id = base->add_interpretation(typ_i, offset, stride, ref_id, threshhold);
   }
   else if(typ_i == 4){
     std::shared_ptr<std::vector<float>> colors = std::make_shared<std::vector<float>>();
@@ -271,14 +272,14 @@ void add_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
     }
 
     if(colors->size()%3 == 0)
-      interpret_id = base->add_interpretation(typ_i, threshhold, colors);
+      interpret_id = base->add_interpretation(typ_i, offset, stride, threshhold, colors);
     else
       std::cout << "\t too few arguments (tpye, float, [r, g, b]*n) \n";
   }
   else if(typ_i == 5){
     int ref_id        = args[1]->IntegerValue();
     float threshhold  = args[2]->NumberValue();
-    interpret_id = base->add_interpretation(typ_i, ref_id, threshhold);
+    interpret_id = base->add_interpretation(typ_i, offset, stride, ref_id, threshhold);
   }
 
   if(interpret_id >= 0 ) {

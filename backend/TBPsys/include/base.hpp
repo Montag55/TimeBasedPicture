@@ -30,10 +30,10 @@ public:
   bool                save(std::string file);
   bool                connect(int id_segment, int id_interpretation);
   int                 add_segment(int start, int end, float local_i, float global_i);
-  int                 add_interpretation(int typ_i);
-  int                 add_interpretation(int typ_i, int ref_id, float threshhold);
-  int                 add_interpretation(int typ_i, std::string ref_file_path, float threshhold);
-  int                 add_interpretation(int typ_i, float threshhold, std::shared_ptr<std::vector<float>> values);
+  int                 add_interpretation(int typ_i, int offset, int stride);
+  int                 add_interpretation(int typ_i, int offset, int stride, int ref_id, float threshhold);
+  int                 add_interpretation(int typ_i, int offset, int stride, std::string ref_file_path, float threshhold);
+  int                 add_interpretation(int typ_i, int offset, int stride, float threshhold, std::shared_ptr<std::vector<float>> values);
   bool                delete_segment(int id);
   bool                manipulate_segment(int id, int start, int end, float local_i, float global_i);
   bool                manipulate_interpretation(int id, int ref_id, float threshhold);

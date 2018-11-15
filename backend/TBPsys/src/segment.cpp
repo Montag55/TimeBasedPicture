@@ -21,7 +21,7 @@ Segment::Segment(int start_frame, int last_frame, double intensity_local, double
   m_values_abs{cv::Mat(mother->get_height(), mother->get_width(), mother->get_img_type(), cv::Scalar(0,0,0))},
   m_values_fac{cv::Mat(mother->get_height(), mother->get_width(), mother->get_img_type(), cv::Scalar(0,0,0))},
   m_uni_fac{0.0f},
-  m_interpretation{std::make_shared<Average>(mother, -1, 0)},
+  m_interpretation{std::make_shared<Average>(mother, -1, 0, 0, 0)},
   m_mutex_soll{},
   m_mutex_state{},
   m_percent{0.0f},

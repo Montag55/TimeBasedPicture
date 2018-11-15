@@ -8,7 +8,7 @@
 
 class Average : public Interpretation{
 public:
-  Average(std::shared_ptr< Base > mother, int id, int type);
+  Average(std::shared_ptr< Base > mother, int id, int type, int offset, int stride);
   ~Average()                          override;
   int getTypenumber()                 override;
   int get_calculation_specification() override;

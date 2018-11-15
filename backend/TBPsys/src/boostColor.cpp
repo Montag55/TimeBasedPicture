@@ -10,8 +10,8 @@
 #include <../include/utils.hpp>
 
 
-BoostColor::BoostColor( std::shared_ptr<Base> mother, int id, int type, float threshhold, std::shared_ptr<std::vector<float>> colors):
-Interpretation{ mother, id, type},
+BoostColor::BoostColor( std::shared_ptr<Base> mother, int id, int type, float threshhold, std::shared_ptr<std::vector<float>> colors, int offset, int stride):
+Interpretation{ mother, id, type, offset, stride},
 m_colors{colors},
 m_threshhold{threshhold},
 m_ptr_delta{mother->get_img_delta()},

@@ -93,15 +93,17 @@ int main (int argc, char **argv){
         else if(v[0] == "addinterpretation") {
           int interpret_id  = -1;
           int typ_i         = std::stoi (v[1]);
+          int offset        = std::stoi (v[2]);
+          int stride        = std::stoi (v[3]);
 
           if(typ_i == 0 || typ_i == 2){
-            interpret_id  = base->add_interpretation(typ_i);
+            interpret_id  = base->add_interpretation(typ_i, offset, stride);
           }
           else if(typ_i == 1){
             std::shared_ptr<std::vector<float>> weights = std::make_shared<std::vector<float>>();
-            float start = std::stoi (v[2]);
+            float start = std::stoi (v[4]);
 
-            for(int idx = 3; idx < v.size(); idx++){
+            for(int idx = 5; idx < v.size(); idx++){
               weights->push_back(std::stof(v[idx]));
             }
             std::cout << "\t > start_frame: " << start << "\n";
@@ -110,31 +112,30 @@ int main (int argc, char **argv){
               std::cout << (*weights)[i] << ", ";
             }
             std::cout << "]\n";
-            interpret_id  = base->add_interpretation(typ_i, start, weights);
+            interpret_id  = base->add_interpretation(typ_i, offset, stride,  start, weights);
           }
           else if(typ_i == 3){
-
-            if(std::any_of(v[2].begin(), v[2].begin() + 2, ::isdigit)){
-              int ref_id        = std::stoi (v[2]);
-              float threshhold  = std::stof (v[3]);
-              interpret_id  = base->add_interpretation(typ_i, ref_id, threshhold);
+            if(std::any_of(v[4].begin(), v[4].begin() + 2, ::isdigit)){
+              int ref_id        = std::stoi (v[4]);
+              float threshhold  = std::stof (v[5]);
+              interpret_id  = base->add_interpretation(typ_i, offset, stride, ref_id, threshhold);
             }
             else{
-              std::string ref_file_path = v[2];
-              float threshhold = std::stof(v[3]);
-              interpret_id = base->add_interpretation(typ_i, ref_file_path, threshhold);
+              std::string ref_file_path = v[4];
+              float threshhold = std::stof(v[5]);
+              interpret_id = base->add_interpretation(typ_i, offset, stride, ref_file_path, threshhold);
             }
           }
           else if(typ_i == 4){
             std::shared_ptr<std::vector<float>> colors = std::make_shared<std::vector<float>>();
-            float threshhold  = std::stoi (v[2]);
+            float threshhold  = std::stoi (v[4]);
 
-            for(int idx = 3; idx < v.size(); idx++){
+            for(int idx = 5; idx < v.size(); idx++){
               colors->push_back(std::stof(v[idx]));
             }
 
             if(colors->size()%3 == 0){
-              interpret_id = base->add_interpretation(typ_i, threshhold, colors);
+              interpret_id = base->add_interpretation(typ_i, offset, stride, threshhold, colors);
               std::cout << "\t > threshhold: " << threshhold << "\n";
               std::cout << "\t > colors: ";
               for(unsigned int i = 0; i < colors->size(); i+=3){
@@ -147,15 +148,15 @@ int main (int argc, char **argv){
           }
           else if(typ_i == 5){
 
-            if(std::any_of(v[2].begin(), v[2].begin() + 2, ::isdigit)){
-              int ref_id        = std::stoi (v[2]);
-              float threshhold  = std::stof (v[3]);
-              interpret_id  = base->add_interpretation(typ_i, ref_id, threshhold);
+            if(std::any_of(v[4].begin(), v[4].begin() + 2, ::isdigit)){
+              int ref_id        = std::stoi (v[4]);
+              float threshhold  = std::stof (v[5]);
+              interpret_id  = base->add_interpretation(typ_i, offset, stride, ref_id, threshhold);
             }
             else{
-              std::string ref_file_path = v[2];
-              float threshhold = std::stof(v[3]);
-              interpret_id = base->add_interpretation(typ_i, ref_file_path, threshhold);
+              std::string ref_file_path = v[4];
+              float threshhold = std::stof(v[5]);
+              interpret_id = base->add_interpretation(typ_i, offset, stride, ref_file_path, threshhold);
             }
           }
 
