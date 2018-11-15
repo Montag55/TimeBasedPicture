@@ -42,8 +42,7 @@ int main (int argc, char **argv){
   int   offset      = 0;
   int   stride      = 0;
   float threshhold  = 0;
-  int offset        = 0;
-  int stride        = 0;
+  
 
   std::cout<<"here\n";
   base->add_interpretation(typ_i, offset, stride, ref_id, threshhold);
