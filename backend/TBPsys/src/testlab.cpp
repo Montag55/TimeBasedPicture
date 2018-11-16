@@ -39,9 +39,14 @@ int main (int argc, char **argv){
 
   int   typ_i       = 3;
   int   ref_id      = -1;
-  float threshhold  = 300;
+  int   offset      = 0;
+  int   stride      = 0;
+  float threshhold  = 0;
+  
+
+
   std::cout<<"here\n";
-  base->add_interpretation(typ_i, ref_id, threshhold);
+  base->add_interpretation(typ_i, offset, stride, ref_id, threshhold);
   std::this_thread::sleep_for(std::chrono::milliseconds(1000)); //safety reason
   std::cout<<"here\n";
 
@@ -53,7 +58,8 @@ int main (int argc, char **argv){
 
   for (int i= 0; i<5; i++){
     std::cout<<"cycle: "<<i<<"\n";
-    base->manipulate_interpretation(interpret_id, ref_id, threshhold-i*20);
+
+    base->manipulate_interpretation(interpret_id, ref_id, threshhold++, offset, stride);
     std::this_thread::sleep_for(std::chrono::milliseconds(3000)); //safety reason
     bool wait=true;
     float progress=0;
@@ -80,33 +86,44 @@ int main (int argc, char **argv){
   // base->add_interpretation(typ_i, ref_id, threshhold);
   // std::this_thread::sleep_for(std::chrono::milliseconds(1000)); //safety reason
   //
-  // segment_id    = 0;
-  // interpret_id  = 1;
-  // base->connect(segment_id, interpret_id);
-  // std::this_thread::sleep_for(std::chrono::milliseconds(1000)); //safety reason
-  //
-  // for (int i= 1; i<=20; i++){
-  //   std::cout<<"cycle: "<<i<<"\n";
-  //   base->manipulate_interpretation(interpret_id, ref_id, threshhold*i);
-  //   std::this_thread::sleep_for(std::chrono::milliseconds(2000)); //safety reason
-  //   bool wait=true;
-  //   float progress=0;
-  //   while(wait)
-  //   {
-  //
-  //     progress= (base->get_segment_progress(0));
-  //     if(progress<100){
-  //       std::cout<<"Segment["<<0<<"] Progress: "<<progress<<"\n";
-  //       std::this_thread::sleep_for(std::chrono::milliseconds(3000));//update rate
-  //     }
-  //     else{
-  //       std::cout<<"Segment["<<0<<"] Progress: "<<progress<<" ->save\n";
-  //       base->save("reduce_cyc_"+std::to_string(i*10)+".png");
-  //       std::this_thread::sleep_for(std::chrono::milliseconds(1000)); //safety reason
-  //       wait= false;
-  //     }
-  //   }
-  // }
+
+  typ_i       = 5;
+  ref_id      = -1;
+  threshhold  = 10;
+  offset      = 0;
+  stride      = 0;
+
+  base->add_interpretation(typ_i, ref_id, threshhold);
+  std::this_thread::sleep_for(std::chrono::milliseconds(1000)); //safety reason
+
+  segment_id    = 0;
+  interpret_id  = 1;
+  base->connect(segment_id, interpret_id);
+  std::this_thread::sleep_for(std::chrono::milliseconds(1000)); //safety reason
+
+  for (int i= 1; i<=20; i++){
+    std::cout<<"cycle: "<<i<<"\n";
+    base->manipulate_interpretation(interpret_id, ref_id, threshhold*i, offset, stride);
+    std::this_thread::sleep_for(std::chrono::milliseconds(2000)); //safety reason
+    bool wait=true;
+    float progress=0;
+    while(wait)
+    {
+
+      progress= (base->get_segment_progress(0));
+      if(progress<100){
+        std::cout<<"Segment["<<0<<"] Progress: "<<progress<<"\n";
+        std::this_thread::sleep_for(std::chrono::milliseconds(3000));//update rate
+      }
+      else{
+        std::cout<<"Segment["<<0<<"] Progress: "<<progress<<" ->save\n";
+        base->save("reduce_cyc_"+std::to_string(i*10)+".jpg");
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000)); //safety reason
+        wait= false;
+      }
+    }
+  }
+
 #endif
 
 

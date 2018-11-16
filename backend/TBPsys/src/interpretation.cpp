@@ -8,10 +8,12 @@
 #include <string.h>
 #include <vector>
 
-Interpretation::Interpretation( std::shared_ptr<Base> mother, int id, int type):
+Interpretation::Interpretation( std::shared_ptr<Base> mother, int id, int type, int offset, int stride):
 m_base{mother},
 m_id{id},
 m_type{type},
+m_offset{offset},
+m_stride{stride},
 m_video{mother->get_videocap()},
 m_img_type{mother->get_img_type()}
 {}
@@ -19,6 +21,16 @@ m_img_type{mother->get_img_type()}
 int Interpretation::get_id()
 {
   return m_id;
+}
+
+int Interpretation::get_offset()
+{
+  return m_offset;
+}
+
+int Interpretation::get_stride()
+{
+  return m_stride;
 }
 
 Interpretation::~Interpretation(){
