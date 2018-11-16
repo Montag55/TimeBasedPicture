@@ -91,20 +91,20 @@ void Reduce::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& current_f
       //std::cout<<" distance: "<<distance_RGB <<"\n";
       if(distance_RGB < m_threshhold){
         if(sign > 0) {
-          uc_pixel_res[0] += uc_pixel_current[0];
-          uc_pixel_res[1] += uc_pixel_current[1];
-          uc_pixel_res[2] += uc_pixel_current[2];
-          uc_pixel_fac[0] += 1;
-          uc_pixel_fac[1] += 1;
-          uc_pixel_fac[2] += 1;
+          uc_pixel_res[0] += (m_threshhold-distance_RGB)*uc_pixel_current[0];
+          uc_pixel_res[1] += (m_threshhold-distance_RGB)*uc_pixel_current[1];
+          uc_pixel_res[2] += (m_threshhold-distance_RGB)*uc_pixel_current[2];
+          uc_pixel_fac[0] += (m_threshhold-distance_RGB)*1;
+          uc_pixel_fac[1] += (m_threshhold-distance_RGB)*1;
+          uc_pixel_fac[2] += (m_threshhold-distance_RGB)*1;
         }
         else {
-          uc_pixel_res[0] -= uc_pixel_current[0];
-          uc_pixel_res[1] -= uc_pixel_current[1];
-          uc_pixel_res[2] -= uc_pixel_current[2];
-          uc_pixel_fac[0] -= 1;
-          uc_pixel_fac[1] -= 1;
-          uc_pixel_fac[2] -= 1;
+          uc_pixel_res[0] -= (m_threshhold-distance_RGB)*uc_pixel_current[0];
+          uc_pixel_res[1] -= (m_threshhold-distance_RGB)*uc_pixel_current[1];
+          uc_pixel_res[2] -= (m_threshhold-distance_RGB)*uc_pixel_current[2];
+          uc_pixel_fac[0] -= (m_threshhold-distance_RGB)*1;
+          uc_pixel_fac[1] -= (m_threshhold-distance_RGB)*1;
+          uc_pixel_fac[2] -= (m_threshhold-distance_RGB)*1;
         }
       }
 

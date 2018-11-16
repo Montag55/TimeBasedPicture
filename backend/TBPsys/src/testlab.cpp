@@ -16,7 +16,7 @@ test lab to generate fast output of different settings
 int main (int argc, char **argv){
 
 #ifndef true //Common Variables:
-  std::string file_path = "./../../../videos/street/frame%01d.jpg";
+  std::string file_path = "/home/lucas/Videos/TBP-Footage/forest/frame%01d.png";
   bool exit_status = true;
   std::shared_ptr<Base> base ;
 #endif
@@ -31,8 +31,8 @@ int main (int argc, char **argv){
 #endif
 
 #ifndef true  //Computation:
-  int   startframe  = 20;
-  int   endframe    = 50;
+  int   startframe  = 9000;
+  int   endframe    = 9020;
   int   local_i     = 1;
   int   global_i    = 1;
   base->add_segment(startframe, endframe, local_i, global_i);
@@ -43,6 +43,7 @@ int main (int argc, char **argv){
   int   stride      = 0;
   float threshhold  = 0;
   
+
 
   std::cout<<"here\n";
   base->add_interpretation(typ_i, offset, stride, ref_id, threshhold);
@@ -55,8 +56,9 @@ int main (int argc, char **argv){
   std::this_thread::sleep_for(std::chrono::milliseconds(2000)); //safety reason
   std::cout<<"here\n";
 
-  for (int i= 1; i<=125; i++){
+  for (int i= 0; i<5; i++){
     std::cout<<"cycle: "<<i<<"\n";
+
     base->manipulate_interpretation(interpret_id, ref_id, threshhold++, offset, stride);
     std::this_thread::sleep_for(std::chrono::milliseconds(3000)); //safety reason
     bool wait=true;
@@ -66,18 +68,25 @@ int main (int argc, char **argv){
 
       progress= (base->get_segment_progress(0));
       if(progress<100){
-        std::cout<<"Segment["<<0<<"] Progress: "<<progress<<"\n";
-        std::this_thread::sleep_for(std::chrono::milliseconds(1000));//update rate
+        std::cout<<i<<"Segment["<<0<<"] Progress: "<<progress<<"\n";
+        std::this_thread::sleep_for(std::chrono::milliseconds(5000));//update rate
       }
       else{
         std::cout<<"Segment["<<0<<"] Progress: "<<progress<<" ->save\n";
-        base->save("boost_cyc_"+std::to_string(i*10)+".jpg");
+        base->save("boost_cyc_"+std::to_string(i)+".png");
         std::this_thread::sleep_for(std::chrono::milliseconds(1000)); //safety reason
         wait= false;
       }
     }
   }
+  // //
+  // typ_i       = 5;
+  // ref_id      = -1;
+  // threshhold  = 10;
+  // base->add_interpretation(typ_i, ref_id, threshhold);
+  // std::this_thread::sleep_for(std::chrono::milliseconds(1000)); //safety reason
   //
+
   typ_i       = 5;
   ref_id      = -1;
   threshhold  = 10;
@@ -114,6 +123,7 @@ int main (int argc, char **argv){
       }
     }
   }
+
 #endif
 
 

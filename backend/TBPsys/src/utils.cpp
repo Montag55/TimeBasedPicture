@@ -96,6 +96,23 @@ namespace utils {
     return deltaE2000;
   }
 
+  float CIE76(cv::Scalar color1, cv::Scalar color2, float kl, float kc, float kh){
+    return sqrt(kl * pow(color1[0] - color2[0], 2) + kc * pow(color1[1] - color2[1], 2) + kh * pow(color1[2] - color2[2], 2));
+  }
+
+  float CIE94(cv::Scalar color1, cv::Scalar color2, float kl, float kc, float kh){
+    float L_delta = color1[0] -  color2[0];
+    float c1 = sqrt(pow(color1[1], 2) + pow(color1[2], 2));
+    float c2 = sqrt(pow(color2[1], 2) + pow(color2[2], 2));
+    float C_delta = c1 - c2;
+    float H_delta = sqrt(pow(color1[1] - color2[1], 2) + pow(color1[2] - color2[2], 2) - pow(C_delta, 2));
+    float sl = 1 * kl;
+    float sc = 1 + kc * c1;
+    float sh = 1 + kh * c1;
+
+    return sqrt(pow(L_delta / kl * sl, 2) + pow(C_delta / (kc * sc), 2) + pow(H_delta / (kh * sh), 2));
+  }
+
   // https://www.easyrgb.com/en/math.php
   cv::Scalar rgb2lab(float r, float g, float b){
     float x, y, z;
