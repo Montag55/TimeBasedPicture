@@ -113,13 +113,13 @@ void Overplott::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& curren
       const float *uc_pixel_current = ptr_current;
 
       //current frame != ref frame -> result frame/ result fac
-      // float distance_RGB = sqrt(pow(uc_pixel_ref[0] - uc_pixel_current[0], 2) +
-      //                           pow(uc_pixel_ref[1] - uc_pixel_current[1], 2) +
-      //                           pow(uc_pixel_ref[2] - uc_pixel_current[2], 2));
+      float distance_RGB = sqrt(pow(uc_pixel_ref[0] - uc_pixel_current[0], 2) +
+                                pow(uc_pixel_ref[1] - uc_pixel_current[1], 2) +
+                                pow(uc_pixel_ref[2] - uc_pixel_current[2], 2));
 
-      cv::Scalar ref = utils::rgb2lab(uc_pixel_ref[0], uc_pixel_ref[1], uc_pixel_ref[2]);
-      cv::Scalar current = utils::rgb2lab(uc_pixel_current[0], uc_pixel_current[1], uc_pixel_current[2]);
-      float distance_RGB = utils::dE2000(ref, current, 0.1f, 100.0f, 100.0f);
+      // cv::Scalar ref = utils::rgb2lab(uc_pixel_ref[0], uc_pixel_ref[1], uc_pixel_ref[2]);
+      // cv::Scalar current = utils::rgb2lab(uc_pixel_current[0], uc_pixel_current[1], uc_pixel_current[2]);
+      // float distance_RGB = utils::dE2000(ref, current, 0.1f, 100.0f, 100.0f);
       //float distance_RGB = utils::CIE76(ref, current, 1.0f, 0.0f, 0.0f);
       //float distance_RGB = utils::CIE94(ref, current, 5.0f, 100.0f, 100.0f);
 
@@ -147,9 +147,13 @@ void Overplott::late_merge(cv::Mat& result, cv::Mat& facs, cv::Mat& tmp_result){
   cv::Mat mask;
   mask = (result == 0);
   mask.convertTo(mask, CV_32FC3);
-  result      += tmp_result.mul(mask)/255;
+  result      += tmp_result.mul(mask)/(float)255;
+
   tmp_result   = (tmp_result > 0);
-  facs        += mask.mul(tmp_result)/255;
+  tmp_result.convertTo(tmp_result, CV_32FC3);
+  int from_to[] = { 0,0, 0,1, 0,2};
+  cv::mixChannels(&tmp_result, 1, &tmp_result, 1, from_to, 3);
+  facs        += mask.mul(tmp_result)/(float)255;
 }
 
 void Overplott::manipulate(cv::Mat ref_frame, float threshhold, int offset, int stride){
