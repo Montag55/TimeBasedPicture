@@ -30,7 +30,7 @@ int Overplott::getTypenumber(){
 }
 
 int Overplott::get_calculation_specification(){
-  return 0; //standard sum-game
+  return m_calc_specification; //standard sum-game
 }
 
 void Overplott::calc(int id, int start, int length, int sign, cv::Mat& result, float& factor, cv::Mat& fac_mat) {
