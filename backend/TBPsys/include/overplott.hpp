@@ -1,5 +1,5 @@
-#ifndef BOOST_HPP
-#define BOOST_HPP
+#ifndef OVERPLOTT_HPP
+#define OVERPLOTT_HPP
 #include <math.h>
 #include <../include/interpretation.hpp>
 #include <../include/base.hpp>
@@ -8,10 +8,10 @@
 #include <opencv2/core/mat.hpp>
 //we could detect black pixels and print a warning, at th end of calc..?
 
-class Boost : public Interpretation{
+class Overplott : public Interpretation{
 public:
-  Boost(std::shared_ptr< Base > mother, int id, int type, cv::Mat ref, float threshhold, int offset, int stride);
-  ~Boost()                        override;
+  Overplott(std::shared_ptr< Base > mother, int id, int type, cv::Mat ref, float threshhold, int offset, int stride);
+  ~Overplott()                        override;
   int getTypenumber()                 override;
   int get_calculation_specification() override;
   void calc(int id, int start, int length, int sign, cv::Mat& result, float& factor, cv::Mat& fac_mat) override;
