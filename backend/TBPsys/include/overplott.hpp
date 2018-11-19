@@ -15,8 +15,9 @@ public:
   int getTypenumber()                 override;
   int get_calculation_specification() override;
   void calc(int id, int start, int length, int sign, cv::Mat& result, float& factor, cv::Mat& fac_mat) override;
-  void compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& current_frame, int sign);
+  void compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& current_frame);
   void manipulate(cv::Mat ref_frame, float threshhold, int offset, int stride);
+  void late_merge(cv::Mat& result, cv::Mat& facs, cv::Mat& tmp_result);
 
 private:
   float m_threshhold;
