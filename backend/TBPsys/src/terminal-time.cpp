@@ -170,6 +170,23 @@ int main (int argc, char **argv){
               interpret_id = base->add_interpretation(typ_i, offset, stride, ref_file_path, threshhold);
             }
           }
+          else if(typ_i == 6 /*CircularFade*/){
+            int start       = std::stoi (v[4]);
+            int length      = std::stoi (v[5]);
+            int mode        = std::stoi (v[6]);
+            float mid       = std::stof (v[7]);
+            float radius    = std::stof (v[8]);
+            bool fade_dir   = std::stoi (v[9]);
+
+            std::cout << "\t > start: " << start << "\n";
+            std::cout << "\t > length: " << length << "\n";
+            std::cout << "\t > func_mode: " << mode << "\n";
+            std::cout << "\t > middle: " << mid << "\n";
+            std::cout << "\t > radius: " << radius << "\n";
+            std::cout << "\t > fade direction: " << fade_dir << "\n";
+
+            interpret_id  = base->add_interpretation(typ_i, offset, stride, start, length, mode, mid, radius, fade_dir);
+          }
 
           if(interpret_id >= 0 ) {
             std::cout << "\t > offset: " << offset << "\n";
@@ -298,6 +315,31 @@ int main (int argc, char **argv){
                   std::cout << "[" << (*colors)[i] << ", " << (*colors)[i+1] << ", " << (*colors)[i+2] << "], ";
                 }
                 std::cout << "\n\n";
+              }
+              else{
+                std::cout << "\t > manipulate interpretation id: " << id << " failed. \n";
+              }
+
+            }
+            else if(typ_i == 6 /*CircularFade*/){
+              int start       = std::stoi (v[5]);
+              int length      = std::stoi (v[6]);
+              int mode        = std::stoi (v[7]);
+              float mid       = std::stof (v[8]);
+              float radius    = std::stof (v[9]);
+              bool fade_dir   = std::stoi (v[10]);
+
+              if(base->manipulate_interpretation(id, start, length, mode, mid, radius, fade_dir, offset, stride)){
+                std::cout << "\t > interpretation id: " << id << "\n";
+                std::cout << "\t > typ: " << typ_i << "\n";
+                std::cout << "\t > start: " << start << "\n";
+                std::cout << "\t > length: " << length << "\n";
+                std::cout << "\t > func_mode: " << mode << "\n";
+                std::cout << "\t > middle: " << mid << "\n";
+                std::cout << "\t > radius: " << radius << "\n";
+                std::cout << "\t > fade direction: " << fade_dir << "\n";
+                std::cout << "\t > offset: " << offset << "\n";
+                std::cout << "\t > stride: " << stride << "\n\n";
               }
               else{
                 std::cout << "\t > manipulate interpretation id: " << id << " failed. \n";

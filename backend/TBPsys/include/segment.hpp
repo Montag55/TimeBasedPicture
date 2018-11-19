@@ -19,6 +19,7 @@ class Base;
 #include "boostColor.hpp"
 #include "transferfunction.hpp"
 #include "overplott.hpp"
+#include "circularfade.hpp"
 
 class Segment {
 public:

@@ -198,6 +198,15 @@ bool Base::manipulate_interpretation(int id, float threshhold, std::shared_ptr<s
   return true;
 }
 
+bool Base::manipulate_interpretation(int id, int start, int length, int mode, float mid, float radius, bool fade_direction, int offset, int stride){
+
+  if(m_interpretations[id]->getTypenumber() == 6){
+    Circularfade& interpretation = dynamic_cast<Circularfade&>(*m_interpretations[id]);
+    interpretation.manipulate(start, length, mode, mid, radius, fade_direction, offset, stride);
+  }
+  return true;
+}
+
 int Base::add_interpretation(int typ_i, int offset, int stride){
   std::cout<<"\t > interpretation: ";
   int id = m_interpretations.size();
@@ -348,6 +357,22 @@ int Base::add_interpretation(int typ_i, int offset, int stride, float threshhold
   else if(typ_i == 4){
     std::cout << "BoostColor \n";
     m_interpretations.push_back(std::make_shared<BoostColor>(shared_from_this(), id, typ_i, threshhold, values, offset, stride));
+  }
+  else{
+    id = -1;
+    std::cout<< "Wrong interpretation. \n";
+  }
+
+  return id;
+}
+
+int Base::add_interpretation(int typ_i, int offset, int stride, int start, int length, int mode, float mid, float radius, bool fade_direction){
+  std::cout<<"\t > interpretation: ";
+  int id = m_interpretations.size();
+
+  if (typ_i == 6 ){
+    std::cout<<"CircularFade \n";
+    m_interpretations.push_back(std::make_shared<Circularfade>(shared_from_this(), id, typ_i, start, length, mode, mid, radius, fade_direction, offset, stride));
   }
   else{
     id = -1;
