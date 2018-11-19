@@ -248,8 +248,6 @@ void Segment::update_intensity(){
 }
 
 bool Segment::interpret_free( int & work_size){
-  std::cout<<"interpret free\n";
-
   m_mutex_soll.lock();
   int dest_start = m_frame_start_destin;
   int dest_end = m_frame_last_destin;
@@ -359,7 +357,7 @@ bool Segment::interpret_free( int & work_size){
 }
 
 bool Segment::interpret_extending( int & work_size){
-  std::cout<<"interpret extending\n";
+
   //allows only enlargment.. shrinking-> reset
   m_mutex_soll.lock();
   int dest_start = m_frame_start_destin;
@@ -379,11 +377,9 @@ bool Segment::interpret_extending( int & work_size){
   //reset neccessary?
   if( m_frame_last_actual > dest_end )
   {
-    std::cout<< "0: We canno't undo influences!->reset\n";
     reset();
   }else if(m_frame_start_actual < dest_start)
   {
-    std::cout<< "1: We canno't undo influences!->reset\n";
     reset();
   }
 
@@ -397,7 +393,6 @@ bool Segment::interpret_extending( int & work_size){
 
   }
   else if(m_frame_start_actual > dest_start) {
-    std::cout << "calculating bakwards, only update black pixel!\n";
     int startpoint = m_frame_start_actual - work_size;
     int length = work_size;
 
@@ -421,7 +416,6 @@ bool Segment::interpret_extending( int & work_size){
      }
 
      if(m_frame_last_actual < dest_end) {
-       std::cout << "calculating forward!\n";
        /*ffmpeg:
        double frameRate = m_video.get(CV_CAP_PROP_FPS);
        double frameTime = 1000.0 * m_frame_last_actual / frameRate;
