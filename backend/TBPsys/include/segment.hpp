@@ -18,6 +18,7 @@ class Base;
 #include "reduce.hpp"
 #include "boostColor.hpp"
 #include "transferfunction.hpp"
+#include "overplott.hpp"
 
 class Segment {
 public:

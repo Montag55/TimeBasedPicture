@@ -74,7 +74,7 @@ void Segment::revert_influence(){
       skip = true;
     intensity = m_intensity_global_actual;
   }
-  else if(m_interpretation->getTypenumber() == 3 || m_interpretation->getTypenumber() == 4 || m_interpretation->getTypenumber() == 5){
+  else if(m_interpretation->getTypenumber() == 2 || m_interpretation->getTypenumber() == 3 || m_interpretation->getTypenumber() == 4 || m_interpretation->getTypenumber() == 5){
     normalize_factor(influence, factors);
     influence = influence * m_intensity_local_actual * m_intensity_global_actual;
     factors = factors * m_intensity_global_actual;
@@ -105,7 +105,7 @@ void Segment::upload_influence(){
 
     intensity = m_intensity_global_actual;
   }
-  else if(m_interpretation->getTypenumber() == 3 || m_interpretation->getTypenumber() == 4 || m_interpretation->getTypenumber() == 5){
+  else if(m_interpretation->getTypenumber() == 2 || m_interpretation->getTypenumber() == 3 || m_interpretation->getTypenumber() == 4 || m_interpretation->getTypenumber() == 5){
     normalize_factor(influence, factors);
     influence = influence * m_intensity_local_actual * m_intensity_global_actual;
     factors = factors * m_intensity_global_actual;
@@ -358,7 +358,6 @@ bool Segment::interpret_free( int & work_size){
   return exit_status;
 }
 
-
 bool Segment::interpret_extending( int & work_size){
   std::cout<<"interpret extending\n";
   //allows only enlargment.. shrinking-> reset
@@ -459,7 +458,6 @@ bool Segment::interpret_extending( int & work_size){
 
   return exit_status;
 }
-
 
 void Segment::save_segment_out(){
   auto start_time = std::chrono::high_resolution_clock::now();

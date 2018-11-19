@@ -141,11 +141,16 @@ bool Base::manipulate_interpretation(int id, int ref_id, float threshhold, int o
   else {
     ref_img.convertTo( ref_img, m_img_type );   //do this for the whole video right at the start!?
   }
-  if(m_interpretations[id]->getTypenumber()==3){
+
+  if(m_interpretations[id]->getTypenumber() == 2 /*Overplott*/){
+    Overplott& interpretation = dynamic_cast<Overplott&>(*m_interpretations[id]);
+    interpretation.manipulate(ref_img, threshhold, offset, stride);
+  }
+  else if(m_interpretations[id]->getTypenumber() == 3 /*Boost*/){
     Boost& interpretation = dynamic_cast<Boost&>(*m_interpretations[id]);
     interpretation.manipulate(ref_img, threshhold, offset, stride);
   }
-  else if(m_interpretations[id]->getTypenumber()==5){
+  else if(m_interpretations[id]->getTypenumber() == 5 /*Reduce*/){
     Reduce& interpretation = dynamic_cast<Reduce&>(*m_interpretations[id]);
     interpretation.manipulate(ref_img, threshhold, offset, stride);
   }
@@ -163,11 +168,16 @@ bool Base::manipulate_interpretation(int id, std::string ref_file_path, float th
   else {
     ref_img.convertTo( ref_img, m_img_type );   //do this for the whole video right at the start!?
   }
-  if(m_interpretations[id]->getTypenumber()==3){
+
+  if(m_interpretations[id]->getTypenumber() == 2 /*Overplott*/){
+    Overplott& interpretation = dynamic_cast<Overplott&>(*m_interpretations[id]);
+    interpretation.manipulate(ref_img, threshhold, offset, stride);
+  }
+  else if(m_interpretations[id]->getTypenumber() == 3 /*Boost*/){
     Boost& interpretation = dynamic_cast<Boost&>(*m_interpretations[id]);
     interpretation.manipulate(ref_img, threshhold, offset, stride);
   }
-  else if(m_interpretations[id]->getTypenumber()==5){
+  else if(m_interpretations[id]->getTypenumber() == 5 /*Reduce*/){
     Reduce& interpretation = dynamic_cast<Reduce&>(*m_interpretations[id]);
     interpretation.manipulate(ref_img, threshhold, offset, stride);
   }
@@ -192,13 +202,9 @@ int Base::add_interpretation(int typ_i, int offset, int stride){
   std::cout<<"\t > interpretation: ";
   int id = m_interpretations.size();
 
-  if(typ_i == 0 /*averaging*/){
+  if(typ_i == 0 /*Average*/){
     std::cout<<"Average\n";
     m_interpretations.push_back(std::make_shared<Average>(shared_from_this(), id, typ_i, offset, stride));
-  }
-  else if (typ_i == 2 /*overplott*/){
-    id = -1;
-    std::cout<<"Overplott (not implemnted) \n";
   }
   else{
     id = -1;
@@ -212,7 +218,20 @@ int Base::add_interpretation(int typ_i, int offset, int stride, std::string ref_
   std::cout<<"\t > interpretation: ";
   int id = m_interpretations.size();
 
-  if (typ_i == 3){
+  if(typ_i == 2 /*Overplott*/){
+    std::cout<< "Overplott \n";
+    cv::Mat ref_img = cv::imread(ref_file_path);
+
+    if(ref_img.empty()){
+      std::cout << "reference image not loaded. \n";
+    }
+    else {
+      ref_img.convertTo( ref_img, m_img_type );   //do this for the whole video right at the start!?
+    }
+
+    m_interpretations.push_back(std::make_shared<Overplott>(shared_from_this(), id, typ_i, ref_img, threshhold, offset, stride));
+  }
+  else if(typ_i == 3 /*Boost*/){
     std::cout<< "Boost \n";
 
     cv::Mat ref_img = cv::imread(ref_file_path);
@@ -226,7 +245,7 @@ int Base::add_interpretation(int typ_i, int offset, int stride, std::string ref_
 
     m_interpretations.push_back(std::make_shared<Boost>(shared_from_this(), id, typ_i, ref_img, threshhold, offset, stride));
   }
-  else if(typ_i == 5){
+  else if(typ_i == 5 /*Reduce*/){
     std::cout<< "Reduce \n";
 
     cv::Mat ref_img = cv::imread(ref_file_path);
@@ -248,7 +267,27 @@ int Base::add_interpretation(int typ_i, int offset, int stride, int ref_id, floa
   std::cout<<"\t > interpretation: ";
   int id = m_interpretations.size();
 
-  if (typ_i == 3 /*boost*/){
+  if(typ_i == 2 /*Overplott*/){
+    std::cout<< "Overplott \n";
+    std::string path = " ";
+    if(ref_id < 0){
+      path = "./ref.png";
+    }
+    else{
+      path = "./out_seg_id" + std::to_string( ref_id ) + ".png";
+    }
+    cv::Mat ref_img = cv::imread(path);
+
+    if(ref_img.empty()){
+      std::cout << "reference image not loaded. \n";
+    }
+    else {
+      ref_img.convertTo( ref_img, m_img_type );   //do this for the whole video right at the start!?
+    }
+
+    m_interpretations.push_back(std::make_shared<Overplott>(shared_from_this(), id, typ_i, ref_img, threshhold, offset, stride));
+  }
+  else if(typ_i == 3 /*Boost*/){
     std::cout<< "Boost \n";
 
     std::string path = " ";
@@ -269,7 +308,7 @@ int Base::add_interpretation(int typ_i, int offset, int stride, int ref_id, floa
 
     m_interpretations.push_back(std::make_shared<Boost>(shared_from_this(), id, typ_i, ref_img, threshhold, offset, stride));
   }
-  else if(typ_i == 5){
+  else if(typ_i == 5 /*Reduce*/){
     std::cout<< "Reduce \n";
 
     std::string path = " ";
