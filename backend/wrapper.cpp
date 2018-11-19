@@ -132,7 +132,8 @@ void manipulate_segment(const v8::FunctionCallbackInfo<v8::Value>& args){
  /**
  * Type 0: in  (int id, offset, stride)
  * Type 1: in  (int id, offset, stride, int start, float weight1, float weight2, ...)
- * Type 2: in  (int id, offset, stride)
+ * Type 2: in  (int id, offset, stride, int ref_id, float threshhold)
+ *             (int id, offset, stride, string file_path, float threshhold)
  * Type 3: in  (int id, offset, stride, int ref_id, float threshhold)
  *             (int id, offset, stride, string file_path, float threshhold)
  * Type 4: in  (int id, offset, stride, float threshhold, float color_R, float color_G, float color_B, ... )
@@ -234,7 +235,8 @@ void get_segment_progress(const v8::FunctionCallbackInfo<v8::Value>& args){
 * returns: interpretation id
 * Type 0: in  (int type, offset, stride)
 * Type 1: in  (int type, offset, stride, int start, float weight1, float weight2, ...)
-* Type 2: in  (int type, offset, stride)
+* Type 2: in  (int type, offset, stride, int ref_id, float threshhold)
+*             (int type, offset, stride, string file_path, float threshhold)
 * Type 3: in  (int type, offset, stride, int ref_id, float threshhold)
 *             (int type, offset, stride, string file_path, float threshhold)
 * Type 4: in  (int type, offset, stride, float threshhold, float color_R, float color_G, float color_B, ... )
