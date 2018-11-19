@@ -164,6 +164,9 @@ bool Segment::work(int& work_size){
     else if(m_interpretation->get_calculation_specification() == 1){
       state = interpret_extending( work_size );
     }
+    else if(m_interpretation->get_calculation_specification() == 2){
+      state = interpret_one_way( work_size );
+    }
     else{
       std::cout<<"Other interpretation traversal not implemnted yet. \n";
     }
@@ -450,6 +453,92 @@ bool Segment::interpret_extending( int & work_size){
     exit_status = false; //ist != soll
   }
 
+  return exit_status;
+}
+
+bool Segment::interpret_one_way( int & work_size){
+  //allows only enlargment.. shrinking-> reset
+  m_mutex_soll.lock();
+  int dest_start = m_frame_start_destin;
+  int dest_end = m_frame_last_destin;
+  bool exit_status = false;
+  m_mutex_soll.unlock();
+
+  //int delta=m_frame_last_actual-m_frame_start_actual;
+
+  if(m_frame_start_actual > -1) {
+    revert_influence();
+  }
+
+  cv::Mat tmp_frame;
+  cv::Mat tmp_frame_d;
+
+  //reset neccessary?
+  if( m_frame_last_actual > dest_end )
+  {
+    reset();
+  }
+  else if(m_frame_start_actual < dest_start)
+  {
+    reset();
+  }
+  else if(m_frame_start_actual > dest_start)
+  {
+    reset();
+  }
+
+  //startingpoint:
+  if(m_frame_start_actual == -1) {//not yet computed!
+    m_frame_start_actual = dest_start;
+  }
+
+  if(m_frame_start_actual < dest_start) {
+    std::cout << "a: should not happen !? \n";
+
+  }
+  else if(m_frame_start_actual > dest_start) {
+        std::cout << "b: should not happen !? \n";
+  }
+  //endpoint:
+  if( work_size > 0 ){
+    if(m_frame_last_actual == -1) {//not yet computed!
+       m_frame_last_actual = dest_start;
+     }
+
+     if(m_frame_last_actual < dest_end) {
+       /*ffmpeg:
+       double frameRate = m_video.get(CV_CAP_PROP_FPS);
+       double frameTime = 1000.0 * m_frame_last_actual / frameRate;
+       */
+       //m_video.set(CV_CAP_PROP_POS_MSEC, m_frame_last_actual/*frameTime*/);
+       int endpoint = m_frame_last_actual + work_size;
+       int length = work_size;
+       if(endpoint > dest_end){
+         endpoint = dest_end;
+         length = dest_end - m_frame_last_actual;
+       }
+
+       int sign = 1;
+       m_interpretation->calc(m_id, m_frame_last_actual, length, sign, m_values_abs, m_uni_fac, m_values_fac);
+       work_size -= length;
+       m_frame_last_actual += length;
+     }
+     else if(m_frame_last_actual > dest_end) {
+       std::cout << "b: should not happen !? \n";
+     }
+  }
+
+  if(m_frame_start_actual > -1) {
+
+    upload_influence();
+  }
+
+  if((dest_start == m_frame_start_actual) && (dest_end == m_frame_last_actual)) {
+    exit_status = true;  //ist = soll
+  }
+  else{
+    exit_status = false; //ist != soll
+  }
   return exit_status;
 }
 
