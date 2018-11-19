@@ -18,6 +18,7 @@ m_ptr_delta{mother->get_img_delta()},
 m_pnt_min{mother->get_min_Point()},
 m_pnt_max{mother->get_max_Point()}
 {
+  m_calc_specification = 0;
   //std::cout << "CIELAB Distance: " << utils::dE2000(cv::Scalar(50, 3.1571, -77.2803), cv::Scalar(50, 0, -82.7485), 1.0f, 1.0f, 1.0f) << std::endl;
 }
 
@@ -30,7 +31,7 @@ int BoostColor::getTypenumber(){
 }
 
 int BoostColor::get_calculation_specification(){
-  return 0; //standard sum-game
+  return m_calc_specification;  //standard sum-game
 }
 
 void BoostColor::calc(int id, int start, int length, int sign, cv::Mat& result, float& factor, cv::Mat& fac_mat) {

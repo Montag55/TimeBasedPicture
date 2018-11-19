@@ -12,7 +12,9 @@ Transferfunction::Transferfunction(std::shared_ptr<Base> mother, int id, int typ
 Interpretation{mother, id, type, offset, stride},
 m_weights{weights},
 m_start_pnt{start_pnt}
-{}
+{
+  m_calc_specification = 0;
+}
 
 
 Transferfunction::~Transferfunction(){
@@ -24,7 +26,7 @@ int Transferfunction::getTypenumber(){
 }
 
 int Transferfunction::get_calculation_specification(){
-  return 0;//standard sum-game
+  return m_calc_specification; //standard sum-game
 }
 
 void Transferfunction::calc(int id, int start, int length, int sign, cv::Mat& result, float& factor, cv::Mat& fac_mat) {

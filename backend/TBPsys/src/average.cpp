@@ -11,7 +11,9 @@
 Average::Average(std::shared_ptr<Base> mother, int id, int type, int offset, int stride):
 Interpretation{mother, id, type, offset, stride},
 m_test{0}
-{}
+{
+  m_calc_specification = 0;
+}
 
 Average::~Average(){}
 
@@ -20,7 +22,7 @@ int Average::getTypenumber(){
 }
 
 int Average::get_calculation_specification(){
-  return 0;//standard sum-game
+  return m_calc_specification; //standard sum-game
 }
 
 void Average::calc(int id, int start, int length, int sign, cv::Mat& result, float& factor, cv::Mat& fac_mat) {
