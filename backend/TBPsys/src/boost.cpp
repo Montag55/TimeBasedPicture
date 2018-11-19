@@ -94,7 +94,7 @@ void Boost::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& current_fr
 
       cv::Scalar ref = utils::rgb2lab(uc_pixel_ref[0], uc_pixel_ref[1], uc_pixel_ref[2]);
       cv::Scalar current = utils::rgb2lab(uc_pixel_current[0], uc_pixel_current[1], uc_pixel_current[2]);
-      float distance_RGB = utils::dE2000(ref, current, 0.1f, 100.0f, 100.0f);
+      float distance_RGB = utils::dE2000(ref, current, 0.1f, 0.5f, 0.8f);
       //float distance_RGB = utils::CIE76(ref, current, 1.0f, 0.0f, 0.0f);
       //float distance_RGB = utils::CIE94(ref, current, 5.0f, 100.0f, 100.0f);
 

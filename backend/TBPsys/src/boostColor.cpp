@@ -62,11 +62,6 @@ void BoostColor::calc(int id, int start, int length, int sign, cv::Mat& result, 
 
 void BoostColor::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& current_frame, int sign) {
 
-  cv::Mat tmp;
-  cv::cvtColor(current_frame, tmp, cv::COLOR_BGR2Lab);
-
-  cv::Scalar tmp_2 = cv::Scalar(50, 3.1571, -77.2803);
-  cv::cvtColor(tmp_2, tmp_2, cv::COLOR_RGB2Lab);
 
   for (unsigned int row = m_pnt_min.y; row < m_pnt_max.y; ++row) {
     //ptr:
