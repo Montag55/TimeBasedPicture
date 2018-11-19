@@ -74,7 +74,7 @@ void Segment::revert_influence(){
       skip = true;
     intensity = m_intensity_global_actual;
   }
-  else if(m_interpretation->getTypenumber() == 3 || m_interpretation->getTypenumber() == 4 || m_interpretation->getTypenumber() == 5){
+  else if(m_interpretation->getTypenumber() == 2 || m_interpretation->getTypenumber() == 3 || m_interpretation->getTypenumber() == 4 || m_interpretation->getTypenumber() == 5){
     normalize_factor(influence, factors);
     influence = influence * m_intensity_local_actual * m_intensity_global_actual;
     factors = factors * m_intensity_global_actual;
@@ -83,7 +83,7 @@ void Segment::revert_influence(){
   else{
     std::cout<< "revert influence is not allowed yet " << m_interpretation->getTypenumber() << "\n";
   }
-  
+
   if(!skip){
     m_mother->add_to_values_abs(-influence);
     m_mother->add_to_values_fac(-factors);
@@ -105,7 +105,7 @@ void Segment::upload_influence(){
 
     intensity = m_intensity_global_actual;
   }
-  else if(m_interpretation->getTypenumber() == 3 || m_interpretation->getTypenumber() == 4 || m_interpretation->getTypenumber() == 5){
+  else if(m_interpretation->getTypenumber() == 2 || m_interpretation->getTypenumber() == 3 || m_interpretation->getTypenumber() == 4 || m_interpretation->getTypenumber() == 5){
     normalize_factor(influence, factors);
     influence = influence * m_intensity_local_actual * m_intensity_global_actual;
     factors = factors * m_intensity_global_actual;
@@ -159,8 +159,10 @@ bool Segment::work(int& work_size){
 
   if(work_size > 0) {
     if(m_interpretation->get_calculation_specification() == 0){
-      state = interpret_sized( work_size );
-
+      state = interpret_free( work_size );
+    }
+    else if(m_interpretation->get_calculation_specification() == 1){
+      state = interpret_extending( work_size );
     }
     else{
       std::cout<<"Other interpretation traversal not implemnted yet. \n";
@@ -245,7 +247,9 @@ void Segment::update_intensity(){
     }
 }
 
-bool Segment::interpret_sized( int & work_size){
+bool Segment::interpret_free( int & work_size){
+  std::cout<<"interpret free\n";
+
   m_mutex_soll.lock();
   int dest_start = m_frame_start_destin;
   int dest_end = m_frame_last_destin;
@@ -336,6 +340,107 @@ bool Segment::interpret_sized( int & work_size){
        m_interpretation->calc(m_id, startpoint, length, sign, m_values_abs, m_uni_fac, m_values_fac);
        work_size -= length;
        m_frame_last_actual -= length;
+     }
+  }
+
+  if(m_frame_start_actual > -1) {
+
+    upload_influence();
+  }
+
+  if((dest_start == m_frame_start_actual) && (dest_end == m_frame_last_actual)) {
+    exit_status = true;  //ist = soll
+  }
+  else{
+    exit_status = false; //ist != soll
+  }
+
+  return exit_status;
+}
+
+bool Segment::interpret_extending( int & work_size){
+  std::cout<<"interpret extending\n";
+  //allows only enlargment.. shrinking-> reset
+  m_mutex_soll.lock();
+  int dest_start = m_frame_start_destin;
+  int dest_end = m_frame_last_destin;
+  bool exit_status = false;
+  m_mutex_soll.unlock();
+
+  //int delta=m_frame_last_actual-m_frame_start_actual;
+
+  if(m_frame_start_actual > -1) {
+    revert_influence();
+  }
+
+  cv::Mat tmp_frame;
+  cv::Mat tmp_frame_d;
+
+  //reset neccessary?
+  if( m_frame_last_actual > dest_end )
+  {
+    std::cout<< "0: We canno't undo influences!->reset\n";
+    reset();
+  }else if(m_frame_start_actual < dest_start)
+  {
+    std::cout<< "1: We canno't undo influences!->reset\n";
+    reset();
+  }
+
+  //startingpoint:
+  if(m_frame_start_actual == -1) {//not yet computed!
+    m_frame_start_actual = dest_start;
+  }
+
+  if(m_frame_start_actual < dest_start) {
+    std::cout << "a: should not happen !? \n";
+
+  }
+  else if(m_frame_start_actual > dest_start) {
+    std::cout << "calculating bakwards, only update black pixel!\n";
+    int startpoint = m_frame_start_actual - work_size;
+    int length = work_size;
+
+    if(startpoint < dest_start) {
+      length = m_frame_start_actual - dest_start;
+      startpoint = dest_start;
+    }
+
+    int sign = -1;
+    // -1 indicates late merge:
+    // first calculate overplotting for work length
+    // and then insert all pixels to result img & fac, that aren't already used
+    m_interpretation->calc(m_id, startpoint, length, sign, m_values_abs, m_uni_fac, m_values_fac);
+    work_size -= length;
+    m_frame_start_actual -= length;
+  }
+  //endpoint:
+  if( work_size > 0 ){
+    if(m_frame_last_actual == -1) {//not yet computed!
+       m_frame_last_actual = dest_start;
+     }
+
+     if(m_frame_last_actual < dest_end) {
+       std::cout << "calculating forward!\n";
+       /*ffmpeg:
+       double frameRate = m_video.get(CV_CAP_PROP_FPS);
+       double frameTime = 1000.0 * m_frame_last_actual / frameRate;
+       */
+       //m_video.set(CV_CAP_PROP_POS_MSEC, m_frame_last_actual/*frameTime*/);
+       int endpoint = m_frame_last_actual + work_size;
+       int length = work_size;
+       if(endpoint > dest_end){
+         endpoint = dest_end;
+         length = dest_end - m_frame_last_actual;
+       }
+
+       int sign = 1;
+       m_interpretation->calc(m_id, m_frame_last_actual, length, sign, m_values_abs, m_uni_fac, m_values_fac);
+       work_size -= length;
+       m_frame_last_actual += length;
+     }
+     else if(m_frame_last_actual > dest_end) {
+       std::cout << "b: should not happen !? \n";
      }
   }
 

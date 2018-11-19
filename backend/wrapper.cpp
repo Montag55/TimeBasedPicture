@@ -132,7 +132,8 @@ void manipulate_segment(const v8::FunctionCallbackInfo<v8::Value>& args){
  /**
  * Type 0: in  (int id, offset, stride)
  * Type 1: in  (int id, offset, stride, int start, float weight1, float weight2, ...)
- * Type 2: in  (int id, offset, stride)
+ * Type 2: in  (int id, offset, stride, int ref_id, float threshhold)
+ *             (int id, offset, stride, string file_path, float threshhold)
  * Type 3: in  (int id, offset, stride, int ref_id, float threshhold)
  *             (int id, offset, stride, string file_path, float threshhold)
  * Type 4: in  (int id, offset, stride, float threshhold, float color_R, float color_G, float color_B, ... )
@@ -166,7 +167,7 @@ void manipulate_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
       std::cout << "manipulate_segment() failed. \n";
     }
   }
-  else if(typ_i == 3 || typ_i == 5){
+  else if(typ_i == 2 || typ_i == 3 || typ_i == 5){
     if(args[3]->IsNumber()){
       int ref_id = args[3]->IntegerValue();
       float threshhold = args[4]->NumberValue();
@@ -234,7 +235,8 @@ void get_segment_progress(const v8::FunctionCallbackInfo<v8::Value>& args){
 * returns: interpretation id
 * Type 0: in  (int type, offset, stride)
 * Type 1: in  (int type, offset, stride, int start, float weight1, float weight2, ...)
-* Type 2: in  (int type, offset, stride)
+* Type 2: in  (int type, offset, stride, int ref_id, float threshhold)
+*             (int type, offset, stride, string file_path, float threshhold)
 * Type 3: in  (int type, offset, stride, int ref_id, float threshhold)
 *             (int type, offset, stride, string file_path, float threshhold)
 * Type 4: in  (int type, offset, stride, float threshhold, float color_R, float color_G, float color_B, ... )
@@ -250,7 +252,7 @@ void add_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
   int offset = args[1]->IntegerValue();
   int stride = args[2]->IntegerValue();
 
-  if(typ_i == 0 || typ_i == 2){
+  if(typ_i == 0){
     interpret_id = base->add_interpretation(typ_i, offset, stride);
   }
   else if(typ_i == 1){
@@ -263,10 +265,18 @@ void add_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
 
     interpret_id = base->add_interpretation(typ_i, offset, stride, start, weights);
   }
-  else if(typ_i == 3){
-    int ref_id        = args[3]->IntegerValue();
-    float threshhold  = args[4]->NumberValue();
-    interpret_id = base->add_interpretation(typ_i, offset, stride, ref_id, threshhold);
+  else if(typ_i == 2 || typ_i == 3 || typ_i == 5){
+    if(args[3]->IsNumber()){
+      int ref_id        = args[3]->IntegerValue();
+      float threshhold  = args[4]->NumberValue();
+      interpret_id = base->add_interpretation(typ_i, offset, stride, ref_id, threshhold);
+    }
+    else{
+      v8::String::Utf8Value param1( args[3]->ToString() );
+      std::string ref_file_path = std::string( *param1 );
+      float threshhold = args[4]->NumberValue();
+      interpret_id = base->add_interpretation(typ_i, offset, stride, ref_file_path, threshhold);
+    }
   }
   else if(typ_i == 4){
     std::shared_ptr<std::vector<float>> colors = std::make_shared<std::vector<float>>();
@@ -281,11 +291,7 @@ void add_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
     else
       std::cout << "\t too few arguments (tpye, float, [r, g, b]*n) \n";
   }
-  else if(typ_i == 5){
-    int ref_id        = args[3]->IntegerValue();
-    float threshhold  = args[4]->NumberValue();
-    interpret_id = base->add_interpretation(typ_i, offset, stride, ref_id, threshhold);
-  }
+
 
   if(interpret_id >= 0 ) {
     std::cout<<"\n\t > intpretation id: "<< interpret_id << "\n";

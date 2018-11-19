@@ -22,9 +22,8 @@ exposure_delta  [int]id   [int]delta
 #include <cctype>
 
 #include "base.hpp"
-#include "average.hpp"
+#include "segment.hpp"
 #include "interpretation.hpp"
-#include "transferfunction.hpp"
 
 #include <opencv2/opencv.hpp>
 
@@ -96,10 +95,10 @@ int main (int argc, char **argv){
           int offset        = std::stoi (v[2]);
           int stride        = std::stoi (v[3]);
 
-          if(typ_i == 0 || typ_i == 2){
+          if(typ_i == 0 /*Average*/){
             interpret_id  = base->add_interpretation(typ_i, offset, stride);
           }
-          else if(typ_i == 1){
+          else if(typ_i == 1 /*Transferfunction*/){
             std::shared_ptr<std::vector<float>> weights = std::make_shared<std::vector<float>>();
             float start = std::stoi (v[4]);
 
@@ -114,7 +113,7 @@ int main (int argc, char **argv){
             std::cout << "]\n";
             interpret_id  = base->add_interpretation(typ_i, offset, stride,  start, weights);
           }
-          else if(typ_i == 3){
+          else if(typ_i == 2 /*Overplott*/){
             if(std::any_of(v[4].begin(), v[4].begin() + 2, ::isdigit)){
               int ref_id        = std::stoi (v[4]);
               float threshhold  = std::stof (v[5]);
@@ -126,7 +125,19 @@ int main (int argc, char **argv){
               interpret_id = base->add_interpretation(typ_i, offset, stride, ref_file_path, threshhold);
             }
           }
-          else if(typ_i == 4){
+          else if(typ_i == 3 /*Boost*/){
+            if(std::any_of(v[4].begin(), v[4].begin() + 2, ::isdigit)){
+              int ref_id        = std::stoi (v[4]);
+              float threshhold  = std::stof (v[5]);
+              interpret_id  = base->add_interpretation(typ_i, offset, stride, ref_id, threshhold);
+            }
+            else{
+              std::string ref_file_path = v[4];
+              float threshhold = std::stof(v[5]);
+              interpret_id = base->add_interpretation(typ_i, offset, stride, ref_file_path, threshhold);
+            }
+          }
+          else if(typ_i == 4 /*BoostColor*/){
             std::shared_ptr<std::vector<float>> colors = std::make_shared<std::vector<float>>();
             float threshhold  = std::stoi (v[4]);
 
@@ -146,7 +157,7 @@ int main (int argc, char **argv){
             else
               std::cout << "\t too few arguments (tpye, float, [r, g, b]*n) \n";
           }
-          else if(typ_i == 5){
+          else if(typ_i == 5 /*Reduce*/){
 
             if(std::any_of(v[4].begin(), v[4].begin() + 2, ::isdigit)){
               int ref_id        = std::stoi (v[4]);
@@ -159,7 +170,6 @@ int main (int argc, char **argv){
               interpret_id = base->add_interpretation(typ_i, offset, stride, ref_file_path, threshhold);
             }
           }
-
 
           if(interpret_id >= 0 ) {
             std::cout << "\t > offset: " << offset << "\n";
@@ -207,7 +217,7 @@ int main (int argc, char **argv){
                 std::cout << "\t > manipulate interpretation id: " << id << " failed. \n";
               }
             }
-            else if(typ_i == 1) {
+            else if(typ_i == 1 /*Transferfrunction*/ ) {
               float start  = std::stoi (v[5]);
               std::shared_ptr<std::vector<float>> weights = std::make_shared<std::vector<float>>();
 
@@ -231,7 +241,7 @@ int main (int argc, char **argv){
                 std::cout << "\t > manipulate interpretation id: " << id << " failed. \n";
               }
             }
-            else if(typ_i == 3 || typ_i == 5){
+            else if(typ_i == 2 || typ_i == 3 || typ_i == 5 /*Overplott, Boost, Reduce*/){
 
               if(std::any_of(v[5].begin(), v[5].begin() + 2, ::isdigit)){
                 int ref_id        = std::stoi (v[5]);
@@ -266,7 +276,7 @@ int main (int argc, char **argv){
                 }
               }
             }
-            else if(typ_i == 4){
+            else if(typ_i == 4 /*BoostColor*/){
               std::shared_ptr<std::vector<float>> colors = std::make_shared<std::vector<float>>();
               float threshhold = std::stof(v[5]);
 

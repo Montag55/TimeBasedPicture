@@ -18,6 +18,7 @@ class Base;
 #include "reduce.hpp"
 #include "boostColor.hpp"
 #include "transferfunction.hpp"
+#include "overplott.hpp"
 
 class Segment {
 public:
@@ -25,7 +26,8 @@ public:
   ~Segment();
 
   bool work(int& work_size);
-  bool interpret_sized(int& work_size);
+  bool interpret_free(int& work_size);
+  bool interpret_extending(int& work_size);
   void update_intensity();
   /*needs to be reimplemented with a owned segment:
   void boost_diff();

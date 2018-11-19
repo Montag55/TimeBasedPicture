@@ -17,7 +17,9 @@ m_threshhold{threshhold},
 m_ptr_delta{mother->get_img_delta()},
 m_pnt_min{mother->get_min_Point()},
 m_pnt_max{mother->get_max_Point()}
-{}
+{
+  m_calc_specification = 0;
+}
 
 Boost::~Boost(){
   //std::cout<<"deleting interpretation-boost\n";
@@ -28,7 +30,7 @@ int Boost::getTypenumber(){
 }
 
 int Boost::get_calculation_specification(){
-  return 0; //standard sum-game
+  return m_calc_specification;  //standard sum-game
 }
 
 void Boost::calc(int id, int start, int length, int sign, cv::Mat& result, float& factor, cv::Mat& fac_mat) {
