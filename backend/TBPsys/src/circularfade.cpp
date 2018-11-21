@@ -3,6 +3,7 @@
 #include <memory>
 #include <string.h>
 #include <vector>
+#include <algorithm>
 
 #include <../include/interpretation.hpp>
 #include <../include/circularfade.hpp>
@@ -10,7 +11,7 @@
 #include <../include/utils.hpp>
 
 
-Circularfade::Circularfade(std::shared_ptr<Base> mother, int id, int type, int start, int length, int mode, float mid, float radius, bool fade_direction, int offset, int stride):
+Circularfade::Circularfade(std::shared_ptr<Base> mother, int id, int type, int start, int length, int mode, cv::Point mid, float radius, bool fade_direction, int offset, int stride):
 Interpretation{ mother, id, type, offset, stride},
 m_start{start},
 m_length{length},
@@ -39,6 +40,10 @@ int Circularfade::get_calculation_specification(){
 
 void Circularfade::calc(int id, int start, int length, int sign, cv::Mat& result, float& factor, cv::Mat& fac_mat) {
   auto start_time = std::chrono::high_resolution_clock::now();
+
+  int seg_start = m_base->get_seg_start(id);
+  int seg_end = m_base->get_seg_end(id);
+
   cv::Mat tmp_frame;
   m_video->set( CV_CAP_PROP_POS_MSEC, start/*frameTime*/);
 
@@ -53,7 +58,7 @@ void Circularfade::calc(int id, int start, int length, int sign, cv::Mat& result
       }
 
       tmp_frame.convertTo(tmp_frame, m_img_type);   //do this for the whole video right at the start!?
-      compute_frame(result, fac_mat, tmp_frame, sign);
+      compute_frame(result, fac_mat, tmp_frame, sign, start + i, seg_start, seg_end);
     }
 
     auto end_time = std::chrono::high_resolution_clock::now();
@@ -64,7 +69,7 @@ void Circularfade::calc(int id, int start, int length, int sign, cv::Mat& result
   }
 }
 
-void Circularfade::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& current_frame, int sign) {
+void Circularfade::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& current_frame, int sign, int frame_num, int seg_start, int seg_end) {
 
   cv::Mat out = cv::Mat(m_pnt_max.y, m_pnt_max.x, m_img_type, cv::Scalar(0,0,0));
   for (unsigned int row = m_pnt_min.y; row < m_pnt_max.y; ++row) {
@@ -80,13 +85,75 @@ void Circularfade::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& cur
       float *uc_pixel_res           = ptr_res;
       float *uc_pixel_fac           = ptr_fac;
       const float *uc_pixel_current = ptr_current;
+
+      float distance = sqrt(pow((float)col - m_mid.x, 2) + pow((float)row - m_mid.y, 2));
+
+      float null_null = sqrt(pow(m_pnt_min.x - m_mid.x, 2) + pow(m_pnt_min.y - m_mid.y, 2));
+      float null_max = sqrt(pow(m_pnt_min.x - m_mid.x, 2) + pow(m_pnt_max.y - m_mid.y, 2));
+      float max_null = sqrt(pow(m_pnt_max.x - m_mid.x, 2) + pow(m_pnt_min.y - m_mid.y, 2));
+      float max_max = sqrt(pow(m_pnt_max.x - m_mid.x, 2) + pow(m_pnt_max.y - m_mid.y, 2));
+      float max_distance = 0;
+
+      if(max_distance < null_null)
+        max_distance = null_null;
+      else if(max_distance < null_max)
+        max_distance = null_max;
+      else if(max_distance < max_null)
+        max_distance = max_null;
+      else if(max_distance < max_max)
+        max_distance = max_max;
+
+
+      //std::cout << "dis: " << distance << ", x: " << col << ", y: " << row << "\n";
+
+      if(distance < m_radius){
+        if(frame_num >= m_start && frame_num <= (m_start + m_length)){
+          uc_pixel_res[0] += uc_pixel_current[0];
+          uc_pixel_res[1] += uc_pixel_current[1];
+          uc_pixel_res[2] += uc_pixel_current[2];
+          uc_pixel_fac[0] += 1;
+          uc_pixel_fac[1] += 1;
+          uc_pixel_fac[2] += 1;
+        }
+      }
+      else{
+        max_distance -= m_radius;
+        distance -= m_radius;
+        float fade_fac = distance / max_distance;
+        float start_border = fade_fac * (seg_start - m_start) + m_start;
+        float end_border = fade_fac * (seg_end - (m_start + m_length)) + m_start + m_length;
+
+        //std::cout << "frame: " << frame_num << " , dis: " << distance << " , start i: " << (int)start_border << " , start f: " << start_border << " , weight: " << (float)start_border - (int)start_border << "\n";
+
+        if(frame_num > (int)start_border && frame_num <= (int)end_border){
+          uc_pixel_res[0] += uc_pixel_current[0];
+          uc_pixel_res[1] += uc_pixel_current[1];
+          uc_pixel_res[2] += uc_pixel_current[2];
+          uc_pixel_fac[0] += 1;
+          uc_pixel_fac[1] += 1;
+          uc_pixel_fac[2] += 1;
+        }
+        else if(frame_num == (int)start_border) {
+          float weight = 1 - fabs((float)start_border - (int)start_border);
+          uc_pixel_res[0] += weight * uc_pixel_current[0];
+          uc_pixel_res[1] += weight * uc_pixel_current[1];
+          uc_pixel_res[2] += weight * uc_pixel_current[2];
+          uc_pixel_fac[0] += weight;
+          uc_pixel_fac[1] += weight;
+          uc_pixel_fac[2] += weight;
+        }
+        else if(frame_num == (int)end_border + 1){
+          float weight = fabs((float)end_border - (int)end_border);
+          uc_pixel_res[0] += weight * uc_pixel_current[0];
+          uc_pixel_res[1] += weight * uc_pixel_current[1];
+          uc_pixel_res[2] += weight * uc_pixel_current[2];
+          uc_pixel_fac[0] += weight;
+          uc_pixel_fac[1] += weight;
+          uc_pixel_fac[2] += weight;
+        }
+      }
+
       //tobe implemented
-          // uc_pixel_res[0] += uc_pixel_current[0];
-          // uc_pixel_res[1] += uc_pixel_current[1];
-          // uc_pixel_res[2] += uc_pixel_current[2];
-          // uc_pixel_fac[0] += 1;
-          // uc_pixel_fac[1] += 1;
-          // uc_pixel_fac[2] += 1;
 
       //shift ptr:
       ptr_out     += m_ptr_delta;
@@ -95,10 +162,10 @@ void Circularfade::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& cur
       ptr_fac     += m_ptr_delta;
     }
   }
-  cv::imwrite("./pimmel.png", out);
+
 }
 
-void Circularfade::manipulate(int start, int length, int mode, float mid, float radius, bool fade_direction, int offset, int stride){
+void Circularfade::manipulate(int start, int length, int mode, cv::Point mid, float radius, bool fade_direction, int offset, int stride){
   bool update_status = false;
   if(m_start != start){
     m_start = start;

@@ -55,6 +55,8 @@ public:
   void reset();
 
   float get_progress();
+  int get_start();
+  int get_end();
 
 private:
   void ready_to_work();

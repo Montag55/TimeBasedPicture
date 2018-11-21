@@ -74,7 +74,7 @@ void Segment::revert_influence(){
       skip = true;
     intensity = m_intensity_global_actual;
   }
-  else if(m_interpretation->getTypenumber() == 2 || m_interpretation->getTypenumber() == 3 || m_interpretation->getTypenumber() == 4 || m_interpretation->getTypenumber() == 5){
+  else if(m_interpretation->getTypenumber() == 2 || m_interpretation->getTypenumber() == 3 || m_interpretation->getTypenumber() == 4 || m_interpretation->getTypenumber() == 5 || m_interpretation->getTypenumber() == 6){
     normalize_factor(influence, factors);
     influence = influence * m_intensity_local_actual * m_intensity_global_actual;
     factors = factors * m_intensity_global_actual;
@@ -105,7 +105,7 @@ void Segment::upload_influence(){
 
     intensity = m_intensity_global_actual;
   }
-  else if(m_interpretation->getTypenumber() == 2 || m_interpretation->getTypenumber() == 3 || m_interpretation->getTypenumber() == 4 || m_interpretation->getTypenumber() == 5){
+  else if(m_interpretation->getTypenumber() == 2 || m_interpretation->getTypenumber() == 3 || m_interpretation->getTypenumber() == 4 || m_interpretation->getTypenumber() == 5 || m_interpretation->getTypenumber() == 6){
     normalize_factor(influence, factors);
     influence = influence * m_intensity_local_actual * m_intensity_global_actual;
     factors = factors * m_intensity_global_actual;
@@ -631,6 +631,20 @@ void Segment::delete_seg(){
   m_mutex_soll.unlock();
 
   ready_to_work();
+}
+
+int Segment::get_start(){
+  m_mutex_soll.lock();
+  int start = m_frame_start_destin;
+  m_mutex_soll.unlock();
+  return start;
+}
+
+int Segment::get_end(){
+  m_mutex_soll.lock();
+  int end = m_frame_last_destin;
+  m_mutex_soll.unlock();
+  return end;
 }
 
 

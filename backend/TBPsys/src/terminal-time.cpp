@@ -174,14 +174,17 @@ int main (int argc, char **argv){
             int start       = std::stoi (v[4]);
             int length      = std::stoi (v[5]);
             int mode        = std::stoi (v[6]);
-            float mid       = std::stof (v[7]);
-            float radius    = std::stof (v[8]);
-            bool fade_dir   = std::stoi (v[9]);
+            float mid_x     = std::stof (v[7]);
+            float mid_y     = std::stof (v[8]);
+            float radius    = std::stof (v[9]);
+            bool fade_dir   = std::stoi (v[10]);
+
+            cv::Point mid = cv::Point(mid_x, mid_y);
 
             std::cout << "\t > start: " << start << "\n";
             std::cout << "\t > length: " << length << "\n";
             std::cout << "\t > func_mode: " << mode << "\n";
-            std::cout << "\t > middle: " << mid << "\n";
+            std::cout << "\t > middle: " << mid_x << ", " << mid_y << "\n";
             std::cout << "\t > radius: " << radius << "\n";
             std::cout << "\t > fade direction: " << fade_dir << "\n";
 
@@ -325,9 +328,12 @@ int main (int argc, char **argv){
               int start       = std::stoi (v[5]);
               int length      = std::stoi (v[6]);
               int mode        = std::stoi (v[7]);
-              float mid       = std::stof (v[8]);
-              float radius    = std::stof (v[9]);
-              bool fade_dir   = std::stoi (v[10]);
+              float mid_x     = std::stof (v[8]);
+              float mid_y     = std::stof (v[9]);
+              float radius    = std::stof (v[10]);
+              bool fade_dir   = std::stoi (v[11]);
+
+              cv::Point mid = cv::Point(mid_x, mid_y);
 
               if(base->manipulate_interpretation(id, start, length, mode, mid, radius, fade_dir, offset, stride)){
                 std::cout << "\t > interpretation id: " << id << "\n";
@@ -335,7 +341,7 @@ int main (int argc, char **argv){
                 std::cout << "\t > start: " << start << "\n";
                 std::cout << "\t > length: " << length << "\n";
                 std::cout << "\t > func_mode: " << mode << "\n";
-                std::cout << "\t > middle: " << mid << "\n";
+                std::cout << "\t > middle: " << mid_x << ", " << mid_y << "\n";
                 std::cout << "\t > radius: " << radius << "\n";
                 std::cout << "\t > fade direction: " << fade_dir << "\n";
                 std::cout << "\t > offset: " << offset << "\n";

@@ -34,14 +34,14 @@ public:
   int                 add_interpretation(int typ_i, int offset, int stride, int ref_id, float threshhold);
   int                 add_interpretation(int typ_i, int offset, int stride, std::string ref_file_path, float threshhold);
   int                 add_interpretation(int typ_i, int offset, int stride, float threshhold, std::shared_ptr<std::vector<float>> values);
-  int                 add_interpretation(int typ_i, int offset, int stride, int start, int length, int mode, float mid, float radius, bool fade_direction);
+  int                 add_interpretation(int typ_i, int offset, int stride, int start, int length, int mode, cv::Point mid, float radius, bool fade_direction);
   bool                delete_segment(int id);
   bool                manipulate_segment(int id, int start, int end, float local_i, float global_i);
   bool                manipulate_interpretation(int id, int offset, int stride);
   bool                manipulate_interpretation(int id, int ref_id, float threshhold, int offset, int stride);
   bool                manipulate_interpretation(int id, std::string ref_file_path, float threshhold, int offset, int stride);
   bool                manipulate_interpretation(int id, float threshhold, std::shared_ptr<std::vector<float>> values, int offset, int stride);
-  bool                manipulate_interpretation(int id, int start, int length, int mode, float mid, float radius, bool fade_direction, int offset, int stride);
+  bool                manipulate_interpretation(int id, int start, int length, int mode, cv::Point mid, float radius, bool fade_direction, int offset, int stride);
 
   //WORK::::::::::::::::::::::::::::::::::::::::::::::::
   float               get_segment_progress(int id);
@@ -60,6 +60,8 @@ public:
   int                 get_last_frame();
   int                 get_img_delta();
   float               get_intensity();
+  int                 get_seg_start(int id);
+  int                 get_seg_end(int id);
   void                set_work_size(int i);
 
   void                add_work(Segment* new_seg);

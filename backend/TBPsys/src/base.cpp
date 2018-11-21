@@ -198,7 +198,7 @@ bool Base::manipulate_interpretation(int id, float threshhold, std::shared_ptr<s
   return true;
 }
 
-bool Base::manipulate_interpretation(int id, int start, int length, int mode, float mid, float radius, bool fade_direction, int offset, int stride){
+bool Base::manipulate_interpretation(int id, int start, int length, int mode, cv::Point mid, float radius, bool fade_direction, int offset, int stride){
 
   if(m_interpretations[id]->getTypenumber() == 6){
     Circularfade& interpretation = dynamic_cast<Circularfade&>(*m_interpretations[id]);
@@ -366,7 +366,7 @@ int Base::add_interpretation(int typ_i, int offset, int stride, float threshhold
   return id;
 }
 
-int Base::add_interpretation(int typ_i, int offset, int stride, int start, int length, int mode, float mid, float radius, bool fade_direction){
+int Base::add_interpretation(int typ_i, int offset, int stride, int start, int length, int mode, cv::Point mid, float radius, bool fade_direction){
   std::cout<<"\t > interpretation: ";
   int id = m_interpretations.size();
 
@@ -571,6 +571,14 @@ void Base::update_result(){
 
   int Base::get_img_delta() {
     return m_img_delta;
+  }
+
+  int Base::get_seg_start(int id){
+    return m_segments[id]->get_start();
+  }
+
+  int Base::get_seg_end(int id){
+    return m_segments[id]->get_end();
   }
 
   void Base::set_work_size(int i) {
