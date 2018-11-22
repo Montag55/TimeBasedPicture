@@ -161,4 +161,7 @@ namespace utils {
     return cv::Scalar((116 * y) - 16, 500 * (x - y), 200 * (y - z));
   }
 
+  float sigmoid(float x, float exponent, float mid){
+    return (1/(1+exp(-exponent*(x-mid))));
+  }
 };
