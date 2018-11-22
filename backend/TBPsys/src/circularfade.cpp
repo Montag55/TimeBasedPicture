@@ -103,55 +103,168 @@ void Circularfade::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& cur
       else if(max_distance < max_max)
         max_distance = max_max;
 
+      if(m_mode == 0){
+        if(m_fade_direction){
+          if(distance < m_radius){
+            if(frame_num >= m_start && frame_num <= (m_start + m_length)){
+              uc_pixel_res[0] += uc_pixel_current[0];
+              uc_pixel_res[1] += uc_pixel_current[1];
+              uc_pixel_res[2] += uc_pixel_current[2];
+              uc_pixel_fac[0] += 1;
+              uc_pixel_fac[1] += 1;
+              uc_pixel_fac[2] += 1;
+            }
+          }
+          else{
+            max_distance -= m_radius;
+            distance -= m_radius;
+            float fade_fac = distance / max_distance;
+            float start_border = fade_fac * (seg_start - m_start) + m_start;
+            float end_border = fade_fac * (seg_end - (m_start + m_length)) + m_start + m_length;
 
-      //std::cout << "dis: " << distance << ", x: " << col << ", y: " << row << "\n";
+            if(frame_num > (int)start_border && frame_num <= (int)end_border){
+              uc_pixel_res[0] += uc_pixel_current[0];
+              uc_pixel_res[1] += uc_pixel_current[1];
+              uc_pixel_res[2] += uc_pixel_current[2];
+              uc_pixel_fac[0] += 1;
+              uc_pixel_fac[1] += 1;
+              uc_pixel_fac[2] += 1;
+            }
+            else if(frame_num == (int)start_border) {
+              float weight = 1 - fabs((float)start_border - (int)start_border);
+              uc_pixel_res[0] += weight * uc_pixel_current[0];
+              uc_pixel_res[1] += weight * uc_pixel_current[1];
+              uc_pixel_res[2] += weight * uc_pixel_current[2];
+              uc_pixel_fac[0] += weight;
+              uc_pixel_fac[1] += weight;
+              uc_pixel_fac[2] += weight;
+            }
+            else if(frame_num == (int)end_border + 1){
+              float weight = fabs((float)end_border - (int)end_border);
+              uc_pixel_res[0] += weight * uc_pixel_current[0];
+              uc_pixel_res[1] += weight * uc_pixel_current[1];
+              uc_pixel_res[2] += weight * uc_pixel_current[2];
+              uc_pixel_fac[0] += weight;
+              uc_pixel_fac[1] += weight;
+              uc_pixel_fac[2] += weight;
+            }
+          }
+        }
+        else{
+          if(distance > m_radius){
+            if(frame_num >= m_start && frame_num <= (m_start + m_length)){
+              uc_pixel_res[0] += uc_pixel_current[0];
+              uc_pixel_res[1] += uc_pixel_current[1];
+              uc_pixel_res[2] += uc_pixel_current[2];
+              uc_pixel_fac[0] += 1;
+              uc_pixel_fac[1] += 1;
+              uc_pixel_fac[2] += 1;
+            }
+          }
+          else{
+            max_distance = m_radius;
+            distance = m_radius - distance;
+            float fade_fac = distance / max_distance;
+            float start_border = fade_fac * (seg_start - m_start) + m_start;
+            float end_border = fade_fac * (seg_end - (m_start + m_length)) + m_start + m_length;
 
-      if(distance < m_radius){
-        if(frame_num >= m_start && frame_num <= (m_start + m_length)){
-          uc_pixel_res[0] += uc_pixel_current[0];
-          uc_pixel_res[1] += uc_pixel_current[1];
-          uc_pixel_res[2] += uc_pixel_current[2];
-          uc_pixel_fac[0] += 1;
-          uc_pixel_fac[1] += 1;
-          uc_pixel_fac[2] += 1;
+            if(frame_num > (int)start_border && frame_num <= (int)end_border){
+              uc_pixel_res[0] += uc_pixel_current[0];
+              uc_pixel_res[1] += uc_pixel_current[1];
+              uc_pixel_res[2] += uc_pixel_current[2];
+              uc_pixel_fac[0] += 1;
+              uc_pixel_fac[1] += 1;
+              uc_pixel_fac[2] += 1;
+            }
+            else if(frame_num == (int)start_border) {
+              float weight = 1 - fabs((float)start_border - (int)start_border);
+              uc_pixel_res[0] += weight * uc_pixel_current[0];
+              uc_pixel_res[1] += weight * uc_pixel_current[1];
+              uc_pixel_res[2] += weight * uc_pixel_current[2];
+              uc_pixel_fac[0] += weight;
+              uc_pixel_fac[1] += weight;
+              uc_pixel_fac[2] += weight;
+            }
+            else if(frame_num == (int)end_border + 1){
+              float weight = fabs((float)end_border - (int)end_border);
+              uc_pixel_res[0] += weight * uc_pixel_current[0];
+              uc_pixel_res[1] += weight * uc_pixel_current[1];
+              uc_pixel_res[2] += weight * uc_pixel_current[2];
+              uc_pixel_fac[0] += weight;
+              uc_pixel_fac[1] += weight;
+              uc_pixel_fac[2] += weight;
+            }
+          }
         }
       }
-      else{
-        max_distance -= m_radius;
-        distance -= m_radius;
-        float fade_fac = distance / max_distance;
-        float start_border = fade_fac * (seg_start - m_start) + m_start;
-        float end_border = fade_fac * (seg_end - (m_start + m_length)) + m_start + m_length;
-
-        //std::cout << "frame: " << frame_num << " , dis: " << distance << " , start i: " << (int)start_border << " , start f: " << start_border << " , weight: " << (float)start_border - (int)start_border << "\n";
-
-        if(frame_num > (int)start_border && frame_num <= (int)end_border){
-          uc_pixel_res[0] += uc_pixel_current[0];
-          uc_pixel_res[1] += uc_pixel_current[1];
-          uc_pixel_res[2] += uc_pixel_current[2];
-          uc_pixel_fac[0] += 1;
-          uc_pixel_fac[1] += 1;
-          uc_pixel_fac[2] += 1;
+      else if (m_mode == 1){
+        if(distance < m_radius){
+          if(frame_num >= m_start && frame_num <= (m_start + m_length)){
+            uc_pixel_res[0] += uc_pixel_current[0];
+            uc_pixel_res[1] += uc_pixel_current[1];
+            uc_pixel_res[2] += uc_pixel_current[2];
+            uc_pixel_fac[0] += 1;
+            uc_pixel_fac[1] += 1;
+            uc_pixel_fac[2] += 1;
+          }
         }
-        else if(frame_num == (int)start_border) {
-          float weight = 1 - fabs((float)start_border - (int)start_border);
-          uc_pixel_res[0] += weight * uc_pixel_current[0];
-          uc_pixel_res[1] += weight * uc_pixel_current[1];
-          uc_pixel_res[2] += weight * uc_pixel_current[2];
-          uc_pixel_fac[0] += weight;
-          uc_pixel_fac[1] += weight;
-          uc_pixel_fac[2] += weight;
-        }
-        else if(frame_num == (int)end_border + 1){
-          float weight = fabs((float)end_border - (int)end_border);
-          uc_pixel_res[0] += weight * uc_pixel_current[0];
-          uc_pixel_res[1] += weight * uc_pixel_current[1];
-          uc_pixel_res[2] += weight * uc_pixel_current[2];
-          uc_pixel_fac[0] += weight;
-          uc_pixel_fac[1] += weight;
-          uc_pixel_fac[2] += weight;
+        else{
+          max_distance -= m_radius;
+          max_distance = sqrt(max_distance);
+          distance -= m_radius;
+          distance = sqrt(distance);
+
+          float fade_fac = distance / max_distance;
+          float start_border = fade_fac * (seg_start - m_start) + m_start;
+          float end_border = fade_fac * (seg_end - (m_start + m_length)) + m_start + m_length;
+
+          // if(row == 500)
+          //   std::cout<< col <<": " << 1 - fabs((float)start_border - (int)start_border) << std::endl;
+
+          if(frame_num > (int)start_border && frame_num <= (int)end_border){
+            uc_pixel_res[0] += uc_pixel_current[0];
+            uc_pixel_res[1] += uc_pixel_current[1];
+            uc_pixel_res[2] += uc_pixel_current[2];
+            uc_pixel_fac[0] += 1;
+            uc_pixel_fac[1] += 1;
+            uc_pixel_fac[2] += 1;
+          }
+          else if(frame_num == (int)start_border) {
+
+            // //new
+            float ref =  fabs(sqrt((int) start_border+1) - (float) sqrt((int)start_border));
+            float weight = 1 - (fabs(sqrt(start_border) - (float) sqrt((int)start_border))) /ref;
+            std::cout<<weight<<" weight ";
+            weight = 1 - fabs((float)start_border - (int)start_border);
+            std::cout<<weight<<" \n";
+
+            uc_pixel_res[0] += weight * uc_pixel_current[0];
+            uc_pixel_res[1] += weight * uc_pixel_current[1];
+            uc_pixel_res[2] += weight * uc_pixel_current[2];
+            uc_pixel_fac[0] += weight;
+            uc_pixel_fac[1] += weight;
+            uc_pixel_fac[2] += weight;
+          }
+          else if(frame_num == (int)end_border + 1){
+            // //new:
+            float ref =  fabs(sqrt((int) end_border+1) - (float) sqrt((int)end_border));
+            float weight = (fabs(sqrt(end_border) - (float) sqrt((int)end_border)))/ref;
+            std::cout<<weight<<" weight ";
+            weight = fabs((float)end_border - (int)end_border);
+            std::cout<<weight<<"\n";
+
+            uc_pixel_res[0] += weight * uc_pixel_current[0];
+            uc_pixel_res[1] += weight * uc_pixel_current[1];
+            uc_pixel_res[2] += weight * uc_pixel_current[2];
+            uc_pixel_fac[0] += weight;
+            uc_pixel_fac[1] += weight;
+            uc_pixel_fac[2] += weight;
+          }
         }
       }
+      else if (m_mode == 2){}
+
+
 
       //tobe implemented
 
