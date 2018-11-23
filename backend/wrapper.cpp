@@ -137,7 +137,7 @@ void manipulate_segment(const v8::FunctionCallbackInfo<v8::Value>& args){
  * Type 4: in  (int id, offset, stride, float threshhold, float color_R, float color_G, float color_B, ... )
  * Type 5: in  (int id, offset, stride, int ref_id, float threshhold)
  *             (int id, offset, stride, string file_path, float threshhold)
- * Type 6: in  (int type, offset, stride, int start, int length, int mode, float mid, float radius, int fadeDirection)
+ * Type 6: in  (int type, offset, stride, int start, int end, int mode, float mid, float radius, int fadeDirection, float parameter)
  */
 void manipulate_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
   v8::Isolate* isolate = args.GetIsolate();
@@ -202,12 +202,14 @@ void manipulate_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
   }
   else if(typ_i == 6){
     int start     = args[3]->IntegerValue();
-    int length    = args[4]->IntegerValue();
+    int end    = args[4]->IntegerValue();
     int mode      = args[5]->IntegerValue();
     float mid     = args[6]->NumberValue();
     float radius  = args[7]->NumberValue();
     bool fade_dir = args[8]->IntegerValue();
-    if(!base->manipulate_interpretation(typ_i, offset, stride, start, length, mode, mid, radius, fade_dir)){
+    float parameter = args[9]->NumberValue();
+
+    if(!base->manipulate_interpretation(typ_i, offset, stride, start, end, mode, mid, radius, fade_dir, parameter)){
       correct = "false";
       std::cout << "manipulate_segment() failed. \n";
     }
@@ -253,7 +255,7 @@ void get_segment_progress(const v8::FunctionCallbackInfo<v8::Value>& args){
 * Type 4: in  (int type, offset, stride, float threshhold, float color_R, float color_G, float color_B, ... )
 * Type 5: in  (int type, offset, stride, int ref_id, float threshhold)
 *             (int type, offset, stride, string file_path, float threshhold)
-* Type 6: in  (int type, offset, stride, int start, int length, int mode, float mid, float radius, int fadeDirection)
+* Type 6: in  (int type, offset, stride, int start, int end, int mode, float mid, float radius, int fadeDirection, float parameter)
 */
 void add_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
   v8::Isolate* isolate = args.GetIsolate();
@@ -305,12 +307,14 @@ void add_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
   }
   else if(typ_i == 6){
     int start     = args[3]->IntegerValue();
-    int length    = args[4]->IntegerValue();
+    int end    = args[4]->IntegerValue();
     int mode      = args[5]->IntegerValue();
     float mid     = args[6]->NumberValue();
     float radius  = args[7]->NumberValue();
     bool fade_dir = args[8]->IntegerValue();
-    interpret_id = base->add_interpretation(typ_i, offset, stride, start, length, mode, mid, radius, fade_dir);
+    float parameter  = args[9]->NumberValue();
+
+    interpret_id = base->add_interpretation(typ_i, offset, stride, start, end, mode, mid, radius, fade_dir, parameter);
   }
 
   if(interpret_id >= 0 ) {
