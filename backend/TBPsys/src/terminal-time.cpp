@@ -172,23 +172,25 @@ int main (int argc, char **argv){
           }
           else if(typ_i == 6 /*CircularFade*/){
             int start       = std::stoi (v[4]);
-            int length      = std::stoi (v[5]);
+            int end      = std::stoi (v[5]);
             int mode        = std::stoi (v[6]);
             float mid_x     = std::stof (v[7]);
             float mid_y     = std::stof (v[8]);
             float radius    = std::stof (v[9]);
             bool fade_dir   = std::stoi (v[10]);
+            float parameter   = std::stof (v[11]);
 
             cv::Point mid = cv::Point(mid_x, mid_y);
 
             std::cout << "\t > start: " << start << "\n";
-            std::cout << "\t > length: " << length << "\n";
+            std::cout << "\t > end: " << end << "\n";
             std::cout << "\t > func_mode: " << mode << "\n";
             std::cout << "\t > middle: " << mid_x << ", " << mid_y << "\n";
             std::cout << "\t > radius: " << radius << "\n";
             std::cout << "\t > fade direction: " << fade_dir << "\n";
+            std::cout << "\t > parameter: " << parameter << "\n";
 
-            interpret_id  = base->add_interpretation(typ_i, offset, stride, start, length, mode, mid, radius, fade_dir);
+            interpret_id  = base->add_interpretation(typ_i, offset, stride, start, end, mode, mid, radius, fade_dir, parameter);
           }
 
           if(interpret_id >= 0 ) {
@@ -326,24 +328,26 @@ int main (int argc, char **argv){
             }
             else if(typ_i == 6 /*CircularFade*/){
               int start       = std::stoi (v[5]);
-              int length      = std::stoi (v[6]);
+              int end      = std::stoi (v[6]);
               int mode        = std::stoi (v[7]);
               float mid_x     = std::stof (v[8]);
               float mid_y     = std::stof (v[9]);
               float radius    = std::stof (v[10]);
               bool fade_dir   = std::stoi (v[11]);
+              float parameter = std::stof (v[12]);
 
               cv::Point mid = cv::Point(mid_x, mid_y);
 
-              if(base->manipulate_interpretation(id, start, length, mode, mid, radius, fade_dir, offset, stride)){
+              if(base->manipulate_interpretation(id, start, end, mode, mid, radius, fade_dir, parameter ,offset, stride)){
                 std::cout << "\t > interpretation id: " << id << "\n";
                 std::cout << "\t > typ: " << typ_i << "\n";
                 std::cout << "\t > start: " << start << "\n";
-                std::cout << "\t > length: " << length << "\n";
+                std::cout << "\t > end: " << end << "\n";
                 std::cout << "\t > func_mode: " << mode << "\n";
                 std::cout << "\t > middle: " << mid_x << ", " << mid_y << "\n";
                 std::cout << "\t > radius: " << radius << "\n";
                 std::cout << "\t > fade direction: " << fade_dir << "\n";
+                std::cout << "\t > parameter: " << parameter << "\n";
                 std::cout << "\t > offset: " << offset << "\n";
                 std::cout << "\t > stride: " << stride << "\n\n";
               }

@@ -11,19 +11,23 @@
 #include <../include/utils.hpp>
 
 
-Circularfade::Circularfade(std::shared_ptr<Base> mother, int id, int type, int start, int length, int mode, cv::Point mid, float radius, bool fade_direction, int offset, int stride):
+Circularfade::Circularfade(std::shared_ptr<Base> mother, int id, int type, int start, int end, int mode, cv::Point mid, float radius, bool fade_direction, float parameter, int offset, int stride):
 Interpretation{ mother, id, type, offset, stride},
 m_start{start},
-m_length{length},
+m_end{end},
 m_mode{mode},
 m_mid{mid},
 m_radius{radius},
 m_fade_direction{fade_direction},
+m_parameter{parameter},
 m_ptr_delta{mother->get_img_delta()},
 m_pnt_min{mother->get_min_Point()},
 m_pnt_max{mother->get_max_Point()}
 {
   m_calc_specification = 2;
+  if(m_mode > 1)
+    std::cout << "\t ! you fool. Now the mode = linealinear." << std::endl;
+
 }
 
 Circularfade::~Circularfade(){
@@ -106,7 +110,7 @@ void Circularfade::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& cur
 
         if(m_fade_direction){
           if(distance < m_radius){
-            if(frame_num >= m_start && frame_num <= (m_start + m_length)){
+            if(frame_num >= m_start && frame_num <= m_end){
               uc_pixel_res[0] += uc_pixel_current[0];
               uc_pixel_res[1] += uc_pixel_current[1];
               uc_pixel_res[2] += uc_pixel_current[2];
@@ -121,18 +125,16 @@ void Circularfade::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& cur
             if(m_mode==0){
 
               //power
-              int power=2;
-              max_distance = pow(max_distance, power);
-              distance = pow(distance, power);
+              max_distance = pow(max_distance, m_parameter);
+              distance = pow(distance, m_parameter);
 
             }
             else if(m_mode==1){
 
               //sigmoid
-              float fac=0.01;
-              distance = utils::sigmoid(distance, fac, max_distance/2);
-              float min_clip = utils::sigmoid(0, fac, max_distance/2);
-              max_distance = utils::sigmoid(max_distance, fac, max_distance/2);
+              distance = utils::sigmoid(distance, m_parameter, max_distance/2);
+              float min_clip = utils::sigmoid(0, m_parameter, max_distance/2);
+              max_distance = utils::sigmoid(max_distance, m_parameter, max_distance/2);
               max_distance -= min_clip;
               distance -= min_clip;
 
@@ -144,7 +146,7 @@ void Circularfade::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& cur
             }
             float fade_fac = distance / max_distance;
             float start_border = fade_fac * (seg_start - m_start) + m_start;
-            float end_border = fade_fac * (seg_end - (m_start + m_length)) + m_start + m_length;
+            float end_border = fade_fac * (seg_end - m_end) + m_end;
 
             if(frame_num > (int)start_border && frame_num <= (int)end_border){
               uc_pixel_res[0] += uc_pixel_current[0];
@@ -176,7 +178,7 @@ void Circularfade::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& cur
         }
         else{
           if(distance > m_radius){
-            if(frame_num >= m_start && frame_num <= (m_start + m_length)){
+            if(frame_num >= m_start && frame_num <= m_end){
               uc_pixel_res[0] += uc_pixel_current[0];
               uc_pixel_res[1] += uc_pixel_current[1];
               uc_pixel_res[2] += uc_pixel_current[2];
@@ -188,21 +190,19 @@ void Circularfade::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& cur
           else{
             max_distance = m_radius;
             distance = m_radius - distance;
-            if(m_mode==0){
+            if(m_mode == 0){
 
               //power
-              int power=2;
-              max_distance = pow(max_distance, power);
-              distance = pow(distance, power);
+              max_distance = pow(max_distance, m_parameter);
+              distance = pow(distance, m_parameter);
 
             }
-            else if(m_mode==1){
+            else if(m_mode == 1){
 
               //sigmoid
-              float fac=0.01;
-              distance = utils::sigmoid(distance, fac, max_distance/2);
-              float min_clip = utils::sigmoid(0, fac, max_distance/2);
-              max_distance = utils::sigmoid(max_distance, fac, max_distance/2);
+              distance = utils::sigmoid(distance, m_parameter, max_distance/2);
+              float min_clip = utils::sigmoid(0, m_parameter, max_distance/2);
+              max_distance = utils::sigmoid(max_distance, m_parameter, max_distance/2);
               max_distance -= min_clip;
               distance -= min_clip;
 
@@ -215,7 +215,7 @@ void Circularfade::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& cur
 
             float fade_fac = distance / max_distance;
             float start_border = fade_fac * (seg_start - m_start) + m_start;
-            float end_border = fade_fac * (seg_end - (m_start + m_length)) + m_start + m_length;
+            float end_border = fade_fac * (seg_end - m_end) + m_end;
 
             if(frame_num > (int)start_border && frame_num <= (int)end_border){
               uc_pixel_res[0] += uc_pixel_current[0];
@@ -256,14 +256,14 @@ void Circularfade::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& cur
 
 }
 
-void Circularfade::manipulate(int start, int length, int mode, cv::Point mid, float radius, bool fade_direction, int offset, int stride){
+void Circularfade::manipulate(int start, int end, int mode, cv::Point mid, float radius, bool fade_direction, float parameter, int offset, int stride){
   bool update_status = false;
   if(m_start != start){
     m_start = start;
     update_status = true;
   }
-  if(m_length != length){
-    m_length = length;
+  if(m_end != end){
+    m_end = end;
     update_status = true;
   }
   if(m_mode != mode){
@@ -280,6 +280,10 @@ void Circularfade::manipulate(int start, int length, int mode, cv::Point mid, fl
   }
   if(m_fade_direction != fade_direction){
     m_fade_direction = fade_direction;
+    update_status = true;
+  }
+  if(m_parameter != parameter){
+    m_parameter = parameter;
     update_status = true;
   }
   if(m_offset != offset){
