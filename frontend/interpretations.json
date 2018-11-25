@@ -1,0 +1,177 @@
+[
+    {
+        "name": "Average",
+        "id": 0,
+        "types": [
+            {
+                "name": "offset",
+                "type": "number",
+                "min": 0,
+                "max": 10,
+                "step": 1
+            },
+            {
+                "name": "stride",
+                "type": "number",
+                "min": 0,
+                "max": 1,
+                "step": 0.1
+            }
+        ]
+    },
+    {
+        "name": "Transfer Function",
+        "id": 1,
+        "types": [
+            {
+                "name": "offset",
+                "type": "number",
+                "min": 0,
+                "max": 10,
+                "step": 1
+            },
+            {
+                "name": "stride",
+                "type": "number",
+                "min": 0,
+                "max": 1,
+                "step": 0.1
+            },
+            {
+                "name": "start",
+                "type": "number",
+                "min": 0,
+                "max": 1,
+                "step": 0.1
+            },
+            {
+                "name": "transfer",
+                "type": "transfer"
+            }
+        ]
+    },
+    {
+        "name": "Overplotting",
+        "id": 2,
+        "types": [
+            {
+                "name": "offset",
+                "type": "number",
+                "min": 0,
+                "max": 10,
+                "step": 1
+            },
+            {
+                "name": "stride",
+                "type": "number",
+                "min": 0,
+                "max": 1,
+                "step": 0.1
+            },
+            {
+                "name": "ref",
+                "type": "string"
+            },
+            {
+                "name": "threshold",
+                "type": "number",
+                "min": 0,
+                "max": 10,
+                "step": 1
+            }
+        ]
+    },
+    {
+        "name": "Boost",
+        "id": 3,
+        "types": [
+            {
+                "name": "offset",
+                "type": "number",
+                "min": 0,
+                "max": 10,
+                "step": 1
+            },
+            {
+                "name": "stride",
+                "type": "number",
+                "min": 0,
+                "max": 1,
+                "step": 0.1
+            },
+            {
+                "name": "ref",
+                "type": "string"
+            },
+            {
+                "name": "threshhold",
+                "type": "number",
+                "min": 0,
+                "max": 10,
+                "step": 1
+            }
+        ]
+    },
+    {
+        "name": "Boost Color",
+        "id": 4,
+        "types": [
+            {
+                "name": "offset",
+                "type": "number",
+                "min": 0,
+                "max": 10,
+                "step": 1
+            },
+            {
+                "name": "stride",
+                "type": "number",
+                "min": 0,
+                "max": 1,
+                "step": 0.1
+            },
+            {
+                "name": "threshold",
+                "type": "number",
+                "min": 0,
+                "max": 1,
+                "step": 0.1
+            },
+            {
+                "name": "colors",
+                "type": "color"
+            }
+        ]
+    },
+    {
+        "name": "Reduce",
+        "id": 5,
+        "types": [
+            {
+                "name": "offset",
+                "type": "number",
+                "min": 0,
+                "max": 10,
+                "step": 1
+            },
+            {
+                "name": "stride",
+                "type": "number",
+                "min": 0,
+                "max": 1,
+                "step": 0.1
+            },
+            {
+                "name": "ref",
+                "type": "string"
+            },
+            {
+                "name": "threshold",
+                "type": "number",
+                "min": 0,
+                "max": 1,
+                "step": 0.1
+            }
+        ]
+    }
+]
