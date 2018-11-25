@@ -1,3 +1,5 @@
+process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
+
 const wrapper = require('../build/Release/wrapper.node')
 const IPCStream = require('electron-ipc-stream')
 const fs = require('fs')
@@ -24,6 +26,18 @@ function createWindow () {
 
   ipcs = new IPCStream('any-arbitrary-channel-name', win)
 }
+
+ipcMain.on("addInterpretation", (event, arg) => {
+  let arr = [];
+  Object.keys(arg).forEach(function (key) {
+    arr.push(arg[key]);
+  });
+  console.log(arr);
+  let id = wrapper.add_interpretation().apply(null, arr);
+
+  event.sender.send('addedInterpretation', id)
+  //console.log(id);
+})
 
 ipcMain.on("getProgress", (event, arg) => {
   let progress = wrapper.get_segment_progress(arg);

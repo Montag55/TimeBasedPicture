@@ -9,7 +9,6 @@
         <link rel="stylesheet" href="css/timeline.css">
         <link rel="stylesheet" href="css/preview.css">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
-
     </head>
     <body>
         <div class="top-bar">
@@ -57,61 +56,16 @@
                     <div class="tab">
                         <div class="interpretations">
                             <h1>Interpretations</h1>
-                            <div class="container border-in">
-                                <div class="interpretation">
-                                    <p class="interpretation-name">
-                                        i_0
-                                    </p>
-                                    <p class="interpretation-type">
-                                        AVG
-                                    </p>
-                                    <i class="fas fa-project-diagram"></i>
-                                </div>
-                                <div class="interpretation">
-                                    <p class="interpretation-name">
-                                        i_1
-                                    </p>
-                                    <p class="interpretation-type">
-                                        MOTION
-                                    </p>
-                                    <i class="fas fa-project-diagram"></i>
-                                </div>
+                            <br>
+                            <div class="container">
+                            
                             </div>
                             <br>
-                            <select name="carlist" form="carform">
-                                <option value="average">Average</option>
-                                <option value="transfer">Transfer</option>
-                                <option value="overwrite">Overwrite</option>
-                                <option value="motion">Motion</option>
-                            </select>
-                            <button class="add">
-                                <i class="fa fa-plus"></i>
-                            </button>
-                            <br>
-                            <br>
+                            <select name="" id="">
 
-                            <p class="i-id"></p>
-                            <div class="avg">
-        
-                            </div>
-                            <div class="transfer">
-                            </div>
-                            <div class="overwrite">
-                                <p>Threshold</p>
-                                <input type="number">
-                                <br>
-                                <br>
-                                <p>Offset</p>
-                                <input type="number">
-                                <br>
-                                <br>
-                                <p>Gapping</p>
-                                <input type="number">
-                                <br>
-                                <br>
-                            </div>
-                            <div class="motion">
-                            </div>
+                            </select>
+                            <button class="add">+</button>
+                            <div class="editor"></div>
                         </div>
                     </div>
                     <div class="tab">
@@ -308,6 +262,9 @@
             });
         </script>
         <script src="js/modules/config.js"></script>
+        <script src="js/modules/color.js"></script>
+        <script src="js/modules/transfer.js"></script>
+        <script src="js/modules/loader.js"></script>
         <script src="js/modules/masking.js"></script>
         <script src="js/modules/tabs.js"></script>
         <script src="js/modules/edit.js"></script>

@@ -11,7 +11,8 @@
             "backend/TBPsys/src/transferfunction.cpp",
             "backend/TBPsys/src/boost.cpp",
             "backend/TBPsys/src/boostColor.cpp",
-            "backend/TBPsys/src/reduce.cpp"
+            "backend/TBPsys/src/reduce.cpp",
+            "backend/TBPsys/src/overplott.cpp"
        ],
        "include_dirs": [
          "backend/TBPsys/include/"

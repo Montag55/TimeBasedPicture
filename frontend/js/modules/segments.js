@@ -251,12 +251,18 @@ let Segments = (function () {
             return;
         }
         Object.keys(segments).forEach(function (key) {
+            if (typeof(segments[key]) === 'undefined' || segments[key] === null) {
+                return;
+            }
             let segment = segments[key];
             requestProgress(segment.id);
         });
     }
 
     function updateProgress(data) {
+        if (typeof(segments[data.id]) === 'undefined' || segments[data.id] === null) {
+            return;
+        }
         // segments[data.id].progress.style.width = 100 - parseFloat(data.progress) + "%";
         segments[data.id].progress.style.left = parseFloat(data.progress) + "%";
     }

@@ -6,7 +6,9 @@
   "dependencies": {
     "electron-ipc-stream": "^0.2.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "electron": "^1.4.5"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron ."

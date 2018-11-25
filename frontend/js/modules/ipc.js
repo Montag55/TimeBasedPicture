@@ -24,6 +24,11 @@ ipcRenderer.on('init', (event, arg) => {
     Timeline.init(args[0], args[1]);
 });
 
+function requestAddInterpretation() {
+    console.log(arguments);
+    ipcRenderer.send('addInterpretation', arguments)
+}
+
 function requestAdd() {
     startTime = Date.now();
     ipcRenderer.send('addSegment', '');
