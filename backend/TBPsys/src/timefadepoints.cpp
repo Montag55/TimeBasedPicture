@@ -94,6 +94,7 @@ void Timefadepoints::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& c
 
       */
       std::list<cv::Vec3f> pnts_sorted; //start, end, distance
+      float sum=0;
       for(int i=0; i < (*m_points).size(); i++){
         //calc distance
         float pnt_dis=-1;
@@ -102,51 +103,97 @@ void Timefadepoints::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& c
           pnt_dis = abs(col-(*m_points)[i][0])+abs(row-(*m_points)[i][1]);
         }else{
           //euklid 2d
-          pnt_dis = sqrt(pow(col-(*m_points)[i][0],2))+sqrt(pow(row-(*m_points)[i][1],2));
+        pnt_dis = sqrt(pow(col-(*m_points)[i][0],2)+pow(row-(*m_points)[i][1],2));
         }
+        sum+=pnt_dis;
         //insert according to distance
         if(pnts_sorted.size()==0){
           pnts_sorted.push_back(cv::Vec3f((*m_points)[i][2],(*m_points)[i][3], pnt_dis));
         }else{
+          bool inserted=false;
           for(std::list<cv::Vec3f>::iterator o = pnts_sorted.begin(); o != pnts_sorted.end(); ++o){
             if((*o)[2] > pnt_dis){
               pnts_sorted.insert(o, cv::Vec3f((*m_points)[i][2],(*m_points)[i][3], pnt_dis));
+              inserted=true;
               break;
             }
+          }
+          if(!inserted){
+            pnts_sorted.push_back(cv::Vec3f((*m_points)[i][2],(*m_points)[i][3], pnt_dis));
           }
         }
       }
       //points are sorted now!
 
       //calc borders:
-      float ref_dis = (*pnts_sorted.begin())[2] + (pnts_sorted.back())[2];
-      ref_dis = pow(ref_dis,m_param);
-
+      float ref_dis = (*pnts_sorted.begin())[2]+ (pnts_sorted.back())[2];
+      //std::cout << (*pnts_sorted.begin())[2] <<" "<< (pnts_sorted.back())[2] << "\n";
       float start_border = 0;
       float end_border = 0;
       float fac_sum=0;
       for(std::list<cv::Vec3f>::iterator o = pnts_sorted.begin(); o != pnts_sorted.end(); ++o){
-        fac_sum+=pow(ref_dis-(*o)[2],m_param);
+        if( m_mode_d == 0 ){
+          //abs 1d
+          fac_sum+=(abs(ref_dis-(*o)[2]));
+        }else{
+          //euklid 2d
+          fac_sum+=sqrt(std::pow(abs(ref_dis-(*o)[2]),m_param));
+        }
+        //std::cout<<std::pow(abs(ref_dis-(*o)[2]),m_param)<<"val\n";
       }
+      //std::cout<<fac_sum<<" fsum\n";
+
 
       float seg_delta= seg_end-seg_start;
 
       for(std::list<cv::Vec3f>::iterator o = pnts_sorted.begin(); o != pnts_sorted.end(); ++o){
-        double influence = (std::pow(ref_dis-(*o)[2],m_param)) / fac_sum;//sum)*(
+
+        double influence=0;
+        if( m_mode_d == 0 ){
+          //abs 1d
+          influence=(abs(ref_dis-(*o)[2]))/fac_sum;
+        }else{
+          //euklid 2d
+          influence=sqrt(std::pow(abs(ref_dis-(*o)[2]),m_param))/fac_sum;
+        }
+
+        //std::cout<<"influ "<< influence<<"\n";
         start_border+=(*o)[0]*influence;
         end_border  +=(*o)[1]*influence;
       }
 
-      start_border= seg_start + start_border*seg_delta;
-
-      if(frame_num > (int)start_border && frame_num <= (int)end_border){
+      start_border = seg_start + start_border*seg_delta;
+      end_border =   seg_start + end_border*seg_delta;
+    //  std::cout<<"frame_num: "<<frame_num<<" start_border: "<<start_border<<" end_border: "<<end_border<<"\n";
+      if(frame_num >= (int)start_border && frame_num <= (int)end_border){
+      //  std::cout<<"paint\n";
         uc_pixel_res[0] += uc_pixel_current[0];
         uc_pixel_res[1] += uc_pixel_current[1];
         uc_pixel_res[2] += uc_pixel_current[2];
         uc_pixel_fac[0] += 1;
         uc_pixel_fac[1] += 1;
         uc_pixel_fac[2] += 1;
+      }else if(frame_num == (int)start_border-1) {
+        float weight = 1 - fabs((float)start_border - (int)start_border);
+        uc_pixel_res[0] += weight * uc_pixel_current[0];
+        uc_pixel_res[1] += weight * uc_pixel_current[1];
+        uc_pixel_res[2] += weight * uc_pixel_current[2];
+        uc_pixel_fac[0] += weight;
+        uc_pixel_fac[1] += weight;
+        uc_pixel_fac[2] += weight;
       }
+      else if(frame_num == (int)end_border + 1){
+        float weight = fabs((float)end_border - (int)end_border);
+        uc_pixel_res[0] += weight * uc_pixel_current[0];
+        uc_pixel_res[1] += weight * uc_pixel_current[1];
+        uc_pixel_res[2] += weight * uc_pixel_current[2];
+        uc_pixel_fac[0] += weight;
+        uc_pixel_fac[1] += weight;
+        uc_pixel_fac[2] += weight;
+      }
+
+
+
       //nun fehlt nur noch interframe interpolation...
 
         //max dis
