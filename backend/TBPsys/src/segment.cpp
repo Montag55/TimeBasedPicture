@@ -248,7 +248,6 @@ void Segment::update_intensity(){
 }
 
 bool Segment::interpret_free( int & work_size){
-  std::cout<<"interpret free\n";
 
   m_mutex_soll.lock();
   int dest_start = m_frame_start_destin;
