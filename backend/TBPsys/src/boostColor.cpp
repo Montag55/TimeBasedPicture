@@ -63,24 +63,16 @@ void BoostColor::calc(int id, int start, int length, int sign, cv::Mat& result, 
 
 void BoostColor::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& current_frame, int sign) {
 
-  cv::Mat tmp;
-  cv::cvtColor(current_frame, tmp, cv::COLOR_BGR2Lab);
-
-  cv::Scalar tmp_2 = cv::Scalar(50, 3.1571, -77.2803);
-  cv::cvtColor(tmp_2, tmp_2, cv::COLOR_RGB2Lab);
-
   for (unsigned int row = m_pnt_min.y; row < m_pnt_max.y; ++row) {
     //ptr:
     float* ptr_res            =  (float*) result.ptr(row);
     float* ptr_fac            =  (float*) fac_mat.ptr(row);
-    //const float* ptr_CIELAB   =  (float*) CIELAB_frame.ptr(row);
     const float* ptr_current  =  (float*) current_frame.ptr(row);
 
     for (unsigned int col = m_pnt_min.x; col < m_pnt_max.x; col++) {
       //ptr:
       float *uc_pixel_res           = ptr_res;
       float *uc_pixel_fac           = ptr_fac;
-      //float *uc_pixel_CIELAB        = ptr_CIELAB;
       const float *uc_pixel_current = ptr_current;
 
       float distance_RGB = -1;
