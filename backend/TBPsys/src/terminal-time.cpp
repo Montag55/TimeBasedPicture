@@ -193,7 +193,26 @@ int main (int argc, char **argv){
             interpret_id  = base->add_interpretation(typ_i, offset, stride, start, end, mode, mid, radius, fade_dir, parameter);
           }
           else if(typ_i == 7 /*Timefadepoints*/){
-            
+            std::shared_ptr<std::vector<cv::Vec4f>> points = std::make_shared<std::vector<cv::Vec4f>>();
+            int mode_distance = std::stoi (v[4]);
+            int mode_function = std::stoi (v[5]);
+            float parameter  = std::stof (v[6]);
+
+            for(int idx = 7; idx < v.size(); idx += 4){
+              cv::Vec4f tmp {std::stof(v[idx]), std::stof(v[idx+1]),
+                             std::stof(v[idx+2]), std::stof(v[idx+3])};
+              points->push_back(tmp);
+            }
+
+            std::cout << "\t > mode_distance: " << mode_distance << "\n";
+            std::cout << "\t > mode_function: " << mode_function << "\n";
+            std::cout << "\t > parameter: " << parameter << "\n";
+            std::cout << "\t > points: [";
+            for(unsigned int i = 0; i < points->size(); i++){
+              std::cout << (*points)[i] << ", ";
+            }
+            std::cout << "]\n";
+            interpret_id  = base->add_interpretation(typ_i, offset, stride, mode_distance, mode_function, parameter, points);
           }
 
           if(interpret_id >= 0 ) {
@@ -331,7 +350,7 @@ int main (int argc, char **argv){
             }
             else if(typ_i == 6 /*CircularFade*/){
               int start       = std::stoi (v[5]);
-              int end      = std::stoi (v[6]);
+              int end         = std::stoi (v[6]);
               int mode        = std::stoi (v[7]);
               float mid_x     = std::stof (v[8]);
               float mid_y     = std::stof (v[9]);
@@ -358,6 +377,27 @@ int main (int argc, char **argv){
                 std::cout << "\t > manipulate interpretation id: " << id << " failed. \n";
               }
 
+            }
+            else if(typ_i == 7 /*TimeFadePoints*/){
+              std::shared_ptr<std::vector<cv::Vec4f>> points = std::make_shared<std::vector<cv::Vec4f>>();
+              int mode_distance = std::stoi (v[5]);
+              int mode_function = std::stoi (v[6]);
+              float parameter  = std::stof (v[7]);
+
+              for(int idx = 8; idx < v.size(); idx += 4){
+                cv::Vec4f tmp {std::stof(v[idx]), std::stof(v[idx+1]),
+                               std::stof(v[idx+2]), std::stof(v[idx+3])};
+                points->push_back(tmp);
+              }
+
+              std::cout << "\t > mode_distance: " << mode_distance << "\n";
+              std::cout << "\t > mode_function: " << mode_function << "\n";
+              std::cout << "\t > parameter: " << parameter << "\n";
+              std::cout << "\t > points: [";
+              for(unsigned int i = 0; i < points->size(); i++){
+                std::cout << (*points)[i] << ", ";
+              }
+              std::cout << "]\n";
             }
             else {
               std::cout<<"not yet implemented manipulation\n";
