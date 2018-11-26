@@ -93,19 +93,62 @@ void Timefadepoints::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& c
           ->out
 
       */
-      float distance_sum = 0;
-      for(int i=0; i<m_points->size(); i++){
+      std::list<cv::Vec3f> pnts_sorted; //start, end, distance
+      for(int i=0; i < (*m_points).size(); i++){
         //calc distance
-        float pnt_dis;
+        float pnt_dis=-1;
         if( m_mode_d == 0 ){
-          //abs
-        //  pnt_dis = abs(col-m_points[i]->x)+abs(row-m_points[i]->y);
+          //abs 1d
+          pnt_dis = abs(col-(*m_points)[i][0])+abs(row-(*m_points)[i][1]);
         }else{
-          //euklid
-          //pnt_dis = sqrt(pow(col-m_points[i]->x,2)+sqrt(pow(row-m_points[i]->y,2));
+          //euklid 2d
+          pnt_dis = sqrt(pow(col-(*m_points)[i][0],2))+sqrt(pow(row-(*m_points)[i][1],2));
         }
         //insert according to distance
+        if(pnts_sorted.size()==0){
+          pnts_sorted.push_back(cv::Vec3f((*m_points)[i][2],(*m_points)[i][3], pnt_dis));
+        }else{
+          for(std::list<cv::Vec3f>::iterator o = pnts_sorted.begin(); o != pnts_sorted.end(); ++o){
+            if((*o)[2] > pnt_dis){
+              pnts_sorted.insert(o, cv::Vec3f((*m_points)[i][2],(*m_points)[i][3], pnt_dis));
+              break;
+            }
+          }
+        }
       }
+      //points are sorted now!
+
+      //calc borders:
+      float ref_dis = (*pnts_sorted.begin())[2] + (pnts_sorted.back())[2];
+      ref_dis = pow(ref_dis,m_param);
+
+      float start_border = 0;
+      float end_border = 0;
+      float fac_sum=0;
+      for(std::list<cv::Vec3f>::iterator o = pnts_sorted.begin(); o != pnts_sorted.end(); ++o){
+        fac_sum+=pow(ref_dis-(*o)[2],m_param);
+      }
+
+      float seg_delta= seg_end-seg_start;
+
+      for(std::list<cv::Vec3f>::iterator o = pnts_sorted.begin(); o != pnts_sorted.end(); ++o){
+        double influence = (std::pow(ref_dis-(*o)[2],m_param)) / fac_sum;//sum)*(
+        start_border+=(*o)[0]*influence;
+        end_border  +=(*o)[1]*influence;
+      }
+
+      start_border= seg_start + start_border*seg_delta;
+
+      if(frame_num > (int)start_border && frame_num <= (int)end_border){
+        uc_pixel_res[0] += uc_pixel_current[0];
+        uc_pixel_res[1] += uc_pixel_current[1];
+        uc_pixel_res[2] += uc_pixel_current[2];
+        uc_pixel_fac[0] += 1;
+        uc_pixel_fac[1] += 1;
+        uc_pixel_fac[2] += 1;
+      }
+      //nun fehlt nur noch interframe interpolation...
+
         //max dis
 
         // if(m_fade_direction){
