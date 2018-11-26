@@ -261,13 +261,18 @@ void get_segment_progress(const v8::FunctionCallbackInfo<v8::Value>& args){
 * Type 6: in  (int type, offset, stride, int start, int end, int mode, float mid, float radius, int fadeDirection, float parameter)
 */
 void add_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
+
   v8::Isolate* isolate = args.GetIsolate();
+
 
   //check if values fit!?
   int interpret_id = -1;
+
   int typ_i = args[0]->IntegerValue();
   int offset = args[1]->IntegerValue();
   int stride = args[2]->IntegerValue();
+
+  std::cout << typ_i;
 
   if(typ_i == 0){
     interpret_id = base->add_interpretation(typ_i, offset, stride);
@@ -332,6 +337,7 @@ void add_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
 
   auto msg = v8::Number::New(isolate, interpret_id);
   args.GetReturnValue().Set(msg);
+
 }
 
 /**

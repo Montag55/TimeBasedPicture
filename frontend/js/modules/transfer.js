@@ -33,15 +33,23 @@ class TransferFunction {
           this.points.sort(function(a, b){
             return a.x - b.x;
           });
+          if (this.update) {
+            this.update();
+          }
         }
       } else if(e.button === 2){
+        
         for(let i = 1, len = this.points.length - 1; i < len; i++){
           if(this.points[i].isInside({x: this.transformX(e.pageX)/this.width, y: this.transformY(e.pageY)/this.height}, this.width, this.height)){
             this.points.splice(i, 1);
+            if (this.update) {
+              this.update();
+            }
             break;
           }
         }
       }
+      
       this.draw();
     }).bind(this));
 
@@ -55,8 +63,14 @@ class TransferFunction {
         this.points.sort(function(a, b){
           return a.x - b.x;
         });
+
+        if (this.update) {
+          this.update();
+        }
+
         this.draw();
       }
+     
     }).bind(this));
 
     window.addEventListener('contextmenu', function(e){e.preventDefault();});
@@ -64,9 +78,9 @@ class TransferFunction {
 
   setValues(v) {
     this.points = [];
-    v.forEach((function (entry, index) {
-      this.points.push(new Point(1 / (v.length - 1) * index, entry));
-    }).bind(this));
+    for (let i = 0, len = v.length; i < len; i += 2) {
+      v.push(new Point(v[i], v[i + 1] / 10));
+    }
   }
 
   draw() {
@@ -88,6 +102,10 @@ class TransferFunction {
     this.ctx.stroke();
     this.ctx.fillStyle = "#00BFA5";
     this.ctx.fill();
+  }
+
+  onChange(f) {
+    this.update = f;
   }
 
   drawLine(p1, p2) {
@@ -114,7 +132,8 @@ class TransferFunction {
   getValues() {
     let arr = [];
     this.points.forEach(function (p) {
-      arr.push(p.y);
+      arr.push(p.x);
+      arr.push(p.y * 10.0);
     });
     return arr;
   }

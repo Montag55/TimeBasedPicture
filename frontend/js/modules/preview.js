@@ -31,7 +31,7 @@ let Preview = (function () {
 
 
         if (Date.now() - then > 33) {
-            preview.src = `../state_tmp.jpg?${Date.now()}`;
+            preview.src = `../state_tmp.png?${Date.now()}`;
             Segments.getProgress();
         }
         window.requestAnimationFrame(loop);

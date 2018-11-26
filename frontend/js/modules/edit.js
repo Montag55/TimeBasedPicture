@@ -1,10 +1,13 @@
 let Edit = (function () {
-    let anchor, name, start, end, segment, edit_id;
+    let anchor, name, start, end, segment, edit_id, interpretations, global_i, local_i, active;
 
     function init() {
         anchor = document.querySelector('.edit');
         name = anchor.querySelector('.name');
         start = anchor.querySelector('.start');
+        local_i = anchor.querySelector('.localI');
+        global_i = anchor.querySelector('.globalI');
+        select = anchor.querySelector('select');
         start.step = 1;
         start.max = MAX_FRAMES;
         start.min = 0;
@@ -12,9 +15,18 @@ let Edit = (function () {
         end.step = 1;
         end.max = MAX_FRAMES;
         end.min = 0;
+        active = 0;
 
         start.addEventListener('change', update);
         end.addEventListener('change', update);
+        global_i.addEventListener('change', update);
+        local_i.addEventListener('change', update);
+        select.addEventListener('change', function () {
+            if (select.value == -1) {
+                return;
+            }
+            Interpretations.connect(active, select.value);
+        });
     }
 
     function show(id) {
@@ -22,20 +34,41 @@ let Edit = (function () {
         if (segment) {
             start.value = segment.start;
             end.value = segment.end;
+            global_i = segment.global_i;
+            local_i = segment.local_i;
             edit_id = id;
             name.innerText = 'segment_' + id;
+            active = id;
         }
-        
     }
 
     function update() {
         segment.start = start.value;
         segment.end = end.value;
+        segment.global_i = global_i.value;
+        segment.local_i = local_i.value;
         Segments.setSegment(edit_id,  segment);
+    }
+
+    function addInterpretation(name, id) {
+        let option = document.createElement('option');
+        option.innerText = name;
+        option.value = id;
+        select.appendChild(option);
+    }
+
+    function updateInterpretation(name, id) {
+        select.querySelectorAll('option').forEach(function (entry) {
+            if (entry.value == id) {
+                entry.innerText = name;
+            }
+        });
     }
 
     return {
         init: init,
-        show: show
+        show: show,
+        addInterpretation: addInterpretation,
+        updateInterpretation: updateInterpretation
     };
 }());

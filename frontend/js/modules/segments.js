@@ -172,7 +172,8 @@ let Segments = (function () {
             block: block,
             start: start,
             end: end,
-            global_i: 1
+            global_i: 1,
+            local_i: 1
         };
 
         segments[id] = segment;

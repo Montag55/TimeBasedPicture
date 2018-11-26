@@ -7,15 +7,15 @@
                 "name": "offset",
                 "type": "number",
                 "min": 0,
-                "max": 10,
+                "max": 1000,
                 "step": 1
             },
             {
                 "name": "stride",
                 "type": "number",
                 "min": 0,
-                "max": 1,
-                "step": 0.1
+                "max": 1000,
+                "step": 1
             }
         ]
     },
@@ -27,22 +27,22 @@
                 "name": "offset",
                 "type": "number",
                 "min": 0,
-                "max": 10,
+                "max": 1000,
                 "step": 1
             },
             {
                 "name": "stride",
                 "type": "number",
                 "min": 0,
-                "max": 1,
-                "step": 0.1
+                "max": 1000,
+                "step": 1
             },
             {
                 "name": "start",
                 "type": "number",
                 "min": 0,
-                "max": 1,
-                "step": 0.1
+                "max": 1000,
+                "step": 1
             },
             {
                 "name": "transfer",
@@ -58,15 +58,15 @@
                 "name": "offset",
                 "type": "number",
                 "min": 0,
-                "max": 10,
+                "max": 1000,
                 "step": 1
             },
             {
                 "name": "stride",
                 "type": "number",
                 "min": 0,
-                "max": 1,
-                "step": 0.1
+                "max": 1000,
+                "step": 1
             },
             {
                 "name": "ref",
@@ -76,7 +76,7 @@
                 "name": "threshold",
                 "type": "number",
                 "min": 0,
-                "max": 10,
+                "max": 255,
                 "step": 1
             }
         ]
@@ -89,15 +89,15 @@
                 "name": "offset",
                 "type": "number",
                 "min": 0,
-                "max": 10,
+                "max": 1000,
                 "step": 1
             },
             {
                 "name": "stride",
                 "type": "number",
                 "min": 0,
-                "max": 1,
-                "step": 0.1
+                "max": 1000,
+                "step": 1
             },
             {
                 "name": "ref",
@@ -107,7 +107,7 @@
                 "name": "threshhold",
                 "type": "number",
                 "min": 0,
-                "max": 10,
+                "max": 255,
                 "step": 1
             }
         ]
@@ -120,22 +120,22 @@
                 "name": "offset",
                 "type": "number",
                 "min": 0,
-                "max": 10,
+                "max": 1000,
                 "step": 1
             },
             {
                 "name": "stride",
                 "type": "number",
                 "min": 0,
-                "max": 1,
-                "step": 0.1
+                "max": 1000,
+                "step": 1
             },
             {
                 "name": "threshold",
                 "type": "number",
                 "min": 0,
-                "max": 1,
-                "step": 0.1
+                "max": 255,
+                "step": 1
             },
             {
                 "name": "colors",
@@ -151,15 +151,15 @@
                 "name": "offset",
                 "type": "number",
                 "min": 0,
-                "max": 10,
+                "max": 1000,
                 "step": 1
             },
             {
                 "name": "stride",
                 "type": "number",
                 "min": 0,
-                "max": 1,
-                "step": 0.1
+                "max": 1000,
+                "step": 1
             },
             {
                 "name": "ref",
@@ -169,8 +169,8 @@
                 "name": "threshold",
                 "type": "number",
                 "min": 0,
-                "max": 1,
-                "step": 0.1
+                "max": 255,
+                "step": 1
             }
         ]
     }

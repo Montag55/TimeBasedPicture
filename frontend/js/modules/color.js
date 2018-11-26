@@ -50,27 +50,58 @@ class ColorPicker {
                     colorDom.style.backgroundColor = color;
                     this.dom.appendChild(colorDom);
                     colorDom.addEventListener('mouseup', (function (e) {
-                    if (e.button === 2) {
-                        this.dom.removeChild(colorDom);
-                        let index  = this.colors.indexOf(colorData);
-                        console.log(index);
-                        if (index > -1) {
-                            this.colors.splice(index, 1);
-                            console.log(this.colors);
+                        if (e.button === 2) {
+                            this.dom.removeChild(colorDom);
+                            let index  = this.colors.indexOf(colorData);
+                            console.log(index);
+                            if (index > -1) {
+                                this.colors.splice(index, 1);
+                                console.log(this.colors);
+                            }
+                            this.update();
                         }
-                    }
-            }).bind(this));
+                    }).bind(this));
+                    this.update();
                 }
                 this.picking = false;
             }).bind(this))
         }).bind(this));
     }
 
+    onChange(f) {
+        this.update = f;
+    }
+
     getValues() {
         let arr = [];
         this.colors.forEach(function (entry) {
-            arr = arr.concat(Array.from(entry));
+            arr = arr.concat(Array.from(entry).reverse());
         });
         return arr;
+    }
+
+    setValues(v) {
+        this.colors = [];
+        for (let i = 0, len = v.length; i < len; i += 3) {
+            let colorData = [v[i], v[i + 1], v[i + 2]];
+            this.colors.push(colorData);
+
+            let color = `rgb(${colorData[0]}, ${colorData[1]}, ${colorData[2]})`;
+            let colorDom = document.createElement('div');
+            colorDom.classList.add('color');
+            colorDom.style.backgroundColor = color;
+            this.dom.appendChild(colorDom);
+            colorDom.addEventListener('mouseup', (function (e) {
+                if (e.button === 2) {
+                    this.dom.removeChild(colorDom);
+                    let index  = this.colors.indexOf(colorData);
+                    console.log(index);
+                    if (index > -1) {
+                        this.colors.splice(index, 1);
+                        console.log(this.colors);
+                    }
+                }
+            }).bind(this));
+        }
     }
 }

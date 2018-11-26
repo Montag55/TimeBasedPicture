@@ -32,11 +32,24 @@ ipcMain.on("addInterpretation", (event, arg) => {
   Object.keys(arg).forEach(function (key) {
     arr.push(arg[key]);
   });
+
   console.log(arr);
+
   let id = wrapper.add_interpretation.apply(null, arr);
 
   event.sender.send('addedInterpretation', id)
   //console.log(id);
+})
+
+ipcMain.on("manipulateInterpretation", (event, arg) => {
+  let arr = [];
+  Object.keys(arg).forEach(function (key) {
+    arr.push(arg[key]);
+  });
+  console.log(arr);
+
+  wrapper.manipulate_interpretation.apply(null, arr);
+
 })
 
 ipcMain.on("getProgress", (event, arg) => {
@@ -69,6 +82,12 @@ ipcMain.on('manipulateSegment', (event, arg) => {
 ipcMain.on('update', (event, arg) => {
 
   event.sender.send('update', '')
+})
+
+ipcMain.on('connect', (event, arg) => {
+
+  console.log(JSON.parse(arg));
+  wrapper.connect.apply(null, JSON.parse(arg));
 })
 
 app.on('ready', createWindow)

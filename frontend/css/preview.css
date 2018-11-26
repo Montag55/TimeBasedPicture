@@ -74,6 +74,12 @@
     background-color: var(--gray-900);
 }
 
+.preview .interpretations .container .instance {
+    width: 100%;
+    height: 20%;
+    background: linear-gradient(to bottom, var(--teal-A700), #28C5AF);
+}
+
 .preview .interpretations .container .interpretation {
     width: 100%;
     height: 20%;
@@ -108,7 +114,7 @@
 }
 
 .preview .editor .inter {
-    display: block;
+    display: none;
 }
 
 .preview .editor .inter.active {
