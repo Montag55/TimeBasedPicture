@@ -19,6 +19,7 @@ class Base;
 #include "boostColor.hpp"
 #include "transferfunction.hpp"
 #include "overplott.hpp"
+#include "circularfade.hpp"
 
 class Segment {
 public:
@@ -28,6 +29,8 @@ public:
   bool work(int& work_size);
   bool interpret_free(int& work_size);
   bool interpret_extending(int& work_size);
+  bool interpret_one_way( int & work_size);
+
   void update_intensity();
   /*needs to be reimplemented with a owned segment:
   void boost_diff();
@@ -52,6 +55,8 @@ public:
   void reset();
 
   float get_progress();
+  int get_start();
+  int get_end();
 
 private:
   void ready_to_work();

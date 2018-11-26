@@ -19,4 +19,5 @@ namespace utils {
 
   cv::Scalar rgb2lab(float r, float g, float b);
 
+  float sigmoid(float x, float exponent, float mid);
 };

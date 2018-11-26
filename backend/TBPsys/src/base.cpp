@@ -198,6 +198,15 @@ bool Base::manipulate_interpretation(int id, float threshhold, std::shared_ptr<s
   return true;
 }
 
+bool Base::manipulate_interpretation(int id, int start, int end, int mode, cv::Point mid, float radius, bool fade_direction, float parameter, int offset, int stride){
+
+  if(m_interpretations[id]->getTypenumber() == 6){
+    Circularfade& interpretation = dynamic_cast<Circularfade&>(*m_interpretations[id]);
+    interpretation.manipulate(start, end, mode, mid, radius, fade_direction, parameter, offset, stride);
+  }
+  return true;
+}
+
 int Base::add_interpretation(int typ_i, int offset, int stride){
   std::cout<<"\t > interpretation: ";
   int id = m_interpretations.size();
@@ -348,6 +357,30 @@ int Base::add_interpretation(int typ_i, int offset, int stride, float threshhold
   else if(typ_i == 4){
     std::cout << "BoostColor \n";
     m_interpretations.push_back(std::make_shared<BoostColor>(shared_from_this(), id, typ_i, threshhold, values, offset, stride));
+  }
+  else{
+    id = -1;
+    std::cout<< "Wrong interpretation. \n";
+  }
+
+  return id;
+}
+
+int Base::add_interpretation(int typ_i, int offset, int stride, int start, int end, int mode, cv::Point mid, float radius, bool fade_direction, float parameter){
+  std::cout<<"\t > interpretation: ";
+  int id = m_interpretations.size();
+
+  if (typ_i == 6 ){
+    std::cout<<"CircularFade \n";
+
+    if(start > end){
+      std::cout << "\t ! WARNING: start > end; swaping end and start." << std::endl;
+      int tmp = end;
+      end = start;
+      start = tmp;
+    }
+
+    m_interpretations.push_back(std::make_shared<Circularfade>(shared_from_this(), id, typ_i, start, end, mode, mid, radius, fade_direction, parameter, offset, stride));
   }
   else{
     id = -1;
@@ -546,6 +579,14 @@ void Base::update_result(){
 
   int Base::get_img_delta() {
     return m_img_delta;
+  }
+
+  int Base::get_seg_start(int id){
+    return m_segments[id]->get_start();
+  }
+
+  int Base::get_seg_end(int id){
+    return m_segments[id]->get_end();
   }
 
   void Base::set_work_size(int i) {
