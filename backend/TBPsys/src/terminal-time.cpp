@@ -192,6 +192,9 @@ int main (int argc, char **argv){
 
             interpret_id  = base->add_interpretation(typ_i, offset, stride, start, end, mode, mid, radius, fade_dir, parameter);
           }
+          else if(typ_i == 7 /*Timefadepoints*/){
+            
+          }
 
           if(interpret_id >= 0 ) {
             std::cout << "\t > offset: " << offset << "\n";

@@ -8,14 +8,12 @@
 #include <vector>
 //Timefadepoints(VideoCapture& vid, int img_type, int id, int start_pnt,  std::shared_ptr<std::vector<float>> weights);
 
-Timefadepoints::Timefadepoints(std::shared_ptr< Base > mother, int id, int type, int mode_d, int mode_f, float param, std::shared_ptr< std::vector<cv::Point>> points, std::shared_ptr< std::vector<int>> starts, std::shared_ptr< std::vector<int>> ends,  int offset, int stride):
+Timefadepoints::Timefadepoints(std::shared_ptr< Base > mother, int id, int type, int mode_d, int mode_f, float param, std::shared_ptr< std::vector<cv::Vec4f>> points,  int offset, int stride):
 Interpretation{mother, id, type, offset, stride},
 m_mode_d{mode_d},
 m_mode_f{mode_f},
 m_param{param},
 m_points{points},
-m_start_frames{starts},
-m_end_frames{ends},
 m_ptr_delta{mother->get_img_delta()},
 m_pnt_min{mother->get_min_Point()},
 m_pnt_max{mother->get_max_Point()}
@@ -132,7 +130,7 @@ void Timefadepoints::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& c
 
 }
 
-void Timefadepoints::manipulate(int mode_d, int mode_f, float param, std::shared_ptr< std::vector<cv::Point>> points, std::shared_ptr< std::vector<int>> starts, std::shared_ptr< std::vector<int>> ends,  int offset, int stride) {
+void Timefadepoints::manipulate(int mode_d, int mode_f, float param, std::shared_ptr< std::vector<cv::Vec4f>> points,  int offset, int stride) {
   bool update_status = false;
   if(m_mode_d != mode_d){
     m_mode_d = mode_d;
@@ -148,14 +146,6 @@ void Timefadepoints::manipulate(int mode_d, int mode_f, float param, std::shared
   }
   if((*m_points) != (*points)){
     m_points = points;
-    update_status = true;
-  }
-  if((*m_start_frames) != (*starts)){
-    m_start_frames = starts;
-    update_status = true;
-  }
-  if((*m_end_frames) != (*ends)){
-    m_end_frames = ends;
     update_status = true;
   }
   if(offset != m_offset){

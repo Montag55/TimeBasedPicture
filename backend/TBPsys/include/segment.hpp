@@ -21,6 +21,7 @@ class Base;
 #include "timefadepoints.hpp"
 #include "overplott.hpp"
 #include "circularfade.hpp"
+#include "timefadepoints.hpp"
 
 class Segment {
 public:
