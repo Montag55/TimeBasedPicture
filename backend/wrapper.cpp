@@ -201,15 +201,18 @@ void manipulate_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
     }
   }
   else if(typ_i == 6){
-    int start     = args[3]->IntegerValue();
-    int end    = args[4]->IntegerValue();
-    int mode      = args[5]->IntegerValue();
-    float mid     = args[6]->NumberValue();
-    float radius  = args[7]->NumberValue();
-    bool fade_dir = args[8]->IntegerValue();
-    float parameter = args[9]->NumberValue();
+    int start       = args[3]->IntegerValue();
+    int end         = args[4]->IntegerValue();
+    int mode        = args[5]->IntegerValue();
+    float mid_x     = args[6]->NumberValue();
+    float mid_y     = args[7]->NumberValue();
+    float radius    = args[8]->NumberValue();
+    bool fade_dir   = args[9]->IntegerValue();
+    float parameter = args[10]->NumberValue();
 
-    if(!base->manipulate_interpretation(typ_i, offset, stride, start, end, mode, mid, radius, fade_dir, parameter)){
+    cv::Point mid = cv::Point(mid_x, mid_y);
+
+    if(!base->manipulate_interpretation(typ_i, start, end, mode, mid, radius, fade_dir, parameter, offset, stride)){
       correct = "false";
       std::cout << "manipulate_segment() failed. \n";
     }
@@ -306,13 +309,16 @@ void add_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
       std::cout << "\t too few arguments (tpye, float, [r, g, b]*n) \n";
   }
   else if(typ_i == 6){
-    int start     = args[3]->IntegerValue();
-    int end    = args[4]->IntegerValue();
-    int mode      = args[5]->IntegerValue();
-    float mid     = args[6]->NumberValue();
-    float radius  = args[7]->NumberValue();
-    bool fade_dir = args[8]->IntegerValue();
-    float parameter  = args[9]->NumberValue();
+    int start        = args[3]->IntegerValue();
+    int end          = args[4]->IntegerValue();
+    int mode         = args[5]->IntegerValue();
+    float mid_x      = args[6]->NumberValue();
+    float mid_y      = args[7]->NumberValue();
+    float radius     = args[8]->NumberValue();
+    bool fade_dir    = args[9]->IntegerValue();
+    float parameter  = args[10]->NumberValue();
+
+    cv::Point mid = cv::Point(mid_x, mid_y);
 
     interpret_id = base->add_interpretation(typ_i, offset, stride, start, end, mode, mid, radius, fade_dir, parameter);
   }

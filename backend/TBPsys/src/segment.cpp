@@ -251,6 +251,7 @@ void Segment::update_intensity(){
 }
 
 bool Segment::interpret_free( int & work_size){
+
   m_mutex_soll.lock();
   int dest_start = m_frame_start_destin;
   int dest_end = m_frame_last_destin;
