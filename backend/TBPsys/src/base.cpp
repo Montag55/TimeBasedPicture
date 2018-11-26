@@ -136,7 +136,8 @@ bool Base::manipulate_interpretation(int id, int ref_id, float threshhold, int o
   cv::Mat ref_img = cv::imread(path);
 
   if(ref_img.empty()){
-    std::cout << "reference image not loaded. \n";
+    ref_img = cv::Mat(m_pnt_max.y, m_pnt_max.x, m_img_type, cv::Scalar(0,0,0));
+    std::cout << "reference image not loaded. Loading empty Image\n";
   }
   else {
     ref_img.convertTo( ref_img, m_img_type );   //do this for the whole video right at the start!?
@@ -163,7 +164,8 @@ bool Base::manipulate_interpretation(int id, std::string ref_file_path, float th
   cv::Mat ref_img = cv::imread(ref_file_path);
 
   if(ref_img.empty()){
-    std::cout << "reference image not loaded. \n";
+    ref_img = cv::Mat(m_pnt_max.y, m_pnt_max.x, m_img_type, cv::Scalar(0,0,0));
+    std::cout << "reference image not loaded. Loading empty Image\n";
   }
   else {
     ref_img.convertTo( ref_img, m_img_type );   //do this for the whole video right at the start!?
@@ -232,7 +234,8 @@ int Base::add_interpretation(int typ_i, int offset, int stride, std::string ref_
     cv::Mat ref_img = cv::imread(ref_file_path);
 
     if(ref_img.empty()){
-      std::cout << "reference image not loaded. \n";
+      ref_img = cv::Mat(m_pnt_max.y, m_pnt_max.x, m_img_type, cv::Scalar(0,0,0));
+      std::cout << "reference image not loaded. Loading empty Image\n";
     }
     else {
       ref_img.convertTo( ref_img, m_img_type );   //do this for the whole video right at the start!?
@@ -246,7 +249,8 @@ int Base::add_interpretation(int typ_i, int offset, int stride, std::string ref_
     cv::Mat ref_img = cv::imread(ref_file_path);
 
     if(ref_img.empty()){
-      std::cout << "reference image not loaded. \n";
+      ref_img = cv::Mat(m_pnt_max.y, m_pnt_max.x, m_img_type, cv::Scalar(0,0,0));
+      std::cout << "reference image not loaded. Loading empty Image\n";
     }
     else {
       ref_img.convertTo( ref_img, m_img_type );   //do this for the whole video right at the start!?
@@ -260,7 +264,8 @@ int Base::add_interpretation(int typ_i, int offset, int stride, std::string ref_
     cv::Mat ref_img = cv::imread(ref_file_path);
 
     if(ref_img.empty()){
-      std::cout << "reference image not loaded. \n";
+      ref_img = cv::Mat(m_pnt_max.y, m_pnt_max.x, m_img_type, cv::Scalar(0,0,0));
+      std::cout << "reference image not loaded. Loading empty Image\n";
     }
     else {
       ref_img.convertTo( ref_img, m_img_type );   //do this for the whole video right at the start!?
@@ -288,7 +293,8 @@ int Base::add_interpretation(int typ_i, int offset, int stride, int ref_id, floa
     cv::Mat ref_img = cv::imread(path);
 
     if(ref_img.empty()){
-      std::cout << "reference image not loaded. \n";
+      ref_img = cv::Mat(m_pnt_max.y, m_pnt_max.x, m_img_type, cv::Scalar(0,0,0));
+      std::cout << "reference image not loaded. Loading empty Image\n";
     }
     else {
       ref_img.convertTo( ref_img, m_img_type );   //do this for the whole video right at the start!?
@@ -309,7 +315,8 @@ int Base::add_interpretation(int typ_i, int offset, int stride, int ref_id, floa
     cv::Mat ref_img = cv::imread(path);
 
     if(ref_img.empty()){
-      std::cout << "reference image not loaded. \n";
+      ref_img = cv::Mat(m_pnt_max.y, m_pnt_max.x, m_img_type, cv::Scalar(0,0,0));
+      std::cout << "reference image not loaded. Loading empty Image\n";
     }
     else {
       ref_img.convertTo( ref_img, m_img_type );   //do this for the whole video right at the start!?
@@ -330,7 +337,8 @@ int Base::add_interpretation(int typ_i, int offset, int stride, int ref_id, floa
     cv::Mat ref_img = cv::imread(path);
 
     if(ref_img.empty()){
-      std::cout << "reference image not loaded. \n";
+      ref_img = cv::Mat(m_pnt_max.y, m_pnt_max.x, m_img_type, cv::Scalar(0,0,0));
+      std::cout << "reference image not loaded. Loading empty Image\n";
     }
     else {
       ref_img.convertTo( ref_img, m_img_type );   //do this for the whole video right at the start!?
