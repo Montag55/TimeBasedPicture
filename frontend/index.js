@@ -33,7 +33,7 @@ ipcMain.on("addInterpretation", (event, arg) => {
     arr.push(arg[key]);
   });
   console.log(arr);
-  let id = wrapper.add_interpretation().apply(null, arr);
+  let id = wrapper.add_interpretation.apply(null, arr);
 
   event.sender.send('addedInterpretation', id)
   //console.log(id);
