@@ -92,12 +92,17 @@ void Timefadepoints::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& c
           ->interpolate
           ->out
 
+        buggs:
+          1->1 seems to have more than one frame ?
+            addinterpretation 7 0 0 1 2 2 0 0 0 0 0 1079 0 0 1919 0 1 1 1919 1079 1 1
+          make faster!
       */
       std::list<cv::Vec3f> pnts_sorted; //start, end, distance
       float sum=0;
       for(int i=0; i < (*m_points).size(); i++){
         //calc distance
         float pnt_dis=-1;
+        //std::cout<<(*m_points)[i][0]<<", "<<(*m_points)[i][1]<<"\n";
         if( m_mode_d == 0 ){
           //abs 1d
           pnt_dis = abs(col-(*m_points)[i][0])+abs(row-(*m_points)[i][1]);
@@ -126,6 +131,7 @@ void Timefadepoints::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& c
       //points are sorted now!
 
       //calc borders:
+
       float ref_dis = (*pnts_sorted.begin())[2]+ (pnts_sorted.back())[2];
       //std::cout << (*pnts_sorted.begin())[2] <<" "<< (pnts_sorted.back())[2] << "\n";
       float start_border = 0;
@@ -165,7 +171,7 @@ void Timefadepoints::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& c
       start_border = seg_start + start_border*seg_delta;
       end_border =   seg_start + end_border*seg_delta;
     //  std::cout<<"frame_num: "<<frame_num<<" start_border: "<<start_border<<" end_border: "<<end_border<<"\n";
-      if(frame_num >= (int)start_border && frame_num <= (int)end_border){
+      if(frame_num > (int)start_border && frame_num <= (int)end_border){
       //  std::cout<<"paint\n";
         uc_pixel_res[0] += uc_pixel_current[0];
         uc_pixel_res[1] += uc_pixel_current[1];
@@ -173,7 +179,7 @@ void Timefadepoints::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& c
         uc_pixel_fac[0] += 1;
         uc_pixel_fac[1] += 1;
         uc_pixel_fac[2] += 1;
-      }else if(frame_num == (int)start_border-1) {
+      }else if(frame_num == (int)start_border) {
         float weight = 1 - fabs((float)start_border - (int)start_border);
         uc_pixel_res[0] += weight * uc_pixel_current[0];
         uc_pixel_res[1] += weight * uc_pixel_current[1];
