@@ -8,10 +8,10 @@
 #include <vector>
 //Timefadepoints(VideoCapture& vid, int img_type, int id, int start_pnt,  std::shared_ptr<std::vector<float>> weights);
 
-Timefadepoints::Timefadepoints(std::shared_ptr< Base > mother, int id, int type, int mode_d, int mode_f, float param, std::shared_ptr< std::vector<cv::Vec4f>> points,  int offset, int stride):
+Timefadepoints::Timefadepoints(std::shared_ptr< Base > mother, int id, int type, int mode_d, int num_pnts, float param, std::shared_ptr< std::vector<cv::Vec4f>> points,  int offset, int stride):
 Interpretation{mother, id, type, offset, stride},
 m_mode_d{mode_d},
-m_mode_f{mode_f},
+m_num_pnts{num_pnts},
 m_param{param},
 m_points{points},
 m_ptr_delta{mother->get_img_delta()},
@@ -19,6 +19,10 @@ m_pnt_min{mother->get_min_Point()},
 m_pnt_max{mother->get_max_Point()}
 {
   m_calc_specification = 2;
+  if(m_num_pnts < 2){
+    m_num_pnts = 2;
+    std::cout << "\t ! number of points smaller 2. Automaticly set to 2. \n"
+  }
 }
 
 
@@ -121,6 +125,7 @@ void Timefadepoints::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& c
       }
 
       //calc borders:
+      pnts_sorted.resize(m_num_pnts);
       float ref_dis = (*pnts_sorted.begin())[2] + (pnts_sorted.back())[2];
       float start_border = 0;
       float end_border = 0;
@@ -195,14 +200,19 @@ void Timefadepoints::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& c
 
 }
 
-void Timefadepoints::manipulate(int mode_d, int mode_f, float param, std::shared_ptr< std::vector<cv::Vec4f>> points,  int offset, int stride) {
+void Timefadepoints::manipulate(int mode_d, int num_pnts, float param, std::shared_ptr< std::vector<cv::Vec4f>> points,  int offset, int stride) {
   bool update_status = false;
   if(m_mode_d != mode_d){
     m_mode_d = mode_d;
     update_status = true;
   }
-  if(m_mode_f != mode_f){
-    m_mode_f = mode_f;
+  if(m_num_pnts != num_pnts){
+    if(num_pnts < 2){
+      num_pnts = 2;
+      std::cout << "\t ! number of points smaller 2. Automaticly set to 2. \n"
+    }
+
+    m_num_pnts = num_pnts;
     update_status = true;
   }
   if(m_param != param){

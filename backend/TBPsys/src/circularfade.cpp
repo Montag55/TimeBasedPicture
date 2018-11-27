@@ -267,6 +267,9 @@ void Circularfade::manipulate(int start, int end, int mode, cv::Point mid, float
     update_status = true;
   }
   if(m_mode != mode){
+    if(mode > 1){
+      std::cout << "\t ! you fool. Now the mode = linealinear." << std::endl;
+    }
     m_mode = mode;
     update_status = true;
   }
