@@ -99,7 +99,7 @@ void Timefadepoints::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& c
           pnt_dis = abs(col - (*m_points)[i][0]) + abs(row - (*m_points)[i][1]);
         }
         else /*euklid 2D*/ {
-          pnt_dis = sqrt(pow(col-(*m_points)[i][0], 2) + pow(row-(*m_points)[i][1], 2));
+          pnt_dis = sqrt(pow(col - (*m_points)[i][0], 2) + pow(row - (*m_points)[i][1], 2));
         }
         //insert according to distance
         if(pnts_sorted.size() == 0){
@@ -128,8 +128,8 @@ void Timefadepoints::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& c
 
       for(std::list<cv::Vec3f>::iterator o = pnts_sorted.begin(); o != pnts_sorted.end(); ++o){
 
-        if( m_mode_f == 0 /*abs 1D*/){
-          fac_sum += (abs(ref_dis - (*o)[2]));
+        if( m_param < 0 /*abs 1D*/){
+          fac_sum += utils::sigmoid(ref_dis - (*o)[2], -m_param, ref_dis / 2);
         }
         else /*euklid 2D*/{
           fac_sum += sqrt(std::pow(abs(ref_dis - (*o)[2]), m_param));
@@ -142,10 +142,10 @@ void Timefadepoints::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& c
       for(std::list<cv::Vec3f>::iterator o = pnts_sorted.begin(); o != pnts_sorted.end(); ++o){
 
         double influence = 0;
-        if( m_mode_f == 0 /*abs 1D*/){
-          influence = (abs(ref_dis-(*o)[2])) / fac_sum;
+        if( m_param < 0 /*abs 1D*/){
+          influence = utils::sigmoid(ref_dis - (*o)[2], -m_param, ref_dis / 2) / fac_sum;
         }
-        else /*euklid 2D*/{
+        else if(m_param > 0){
           influence = sqrt(std::pow(abs(ref_dis - (*o)[2]), m_param)) / fac_sum;
         }
 
