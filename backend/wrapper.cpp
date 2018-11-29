@@ -167,7 +167,10 @@ void manipulate_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
     }
   }
   else if(typ_i == 2 || typ_i == 3 || typ_i == 5){
-    if(args[3]->IsNumber()){
+    v8::String::Utf8Value param1( args[3]->ToString() );
+    std::string ref_file_path = std::string( *param1 );
+
+    if(std::any_of(ref_file_path.begin(), ref_file_path.begin() + 2, ::isdigit)){
       int ref_id = args[3]->IntegerValue();
       float threshhold = args[4]->NumberValue();
 
@@ -177,8 +180,6 @@ void manipulate_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
       }
     }
     else{
-      v8::String::Utf8Value param1( args[3]->ToString() );
-      std::string ref_file_path = std::string( *param1 );
       float threshhold = args[4]->NumberValue();
 
       if(!base->manipulate_interpretation(id, ref_file_path, threshhold, offset, stride)){
