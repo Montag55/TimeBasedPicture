@@ -18,8 +18,10 @@ class Base;
 #include "reduce.hpp"
 #include "boostColor.hpp"
 #include "transferfunction.hpp"
+#include "timefadepoints.hpp"
 #include "overplott.hpp"
 #include "circularfade.hpp"
+#include "timefadepoints.hpp"
 
 class Segment {
 public:

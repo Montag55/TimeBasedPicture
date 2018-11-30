@@ -137,7 +137,8 @@ void manipulate_segment(const v8::FunctionCallbackInfo<v8::Value>& args){
  * Type 4: in  (int id, offset, stride, float threshhold, float color_R, float color_G, float color_B, ... )
  * Type 5: in  (int id, offset, stride, int ref_id, float threshhold)
  *             (int id, offset, stride, string file_path, float threshhold)
- * Type 6: in  (int type, offset, stride, int start, int end, int mode, float mid, float radius, int fadeDirection, float parameter)
+ * Type 6: in  (int id, offset, stride, int start, int end, int mode, float mid, float radius, int fadeDirection, float parameter)
+ * Type 7: in  (int id, offset, stride, int mode_d, int mode_f, float parameter, float x, float y, float start, float end, ... )
  */
 void manipulate_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
   v8::Isolate* isolate = args.GetIsolate();
@@ -218,6 +219,21 @@ void manipulate_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
       std::cout << "manipulate_segment() failed. \n";
     }
   }
+  else if(typ_i == 7){
+    std::shared_ptr<std::vector<cv::Vec4f>> points = std::make_shared<std::vector<cv::Vec4f>>();
+    int mode_distance  = args[3]->IntegerValue();
+    int mode_function  = args[4]->NumberValue();
+    float parameter    = args[5]->NumberValue();
+
+    for(int idx = 6; idx < args.Length(); idx++){
+      points->push_back(args[idx]->NumberValue());
+    }
+
+    if(!base->manipulate_interpretation(typ_i, mode_distance, mode_function, parameter, points, offset, stride)){
+      correct = "false";
+      std::cout << "manipulate_segment() failed. \n";
+    }
+  }
   else{
     std::cout<<"not yet implemented manipulation\n";
   }
@@ -260,6 +276,7 @@ void get_segment_progress(const v8::FunctionCallbackInfo<v8::Value>& args){
 * Type 5: in  (int type, offset, stride, int ref_id, float threshhold)
 *             (int type, offset, stride, string file_path, float threshhold)
 * Type 6: in  (int type, offset, stride, int start, int end, int mode, float mid, float radius, int fadeDirection, float parameter)
+* Type 7: in  (int type, offset, stride, int mode_d, int mode_f, float parameter, float x, float y, float start, float end, ... )
 */
 void add_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
 
@@ -327,6 +344,19 @@ void add_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
     cv::Point mid = cv::Point(mid_x, mid_y);
 
     interpret_id = base->add_interpretation(typ_i, offset, stride, start, end, mode, mid, radius, fade_dir, parameter);
+  }
+  else if(typ_i == 7){
+    std::shared_ptr<std::vector<cv::Vec4f>> points = std::make_shared<std::vector<cv::Vec4f>>();
+    int mode_distance  = args[3]->IntegerValue();
+    int mode_function  = args[4]->NumberValue();
+    float parameter    = args[5]->NumberValue();
+
+    for(int idx = 6; idx < args.Length(); idx++){
+      points->push_back(args[idx]->NumberValue());
+    }
+
+    interpret_id = base->add_interpretation(typ_i, offset, stride, mode_distance, mode_function, parameter, points);
+
   }
 
   if(interpret_id >= 0 ) {

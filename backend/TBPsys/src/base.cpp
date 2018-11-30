@@ -117,8 +117,10 @@ bool Base::manipulate_segment(int id, int start, int end, float local_i, float g
 }
 
 bool Base::manipulate_interpretation(int id, int offset, int stride){
-  Average& interpretation = dynamic_cast<Average&>(*m_interpretations[id]);
-  interpretation.manipulate(offset, stride);
+  if(m_interpretations[id]->getTypenumber() == 0){
+    Average& interpretation = dynamic_cast<Average&>(*m_interpretations[id]);
+    interpretation.manipulate(offset, stride);
+  }
   return true;
 }
 
@@ -205,6 +207,15 @@ bool Base::manipulate_interpretation(int id, int start, int end, int mode, cv::P
   if(m_interpretations[id]->getTypenumber() == 6){
     Circularfade& interpretation = dynamic_cast<Circularfade&>(*m_interpretations[id]);
     interpretation.manipulate(start, end, mode, mid, radius, fade_direction, parameter, offset, stride);
+  }
+  return true;
+}
+
+bool Base::manipulate_interpretation(int id, int mode_distance, int mode_function, float parameter, std::shared_ptr<std::vector<cv::Vec4f>> points, int offset, int stride){
+
+  if(m_interpretations[id]->getTypenumber() == 7){
+    Timefadepoints& interpretation = dynamic_cast<Timefadepoints&>(*m_interpretations[id]);
+    interpretation.manipulate(mode_distance, mode_function, parameter, points, offset, stride);
   }
   return true;
 }
@@ -362,7 +373,7 @@ int Base::add_interpretation(int typ_i, int offset, int stride, float threshhold
     std::cout<<"Transferfunction \n";
     m_interpretations.push_back(std::make_shared<Transferfunction>(shared_from_this(), id, typ_i, threshhold, values, offset, stride));
   }
-  else if(typ_i == 4){
+  else if(typ_i == 4 && values->size()%3 == 0){
     std::cout << "BoostColor \n";
     m_interpretations.push_back(std::make_shared<BoostColor>(shared_from_this(), id, typ_i, threshhold, values, offset, stride));
   }
@@ -389,6 +400,22 @@ int Base::add_interpretation(int typ_i, int offset, int stride, int start, int e
     }
 
     m_interpretations.push_back(std::make_shared<Circularfade>(shared_from_this(), id, typ_i, start, end, mode, mid, radius, fade_direction, parameter, offset, stride));
+  }
+  else{
+    id = -1;
+    std::cout<< "Wrong interpretation. \n";
+  }
+
+  return id;
+}
+
+int Base::add_interpretation(int typ_i, int offset, int stride, int mode_distance, int mode_function, float param, std::shared_ptr<std::vector<cv::Vec4f>> points){
+  std::cout<<"\t > interpretation: ";
+  int id = m_interpretations.size();
+
+  if (typ_i == 7){
+    std::cout<<"TimeFadePoints \n";
+    m_interpretations.push_back(std::make_shared<Timefadepoints>(shared_from_this(), id, typ_i, mode_distance, mode_function, param, points, offset, stride));
   }
   else{
     id = -1;
