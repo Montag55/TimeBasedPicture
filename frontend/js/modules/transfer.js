@@ -38,7 +38,7 @@ class TransferFunction {
           }
         }
       } else if(e.button === 2){
-        
+
         for(let i = 1, len = this.points.length - 1; i < len; i++){
           if(this.points[i].isInside({x: this.transformX(e.pageX)/this.width, y: this.transformY(e.pageY)/this.height}, this.width, this.height)){
             this.points.splice(i, 1);
@@ -49,7 +49,7 @@ class TransferFunction {
           }
         }
       }
-      
+
       this.draw();
     }).bind(this));
 
@@ -70,7 +70,7 @@ class TransferFunction {
 
         this.draw();
       }
-     
+
     }).bind(this));
 
     window.addEventListener('contextmenu', function(e){e.preventDefault();});

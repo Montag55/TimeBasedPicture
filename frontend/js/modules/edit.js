@@ -34,8 +34,10 @@ let Edit = (function () {
         if (segment) {
             start.value = segment.start;
             end.value = segment.end;
-            global_i = segment.global_i;
-            local_i = segment.local_i;
+            // global_i = segment.global_i;
+            // local_i = segment.local_i;
+            global_i.value = segment.global_i;
+            local_i.value  = segment.local_i;
             edit_id = id;
             name.innerText = 'segment_' + id;
             active = id;
@@ -47,6 +49,7 @@ let Edit = (function () {
         segment.end = end.value;
         segment.global_i = global_i.value;
         segment.local_i = local_i.value;
+        console.log(segment)
         Segments.setSegment(edit_id,  segment);
     }
 

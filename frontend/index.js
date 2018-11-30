@@ -54,7 +54,6 @@ ipcMain.on("manipulateInterpretation", (event, arg) => {
 
 ipcMain.on("getProgress", (event, arg) => {
   let progress = wrapper.get_segment_progress(arg);
-
   event.sender.send('progress', JSON.stringify({progress: progress, id: arg}))
 })
 
@@ -74,8 +73,9 @@ ipcMain.on('removeSegment', (event, arg) => {
 
 ipcMain.on('manipulateSegment', (event, arg) => {
   let data = JSON.parse(arg)
+  console.log(data)
   let t = process.hrtime()
-  wrapper.manipulate_segment(data.id, data.start, data.end, 1.0, data.global_i)
+  wrapper.manipulate_segment(data.id, data.start, data.end, data.local_i, data.global_i)
 })
 
 
