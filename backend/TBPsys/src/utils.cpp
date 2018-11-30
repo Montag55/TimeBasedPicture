@@ -164,4 +164,45 @@ namespace utils {
   float sigmoid(float x, float exponent, float mid){
     return (1/(1+exp(-exponent*(x-mid))));
   }
+
+  std::shared_ptr<std::vector<float>> pointsToWeights(std::shared_ptr<std::vector<float>> points, int length){
+
+    std::shared_ptr<std::vector<float>> weights = std::make_shared<std::vector<float>>();
+
+    int frame=0;
+    for(unsigned int i = 0; i < points->size() - 2; i+=2){
+      int x = ((int)((*points)[i] * length))+1;
+      while( frame < x ){
+        weights->push_back(0);
+        frame++;
+      }
+
+      float delta = x -(*points)[i] * length;
+      float m = ((*points)[i+3] - (*points)[i+1]) / ((*points)[i+2]* length - (*points)[i]* length);
+
+      while(frame < (((int)((*points)[i+2] * length))+1)){
+        weights->push_back(m * delta + (*points)[i+1]);
+        delta++;
+        frame++;
+      }
+
+    // for(unsigned int i = 0; i < points->size() - 2; i+=2){
+    //   int x = (int)((*points)[i] * length);
+    //   float delta = (*points)[i] * length - x;
+    //   float m = ((*points)[i+3] - (*points)[i+1]) / ((*points)[i+2]* length - (*points)[i]* length);
+    //
+    //   while((int)((*points)[i] * length) + delta <= (*points)[i+2] * length){
+    //     weights->push_back(m * delta + (*points)[i+1]);
+    //     delta += 1;
+    //   }
+    // }
+    //
+    // std::cout << "weights(" << weights->size() << "): ";
+    // for(int i = 0; i < weights->size(); i++){
+    //   std::cout << (*weights)[i] << ", ";
+    // }
+    // std::cout << "\n";
+
+    return weights;
+  }
 };

@@ -8,12 +8,13 @@
 #include <vector>
 //Transferfunction(VideoCapture& vid, int img_type, int id, int start_pnt,  std::shared_ptr<std::vector<float>> weights);
 
-Transferfunction::Transferfunction(std::shared_ptr<Base> mother, int id, int type, int start_pnt,  std::shared_ptr< std::vector< float > > weights, int offset, int stride):
+Transferfunction::Transferfunction(std::shared_ptr<Base> mother, int id, int type, int start_pnt,  std::shared_ptr< std::vector< float > > points, int offset, int stride):
 Interpretation{mother, id, type, offset, stride},
-m_weights{weights},
-m_start_pnt{start_pnt}
+m_points{points},
+m_start_pnt{start_pnt},
+m_weight_map{}
 {
-  m_calc_specification = 0;
+  m_calc_specification = 2;
 }
 
 
@@ -33,11 +34,18 @@ void Transferfunction::calc(int id, int start, int length, int sign, cv::Mat& re
   //receive transfer weights, per image and calculate wieghted
 
   auto start_time = std::chrono::high_resolution_clock::now();
+  int seg_start = m_base->get_seg_start(id);
+  int seg_end = m_base->get_seg_end(id);
+
   cv::Mat tmp_frame;
   cv::Mat tmp_frame_d;
   m_video->set(CV_CAP_PROP_POS_MSEC, start/*frameTime*/);
 
-  for(int i=0; i<length; i++){
+  if(start == seg_start){
+    m_weight_map[id] = utils::pointsToWeights(m_points, seg_end - seg_start);
+  }
+
+  for(int i = 0; i<length; i++){
     if(start + i < m_offset || (start - m_offset + i) % (m_stride + 1) != 0 ){
       m_video->grab();
     }
@@ -47,16 +55,18 @@ void Transferfunction::calc(int id, int start, int length, int sign, cv::Mat& re
         std::cout<<"empty\n";
       }
       tmp_frame.convertTo(tmp_frame_d, m_img_type);   //do this for the whole video right at the start!?
+
       float weight = 0;
-      int weight_index = start+i-m_start_pnt;
-      if( weight_index >= 0 && weight_index < m_weights->size() ){
-        weight= ( *m_weights )[weight_index];
+      int weight_index = start + i - m_start_pnt;
+      if( weight_index >= 0 && weight_index < m_weight_map[id]->size() ){
+        weight = (*m_weight_map[id])[weight_index];
       }
 
-      if( sign>0 ){
+      if( sign > 0 ){
         factor += weight;
         result += weight * tmp_frame_d;
-      }else{
+      }
+      else{
         factor -= weight;
         result -= weight * tmp_frame_d;
       }
@@ -65,19 +75,19 @@ void Transferfunction::calc(int id, int start, int length, int sign, cv::Mat& re
     auto end_time = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>( end_time - start_time ).count();
     #ifdef show_time
-        std::cout << "\t\t + TransfF. ("<<m_weights->size()<<"): time: \t" << duration << std::endl;
+        std::cout << "\t\t + TransfF. ("<<m_weight_map[id]->size()<<"): time: \t" << duration << std::endl;
     #endif
   }
 }
 
-void Transferfunction::manipulate(int start_pnt, std::shared_ptr< std::vector<float>> weights, int offset, int stride) {
+void Transferfunction::manipulate(int start_pnt, std::shared_ptr<std::vector<float>> points, int offset, int stride) {
   bool update_status = false;
   if(m_start_pnt != start_pnt){
     m_start_pnt = start_pnt;
     update_status = true;
   }
-  if((*m_weights) != (*weights)){
-    m_weights = weights;
+  if((*m_points) != (*points)){
+    m_points = points;
     update_status = true;
   }
   if(offset != m_offset){
