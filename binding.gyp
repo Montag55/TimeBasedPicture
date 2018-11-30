@@ -14,7 +14,8 @@
             "backend/TBPsys/src/reduce.cpp",
             "backend/TBPsys/src/overplott.cpp",
             "backend/TBPsys/src/circularfade.cpp",
-            "backend/TBPsys/src/utils.cpp"
+            "backend/TBPsys/src/utils.cpp",
+            "backend/TBPsys/src/timefadepoints.cpp"
        ],
        "include_dirs": [
          "backend/TBPsys/include/"
