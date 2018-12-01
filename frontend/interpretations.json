@@ -173,5 +173,29 @@
                 "step": 1
             }
         ]
+    },
+    {
+        "name": "SingleImage",
+        "id": 8,
+        "types": [
+          {
+              "name": "offset",
+              "type": "number",
+              "min": 0,
+              "max": 100,
+              "step": 1
+          },
+          {
+              "name": "stride",
+              "type": "number",
+              "min": 0,
+              "max": 100,
+              "step": 1
+          },
+            {
+                "name": "ref",
+                "type": "string"
+            }
+        ]
     }
 ]

@@ -67,7 +67,7 @@ void Segment::revert_influence(){
   cv::Mat influence = m_values_abs.clone();
 
 
-  if( m_interpretation->getTypenumber() == 0 || m_interpretation->getTypenumber() == 1){
+  if( m_interpretation->getTypenumber() == 0 || m_interpretation->getTypenumber() == 1 || m_interpretation->getTypenumber() == 8){
     if(m_uni_fac != 0)
       influence = (m_values_abs * ((float) 1 / ((float) m_uni_fac))) * m_intensity_local_actual * m_intensity_global_actual;
     else
@@ -97,7 +97,7 @@ void Segment::upload_influence(){
   cv::Mat factors = m_values_fac.clone();
   cv::Mat influence = m_values_abs.clone();
 
-  if( m_interpretation->getTypenumber() == 0 || m_interpretation->getTypenumber() == 1){
+  if( m_interpretation->getTypenumber() == 0 || m_interpretation->getTypenumber() == 1 || m_interpretation->getTypenumber() == 8){
     if(m_uni_fac != 0)
       influence = (m_values_abs * ((float) 1 / ((float) m_uni_fac))) * m_intensity_local_actual * m_intensity_global_actual;
     else

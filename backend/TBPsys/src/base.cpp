@@ -116,6 +116,25 @@ bool Base::manipulate_segment(int id, int start, int end, float local_i, float g
   return true;
 }
 
+bool Base::manipulate_interpretation(int id, std::string file_path){
+  cv::Mat image = cv::imread(file_path);
+
+  if(image.empty()){
+    image = cv::Mat(m_pnt_max.y, m_pnt_max.x, m_img_type, cv::Scalar(0,0,0));
+    std::cout << "image not loaded. Loading empty Image\n";
+  }
+  else {
+    image.convertTo(image, m_img_type );   //do this for the whole video right at the start!?
+  }
+
+  if(m_interpretations[id]->getTypenumber() == 8 /*SingleImage*/){
+    Singleimage& interpretation = dynamic_cast<Singleimage&>(*m_interpretations[id]);
+    interpretation.manipulate(image);
+  }
+
+  return true;
+}
+
 bool Base::manipulate_interpretation(int id, int offset, int stride){
   if(m_interpretations[id]->getTypenumber() == 0){
     Average& interpretation = dynamic_cast<Average&>(*m_interpretations[id]);
@@ -218,6 +237,29 @@ bool Base::manipulate_interpretation(int id, int mode_distance, int mode_functio
     interpretation.manipulate(mode_distance, mode_function, parameter, points, offset, stride);
   }
   return true;
+}
+
+int Base::add_interpretation(int typ_i, std::string file_path){
+  int id = m_interpretations.size();
+  if(typ_i == 8 /*Singleimage*/){
+    cv::Mat image = cv::imread(file_path);
+
+    if(image.empty()){
+      image = cv::Mat(m_pnt_max.y, m_pnt_max.x, m_img_type, cv::Scalar(0,0,0));
+      std::cout << "image not loaded. Loading empty Image\n";
+    }
+    else {
+      image.convertTo(image, m_img_type );   //do this for the whole video right at the start!?
+    }
+
+    m_interpretations.push_back(std::make_shared<Singleimage>(shared_from_this(), id, typ_i, image));
+  }
+  else{
+    id = -1;
+    std::cout<< "Wrong interpretation. \n";
+  }
+
+  return id;
 }
 
 int Base::add_interpretation(int typ_i, int offset, int stride){

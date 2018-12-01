@@ -214,6 +214,10 @@ int main (int argc, char **argv){
             std::cout << "]\n";
             interpret_id  = base->add_interpretation(typ_i, offset, stride, mode_distance, mode_function, parameter, points);
           }
+          else if(typ_i == 8 /*Singleimage*/){
+            std::string file_path = v[4];
+            interpret_id = base->add_interpretation(typ_i, file_path);
+          }
 
           if(interpret_id >= 0 ) {
             std::cout << "\t > offset: " << offset << "\n";
@@ -398,6 +402,18 @@ int main (int argc, char **argv){
                 std::cout << (*points)[i] << ", ";
               }
               std::cout << "]\n";
+            }
+            else if(typ_i == 8 /*Singleimage*/){
+              std::string file_path = v[5];
+              if(base->manipulate_interpretation(id, file_path)){
+                std::cout << "\t > interpretation id: " << id << "\n";
+                std::cout << "\t > typ: " << typ_i << "\n";
+                std::cout << "\t > file path: " << file_path << "\n";
+
+              }
+              else{
+                std::cout << "\t > manipulate interpretation id: " << id << " failed. \n";
+              }
             }
             else {
               std::cout<<"not yet implemented manipulation\n";
