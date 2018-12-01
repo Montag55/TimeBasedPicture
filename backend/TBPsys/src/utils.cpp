@@ -190,4 +190,53 @@ namespace utils {
 
     return weights;
   }
+
+  std::shared_ptr<std::vector<float>> pointsToWeightsIntegral(std::shared_ptr<std::vector<float>> points, int length){
+
+    int frame = 0;
+    std::shared_ptr<std::vector<float>> weights = std::make_shared<std::vector<float>>();
+
+    float tmp_storage = 0;
+    for(unsigned int i = 0; i < points->size() - 2; i+=2){
+
+      int x = ((int)((*points)[i] * length)) + 1;
+      float pnt_start_x = (*points)[i] * length;
+      float pnt_start_y = (*points)[i+1];
+
+      //case 0: add pnts until frame border
+      if((*points)[i+2] * length < frame+1){
+        float pnt_end_x = (*points)[i+2] * length;
+        float pnt_end_y = (*points)[i+3];
+        float kasten  = (pnt_end_x - pnt_start_x) * pnt_start_y;
+        float dreieck = 0.5 * (pnt_end_x - pnt_start_x) *(pnt_end_y -pnt_start_y);
+        tmp_storage += kasten + dreieck;
+      }
+      else{
+        while((*points)[i+2] * length >= frame+1)
+        {
+          float pnt_end_x = frame+1;
+          float delta = pnt_end_x - pnt_start_x;
+          float m =       ((*points)[i+3] - (*points)[i+1]) / ((*points)[i+2] * length - (*points)[i] * length);
+          float pnt_end_y = pnt_start_y + m * delta ;
+
+          float kasten  = (pnt_end_x - pnt_start_x) * pnt_start_y;
+          float dreieck = 0.5 * (pnt_end_x - pnt_start_x) *(pnt_end_y -pnt_start_y);
+          tmp_storage += kasten + dreieck;
+          weights->push_back(tmp_storage);
+          tmp_storage = 0;
+          frame++;
+          pnt_start_x = pnt_end_x;
+          pnt_start_y = pnt_end_y;
+        }
+
+        float pnt_end_x = (*points)[i+2] * length;
+        float pnt_end_y = (*points)[i+3];
+        float kasten  = (pnt_end_x - pnt_start_x) * pnt_start_y;
+        float dreieck = 0.5 * (pnt_end_x - pnt_start_x) *(pnt_end_y -pnt_start_y);
+        tmp_storage += kasten + dreieck;
+      }
+    }
+    
+    return weights;
+  }
 };

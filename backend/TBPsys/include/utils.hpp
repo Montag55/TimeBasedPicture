@@ -22,4 +22,6 @@ namespace utils {
   float sigmoid(float x, float exponent, float mid);
 
   std::shared_ptr<std::vector<float>> pointsToWeights(std::shared_ptr<std::vector<float>> points, int length);
+
+  std::shared_ptr<std::vector<float>> pointsToWeightsIntegral(std::shared_ptr<std::vector<float>> points, int length);
 };

@@ -42,7 +42,8 @@ void Transferfunction::calc(int id, int start, int length, int sign, cv::Mat& re
   m_video->set(CV_CAP_PROP_POS_MSEC, start/*frameTime*/);
 
   if(start == seg_start){
-    m_weight_map[id] = utils::pointsToWeights(m_points, seg_end - seg_start);
+    // m_weight_map[id] = utils::pointsToWeights(m_points, seg_end - seg_start);
+    m_weight_map[id] = utils::pointsToWeightsIntegral(m_points, seg_end - seg_start);
   }
 
   for(int i = 0; i<length; i++){
