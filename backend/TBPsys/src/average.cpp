@@ -9,8 +9,7 @@
 #include <../include/base.hpp>
 
 Average::Average(std::shared_ptr<Base> mother, int id, int type, int offset, int stride):
-Interpretation{mother, id, type, offset, stride},
-m_test{0}
+Interpretation{mother, id, type, offset, stride}
 {
   m_calc_specification = 0;
 }

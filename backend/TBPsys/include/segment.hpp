@@ -22,6 +22,7 @@ class Base;
 #include "overplott.hpp"
 #include "circularfade.hpp"
 #include "timefadepoints.hpp"
+#include "singleimage.hpp"
 
 class Segment {
 public:

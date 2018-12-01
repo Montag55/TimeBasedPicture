@@ -234,6 +234,14 @@ void manipulate_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
       std::cout << "manipulate_segment() failed. \n";
     }
   }
+  else if(typ_i == 8){
+    v8::String::Utf8Value param1( args[3]->ToString() );
+    std::string file_path = std::string( *param1 );
+    if(!base->manipulate_interpretation(id, file_path)){
+      correct = "false";
+      std::cout << "manipulate_segment() failed. \n";
+    }
+  }
   else{
     std::cout<<"not yet implemented manipulation\n";
   }
@@ -357,6 +365,11 @@ void add_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
 
     interpret_id = base->add_interpretation(typ_i, offset, stride, mode_distance, mode_function, parameter, points);
 
+  }
+  else if(typ_i == 8){
+    v8::String::Utf8Value param1( args[3]->ToString() );
+    std::string file_path = std::string( *param1 );
+    interpret_id = base->add_interpretation(typ_i, file_path);
   }
 
   if(interpret_id >= 0 ) {
