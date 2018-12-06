@@ -111,8 +111,8 @@ bool Base::delete_segment(int id){
   return exit_status;
 }
 
-bool Base::manipulate_segment(int id, int start, int end, float local_i, float global_i){
-  m_segments[id]->manipulate(start, end, local_i, global_i);
+bool Base::manipulate_segment(int id, int start, int end, float local_i, float global_i, bool hasMask){
+  m_segments[id]->manipulate(start, end, local_i, global_i, hasMask);
   return true;
 }
 

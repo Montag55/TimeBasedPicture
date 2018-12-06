@@ -237,8 +237,9 @@ int main (int argc, char **argv){
             int end         = std::stoi(v[4]);
             float local_i   = std::stof(v[5]);
             float global_i  = std::stof(v[6]);
+            bool hasMask    = bool(std::stoi(v[7]));
 
-            if(base->manipulate_segment(id, start, end, local_i, global_i)){
+            if(base->manipulate_segment(id, start, end, local_i, global_i, hasMask)){
               std::cout<<"\t Segment id: " << id << "\n";
             }
             else{

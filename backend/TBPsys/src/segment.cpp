@@ -20,12 +20,14 @@ Segment::Segment(int start_frame, int last_frame, double intensity_local, double
   m_intensity_global_actual{intensity_global},
   m_values_abs{cv::Mat(mother->get_height(), mother->get_width(), mother->get_img_type(), cv::Scalar(0,0,0))},
   m_values_fac{cv::Mat(mother->get_height(), mother->get_width(), mother->get_img_type(), cv::Scalar(0,0,0))},
+  m_mask{cv::Mat(mother->get_height(), mother->get_width(), CV_32FC1, cv::Scalar(0))},
   m_uni_fac{0.0f},
   m_interpretation{std::make_shared<Average>(mother, -1, 0, 0, 0)},
   m_mutex_soll{},
   m_mutex_state{},
   m_percent{0.0f},
   m_work_done{true},
+  m_hasMask{false},
   m_new_interpretation{NULL},
   m_needs_reset{false},
   m_id{id} {
@@ -248,6 +250,37 @@ void Segment::update_intensity(){
       m_intensity_global_actual = dest_intensity_global;
       upload_influence();
     }
+}
+
+void Segment::updateMask(std::string mask_path){
+  if(m_hasMask){
+
+    cv::Mat new_mask = cv::imread("./" + mask_path + ".jpg");
+    cv::Mat tmp_mask = cv::Mat(m_mother->get_max_Point().y, m_mother->get_max_Point().x, CV_32FC3, cv::Scalar(0,0,0));
+
+    if(new_mask.empty()){
+      new_mask = cv::Mat(m_mother->get_max_Point().y, m_mother->get_max_Point().x, CV_32FC1, cv::Scalar(0));
+      std::cout << "reference image not loaded. Loading empty Image\n";
+    }
+    else{
+      cv::cvtColor(new_mask, new_mask, CV_BGR2GRAY);
+      new_mask.convertTo(new_mask, CV_32FC1);
+    }
+
+    cv::Mat tmp_mat_diff_check;
+    double min = 0, max = 0;
+    cv::absdiff(m_mask, new_mask, tmp_mat_diff_check);
+    cv::minMaxLoc(tmp_mat_diff_check, &min, &max);
+
+    if(max > 0){
+      cv::absdiff(m_mask, new_mask, m_mask);
+    }
+
+    m_mask = m_mask / 255;
+    int from_to[] = { 0,0, 0,1, 0,2};
+    cv::mixChannels(&m_mask, 1, &tmp_mask, 1, from_to, 3);
+    m_values_fac = m_values_fac.mul(tmp_mask);
+  }
 }
 
 bool Segment::interpret_free( int & work_size){
@@ -614,15 +647,16 @@ void Segment::set_global_intensity(float i){
   ready_to_work();
 }
 
-void Segment::manipulate(int start, int end, float local_i, float global_i){
+void Segment::manipulate(int start, int end, float local_i, float global_i, bool hasMask){
   end += 1;//including the end frame to calculation
   m_mutex_soll.lock();
   m_frame_start_destin = start;
   m_frame_last_destin = end;
   m_intensity_local_destin = local_i;
   m_intensity_global_destin = global_i;
+  m_hasMask = hasMask;
   m_mutex_soll.unlock();
-
+  updateMask("mask");
   ready_to_work();
 }
 
