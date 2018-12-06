@@ -8,6 +8,7 @@
 #include <../include/boost.hpp>
 #include <../include/base.hpp>
 #include <../include/utils.hpp>
+#include <opencv2/highgui/highgui.hpp>
 
 
 Boost::Boost( std::shared_ptr<Base> mother, int id, int type, cv::Mat ref, float threshhold, int offset, int stride):
@@ -63,14 +64,34 @@ void Boost::calc(int id, int start, int length, int sign, cv::Mat& result, float
 void Boost::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& current_frame, int sign) {
 
   // funktioniert prime; doppelt so schnell (berechnung aber nicht selbst)
-  // cv::Mat mask;
-  // cv::absdiff(current_frame, m_reference, mask);
+  cv::Mat mask;
+  cv::Mat grey_ref = m_reference.clone();
+  cv::Mat grey_current = current_frame.clone();
+  cv::Mat tmp = cv::Mat(m_base->get_height(), m_base->get_width(), m_base->get_img_type(), cv::Scalar(0,0,0));
+
+  cv::cvtColor(current_frame, grey_current, CV_BGR2GRAY);
+  cv::cvtColor(m_reference, grey_ref, CV_BGR2GRAY);
+  grey_current.convertTo(grey_current, CV_32FC3);
+  grey_ref.convertTo(grey_ref, CV_32FC3);
+
+  cv::absdiff(grey_current, grey_ref, mask);
   // mask = (mask > m_threshhold);
-  // mask.convertTo(mask, CV_32FC3);
-  // int from_to[] = { 0,0, 0,1, 0,2};
-  // cv::mixChannels(&mask, 1, &mask, 1, from_to, 3);
-  // result += current_frame.mul(mask) * (float) ((float)sign / ((float)255));
-  // fac_mat += mask * (float) ((float)sign / ((float)255));
+  mask.convertTo(mask, CV_32FC3);
+
+  int from_to[] = { 0,0, 0,1, 0,2};
+  cv::mixChannels(&mask, 1, &tmp, 1, from_to, 3);
+  result += current_frame.mul(tmp) * (float) ((float)sign / ((float)255));
+  fac_mat += tmp * (float) ((float)sign / ((float)255));
+
+
+  cv::absdiff(current_frame, m_reference, mask);
+  // mask = (mask > m_threshhold);
+  mask.convertTo(mask, CV_32FC3);
+  cv::mixChannels(&mask, 1, &mask, 1, from_to, 3);
+
+  cv::imwrite("./rgb.png", mask);
+
+  cv::imwrite("./monochrome.png", tmp);
 
   cv::Mat out = cv::Mat(m_pnt_max.y, m_pnt_max.x, m_img_type, cv::Scalar(0,0,0));
   for (unsigned int row = m_pnt_min.y; row < m_pnt_max.y; ++row) {
@@ -97,8 +118,6 @@ void Boost::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& current_fr
       cv::Scalar ref = utils::rgb2lab(uc_pixel_ref[0], uc_pixel_ref[1], uc_pixel_ref[2]);
       cv::Scalar current = utils::rgb2lab(uc_pixel_current[0], uc_pixel_current[1], uc_pixel_current[2]);
       float distance_RGB = utils::dE2000(ref, current, 0.1f, 100.0f, 100.0f);
-      //float distance_RGB = utils::CIE76(ref, current, 1.0f, 0.0f, 0.0f);
-      //float distance_RGB = utils::CIE94(ref, current, 5.0f, 100.0f, 100.0f);
 
       uc_pixel_out[0] = distance_RGB;
       uc_pixel_out[1] = distance_RGB;
@@ -131,7 +150,11 @@ void Boost::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& current_fr
       ptr_fac     += m_ptr_delta;
     }
   }
-  cv::imwrite("./pimmel.png", out);
+  cv::imwrite("./cielab.png", out);
+  cv::absdiff(tmp, mask, mask);
+  cv::absdiff(out, tmp, tmp);
+  cv::imwrite("./diff_mono_cielab.png", tmp);
+  cv::imwrite("./diff_mono_rgb.png", mask);
 }
 
 void Boost::manipulate(cv::Mat ref_frame, float threshhold, int offset, int stride){
