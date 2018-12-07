@@ -58,7 +58,7 @@ void Transferfunction::calc(int id, int start, int length, int sign, cv::Mat& re
       tmp_frame.convertTo(tmp_frame_d, m_img_type);   //do this for the whole video right at the start!?
 
       float weight = 0;
-      int weight_index = start + i - m_start_pnt;
+      int weight_index = start - seg_start + i - m_start_pnt;
       if( weight_index >= 0 && weight_index < m_weight_map[id]->size() ){
         weight = (*m_weight_map[id])[weight_index];
       }

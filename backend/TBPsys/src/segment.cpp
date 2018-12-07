@@ -63,6 +63,7 @@ void Segment::reset(){
 }
 
 void Segment::revert_influence(){
+  //should be muted from higher levl
   float intensity = -1;
   bool skip = false;
   cv::Mat factors = m_values_fac.clone();
@@ -86,6 +87,15 @@ void Segment::revert_influence(){
     std::cout<< "revert influence is not allowed yet " << m_interpretation->getTypenumber() << "\n";
   }
 
+
+  if(m_hasMask){
+    cv::Mat tmp_mask = cv::Mat(m_mother->get_max_Point().y, m_mother->get_max_Point().x, CV_32FC3, cv::Scalar(0,0,0));
+    int from_to[] = { 0,0, 0,1, 0,2};
+    cv::mixChannels(&m_mask, 1, &tmp_mask, 1, from_to, 3);
+    factors = factors.mul(tmp_mask);
+    influence = influence.mul(tmp_mask);
+  }
+
   if(!skip){
     m_mother->add_to_values_abs(-influence);
     m_mother->add_to_values_fac(-factors);
@@ -94,6 +104,8 @@ void Segment::revert_influence(){
 }
 
 void Segment::upload_influence(){
+  // should be muted from above
+  // intensity could be uplaoded here
   float intensity = -1;
   bool skip = false;
   cv::Mat factors = m_values_fac.clone();
@@ -115,6 +127,16 @@ void Segment::upload_influence(){
   }
   else{
     std::cout<< "upload influence is not allowed yet " << m_interpretation->getTypenumber() << "\n";
+  }
+
+
+  if(m_hasMask){
+    updateMask("mask" + std::to_string(m_id) + ".jpg");
+    cv::Mat tmp_mask = cv::Mat(m_mother->get_max_Point().y, m_mother->get_max_Point().x, CV_32FC3, cv::Scalar(0,0,0));
+    int from_to[] = { 0,0, 0,1, 0,2};
+    cv::mixChannels(&m_mask, 1, &tmp_mask, 1, from_to, 3);
+    factors = factors.mul(tmp_mask);
+    influence = influence.mul(tmp_mask);
   }
 
   if(!skip){
@@ -254,9 +276,9 @@ void Segment::update_intensity(){
 
 void Segment::updateMask(std::string mask_path){
   if(m_hasMask){
+    auto start_time = std::chrono::high_resolution_clock::now();
 
-    cv::Mat new_mask = cv::imread("./" + mask_path + ".jpg");
-    cv::Mat tmp_mask = cv::Mat(m_mother->get_max_Point().y, m_mother->get_max_Point().x, CV_32FC3, cv::Scalar(0,0,0));
+    cv::Mat new_mask = cv::imread("./" + mask_path);
 
     if(new_mask.empty()){
       new_mask = cv::Mat(m_mother->get_max_Point().y, m_mother->get_max_Point().x, CV_32FC1, cv::Scalar(0));
@@ -273,13 +295,14 @@ void Segment::updateMask(std::string mask_path){
     cv::minMaxLoc(tmp_mat_diff_check, &min, &max);
 
     if(max > 0){
-      cv::absdiff(m_mask, new_mask, m_mask);
+      m_mask = new_mask;
+      //cv::absdiff(m_mask, new_mask, m_mask);
     }
 
     m_mask = m_mask / 255;
-    int from_to[] = { 0,0, 0,1, 0,2};
-    cv::mixChannels(&m_mask, 1, &tmp_mask, 1, from_to, 3);
-    m_values_fac = m_values_fac.mul(tmp_mask);
+    auto end_time = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast< std::chrono::milliseconds >( end_time - start_time ).count();
+        std::cout << "\t\t + Seg update Mask: \t" << duration << std::endl;
   }
 }
 
@@ -655,8 +678,8 @@ void Segment::manipulate(int start, int end, float local_i, float global_i, bool
   m_intensity_local_destin = local_i;
   m_intensity_global_destin = global_i;
   m_hasMask = hasMask;
+
   m_mutex_soll.unlock();
-  updateMask("mask");
   ready_to_work();
 }
 
