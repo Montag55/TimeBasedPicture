@@ -175,6 +175,82 @@
         ]
     },
     {
+        "name": "CircularFade",
+        "id": 6,
+        "types": [
+            {
+                "name": "offset",
+                "type": "number",
+                "min": 0,
+                "max": 100,
+                "step": 1
+            },
+            {
+                "name": "stride",
+                "type": "number",
+                "min": 0,
+                "max": 100,
+                "step": 1
+            },
+            {
+                "name": "start",
+                "type": "number",
+                "min": 0,
+                "max": 50,
+                "step": 1
+            },
+            {
+                "name": "end",
+                "type": "number",
+                "min": 0,
+                "max": 50,
+                "step": 1
+            },
+            {
+                "name": "mode",
+                "type": "number",
+                "min": 0,
+                "max": 1,
+                "step": 1
+            },
+            {
+                "name": "pntx",
+                "type": "number",
+                "min": 0,
+                "max": 1920,
+                "step": 1
+            },
+            {
+                "name": "pnty",
+                "type": "number",
+                "min": 0,
+                "max": 1080,
+                "step": 1
+            },
+            {
+                "name": "radius",
+                "type": "number",
+                "min": 0,
+                "max": 540,
+                "step": 1
+            },
+            {
+                "name": "fade_dir",
+                "type": "number",
+                "min": 0,
+                "max": 1,
+                "step": 1
+            },
+            {
+                "name": "param",
+                "type": "number",
+                "min": 0,
+                "max": 10,
+                "step": 0.01
+            }
+        ]
+    },
+    {
         "name": "SingleImage",
         "id": 8,
         "types": [

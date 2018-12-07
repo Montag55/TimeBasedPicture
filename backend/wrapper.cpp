@@ -215,7 +215,7 @@ void manipulate_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
 
     cv::Point mid = cv::Point(mid_x, mid_y);
 
-    if(!base->manipulate_interpretation(typ_i, start, end, mode, mid, radius, fade_dir, parameter, offset, stride)){
+    if(!base->manipulate_interpretation(id, start, end, mode, mid, radius, fade_dir, parameter, offset, stride)){
       correct = "false";
       std::cout << "manipulate_segment() failed. \n";
     }
@@ -230,7 +230,7 @@ void manipulate_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
       points->push_back(args[idx]->NumberValue());
     }
 
-    if(!base->manipulate_interpretation(typ_i, mode_distance, mode_function, parameter, points, offset, stride)){
+    if(!base->manipulate_interpretation(id, mode_distance, mode_function, parameter, points, offset, stride)){
       correct = "false";
       std::cout << "manipulate_segment() failed. \n";
     }
@@ -351,7 +351,7 @@ void add_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
     float parameter  = args[10]->NumberValue();
 
     cv::Point mid = cv::Point(mid_x, mid_y);
-
+    
     interpret_id = base->add_interpretation(typ_i, offset, stride, start, end, mode, mid, radius, fade_dir, parameter);
   }
   else if(typ_i == 7){

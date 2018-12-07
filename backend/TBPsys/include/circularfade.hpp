@@ -15,7 +15,7 @@ public:
   int getTypenumber()                 override;
   int get_calculation_specification() override;
   void calc(int id, int start, int length, int sign, cv::Mat& result, float& factor, cv::Mat& fac_mat) override;
-  void compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& current_frame, int sign, int frame_num, int seg_start, int seg_end);
+  void compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& current_frame, int sign, int frame_num, int seg_start, int seg_end, int seg_id);
   void manipulate(int start, int end, int mode, cv::Point mid, float radius, bool fade_direction, float parameter, int offset, int stride);
 
 private:
@@ -29,6 +29,8 @@ private:
   int m_ptr_delta;
   cv::Point m_pnt_min;
   cv::Point m_pnt_max;
+  std::map<int,cv::Mat> m_time_map;
+
 };
 
 #endif
