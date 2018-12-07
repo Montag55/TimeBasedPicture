@@ -75,7 +75,7 @@ ipcMain.on('manipulateSegment', (event, arg) => {
   let data = JSON.parse(arg)
   console.log(data)
   let t = process.hrtime()
-  wrapper.manipulate_segment(data.id, data.start, data.end, data.local_i, data.global_i)
+  wrapper.manipulate_segment(data.id, data.start, data.end, data.local_i, data.global_i, false)
 })
 
 

@@ -39,7 +39,7 @@ public:
   int                 add_interpretation(int typ_i, int offset, int stride, int mode_distance, int mode_function, float parameter, std::shared_ptr<std::vector<cv::Vec4f>> points);
   bool                delete_segment(int id);
   bool                manipulate_interpretation(int id, std::string file_path);
-  bool                manipulate_segment(int id, int start, int end, float local_i, float global_i);
+  bool                manipulate_segment(int id, int start, int end, float local_i, float global_i, bool hasMask);
   bool                manipulate_interpretation(int id, int offset, int stride);
   bool                manipulate_interpretation(int id, int ref_id, float threshhold, int offset, int stride);
   bool                manipulate_interpretation(int id, std::string ref_file_path, float threshhold, int offset, int stride);

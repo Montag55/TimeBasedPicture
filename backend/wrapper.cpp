@@ -116,9 +116,10 @@ void manipulate_segment(const v8::FunctionCallbackInfo<v8::Value>& args){
   int end =         args[2]->IntegerValue();
   float local_i =   args[3]->NumberValue();
   float global_i =  args[4]->NumberValue();
+  bool hasMask =    args[5]->BooleanValue();
   std::string correct = "true";
 
-  if(!base->manipulate_segment(id, start, end, local_i, global_i)){
+  if(!base->manipulate_segment(id, start, end, local_i, global_i, hasMask)){
     correct = "false";
     std::cout << "manipulate_segment() failed. \n";
   }

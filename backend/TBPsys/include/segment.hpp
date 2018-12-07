@@ -35,6 +35,7 @@ public:
   bool interpret_one_way( int & work_size);
 
   void update_intensity();
+  void updateMask(std::string mask_path);
   /*needs to be reimplemented with a owned segment:
   void boost_diff();
   void boost_diff_smooth(int power);
@@ -51,7 +52,7 @@ public:
   void set_exposure_delta(int delta);
   void set_local_intensity(float i);
   void set_global_intensity(float i);
-  void manipulate(int start, int end, float local_i, float global_i);
+  void manipulate(int start, int end, float local_i, float global_i, bool hasMask);
   void set_interpretation(std::shared_ptr<Interpretation> interpret);
   void update_interpretation();
   void delete_seg();
@@ -69,6 +70,7 @@ private:
   int           m_id;
   float         m_percent;
   bool          m_work_done;
+  bool          m_hasMask;
 
   //Definition of BBOX:
   int           m_frame_start_destin;
@@ -87,6 +89,7 @@ private:
   //local values
   cv::Mat       m_values_abs;
   cv::Mat       m_values_fac;
+  cv::Mat       m_mask;
   float         m_uni_fac;
 
   //global values
