@@ -17,7 +17,7 @@ public:
   void calc(int id, int start, int length, int sign, cv::Mat& result, float& factor, cv::Mat& fac_mat) override;
   void compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& current_frame, int frame_num, int seg_id);
   void manipulate(cv::Mat ref_frame, float threshhold, int offset, int stride);
-  void create_time_map();
+  void create_time_map(int id);
 private:
   std::vector<cv::Vec3f>  m_colors;
   std::vector<int>        m_start;

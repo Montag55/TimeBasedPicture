@@ -37,9 +37,41 @@ int Paint::getTypenumber(){
 int Paint::get_calculation_specification(){
   return m_calc_specification;  //standard sum-game
 }
-void Paint::create_time_map(){
+
+void Paint::create_time_map(int id){
+  bool error_occured  = false;
   std::cout<<"creating time map\n";
-  std::cout<<"impimmlment here :)\n";
+  //read color mask pixel for pixel
+  cv::Mat pixel_times = cv::Mat( m_pnt_max.y,  m_pnt_max.x, CV_32FC2, cv::Vec2f(0.0f,0.0f));
+  for (unsigned int row = m_pnt_min.y; row < m_pnt_max.y; ++row) {
+    //ptr:
+    float* ptr_map            =  (float*) pixel_times.ptr(row);
+    float* ptr_color          =  (float*) mask.ptr(row);
+
+    for (unsigned int col = m_pnt_min.x; col < m_pnt_max.x; col++) {
+      //ptr:
+      float *uc_pixel_map             = ptr_map;
+      float *uc_pixel_color           = ptr_color;
+
+      //black: start time= -1, end time= -1 // so it is not included!
+      //otherwise: compare clr to clr_vec clrs. and set start time and end time corresponding
+      // if color does not exist remember to print err. msg at the end of this fct! and pretend clr would be black
+      std::cout<<"impimmlment here :)\n";
+
+      float start_border = -1;
+      float end_border=-1;
+      ptr_map[0] = start_border;  //store startframe inclusive
+      ptr_map[1] = end_border;    //store endframe inclusive
+      //shift ptr:
+      ptr_map     += 2;
+      ptr_color   += 3;
+    }
+  }
+
+  if(error_occured){
+    std::cout<<"was sth. wrong with clrs?, a color in image was not clr vec!\n";
+  }
+  m_time_map[id] = pixel_times;
 }
 
 void Paint::calc(int id, int start, int length, int sign, cv::Mat& result, float& factor, cv::Mat& fac_mat) {
@@ -51,7 +83,7 @@ void Paint::calc(int id, int start, int length, int sign, cv::Mat& result, float
   cv::Mat tmp_frame;
   m_video->set( CV_CAP_PROP_POS_MSEC, start/*frameTime*/);
   if( start == seg_start )
-    create_time_map();
+    create_time_map(id);
 
   for(int i = 0; i < length; i++){
     if(start + i < m_offset || (start - m_offset + i) % (m_stride + 1) != 0 ){
@@ -96,31 +128,13 @@ void Paint::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& current_fr
         float start_border = uc_pixel_map[0];
         float end_border = uc_pixel_map[1];
 
-        if(frame_num > (int)start_border && frame_num <= (int)end_border){
+        if(frame_num >= (int)start_border && frame_num <= (int)end_border){
           uc_pixel_res[0] += uc_pixel_current[0];
           uc_pixel_res[1] += uc_pixel_current[1];
           uc_pixel_res[2] += uc_pixel_current[2];
           uc_pixel_fac[0] += 1;
           uc_pixel_fac[1] += 1;
           uc_pixel_fac[2] += 1;
-        }
-        else if(frame_num == (int)start_border) {
-          float weight = 1 - fabs((float)start_border - (int)start_border);
-          uc_pixel_res[0] += weight * uc_pixel_current[0];
-          uc_pixel_res[1] += weight * uc_pixel_current[1];
-          uc_pixel_res[2] += weight * uc_pixel_current[2];
-          uc_pixel_fac[0] += weight;
-          uc_pixel_fac[1] += weight;
-          uc_pixel_fac[2] += weight;
-        }
-        else if(frame_num == (int)end_border + 1){
-          float weight = fabs((float)end_border - (int)end_border);
-          uc_pixel_res[0] += weight * uc_pixel_current[0];
-          uc_pixel_res[1] += weight * uc_pixel_current[1];
-          uc_pixel_res[2] += weight * uc_pixel_current[2];
-          uc_pixel_fac[0] += weight;
-          uc_pixel_fac[1] += weight;
-          uc_pixel_fac[2] += weight;
         }
 
         //shift ptr:
