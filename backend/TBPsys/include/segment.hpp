@@ -23,6 +23,8 @@ class Base;
 #include "circularfade.hpp"
 #include "timefadepoints.hpp"
 #include "singleimage.hpp"
+#include "struct.hpp"
+#include "paint.hpp"
 
 class Segment {
 public:

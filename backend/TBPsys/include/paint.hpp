@@ -1,0 +1,28 @@
+#ifndef PAINT_HPP
+#define PAINT_HPP
+#include <math.h>
+#include <../include/interpretation.hpp>
+#include <../include/base.hpp>
+#include <../include/struct.hpp>
+
+#include <opencv2/opencv.hpp>
+#include <opencv2/core/mat.hpp>
+
+class Paint : public Interpretation{
+public:
+  Paint(std::shared_ptr< Base > mother, int id, int type, std::shared_ptr<std::vector<ColorCoords>> colorTimes , int offset, int stride);
+  ~Paint()                            override;
+  int getTypenumber()                 override;
+  int get_calculation_specification() override;
+  void calc(int id, int start, int length, int sign, cv::Mat& result, float& factor, cv::Mat& fac_mat) override;
+  void compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& current_frame, int sign);
+  void manipulate(cv::Mat ref_frame, float threshhold, int offset, int stride);
+
+private:
+  std::vector<cv::Vec3f> m_colors;
+  std::vector<int> m_start;
+  std::vector<int> m_end;
+  cv::Mat mask;
+};
+
+#endif
