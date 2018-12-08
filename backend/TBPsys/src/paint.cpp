@@ -19,7 +19,7 @@ Interpretation{ mother, id, type, offset, stride}
     m_end.push_back((*colorTimes)[i].end);
   }
 
-  m_calc_specification = 0;
+  m_calc_specification = 2;
 }
 
 Paint::~Paint(){
