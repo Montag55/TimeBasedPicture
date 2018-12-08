@@ -148,30 +148,40 @@ void Paint::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& current_fr
 
   }
 
-void Paint::manipulate(cv::Mat ref_frame, float threshhold, int offset, int stride){
-  // bool update_status = false;
-  // cv::Mat tmp;
-  // double min = 0, max = 0;
-  // cv::absdiff(m_reference, ref_frame, tmp);
-  // cv::minMaxLoc(tmp, &min, &max);
-  //
-  // if(max > 0){
-  //   m_reference = ref_frame;
-  //   update_status = true;
-  // }
-  // if(m_threshhold != threshhold){
-  //   m_threshhold = threshhold;
-  //   update_status = true;
-  // }
-  // if(offset != m_offset){
-  //   m_offset = offset;
-  //   update_status = true;
-  // }
-  // if(stride != m_stride){
-  //   m_stride = stride;
-  //   update_status = true;
-  // }
-  // if(update_status){
-  //   update_connections();
-  // }
+void Paint::manipulate(std::shared_ptr<std::vector<ColorCoords>> colorTimes, int offset, int stride){
+  bool update_status = false;
+
+  std::vector<cv::Vec3f> color_tmp;
+  std::vector<int> start_tmp;
+  std::vector<int> end_tmp;
+
+  for(unsigned int i = 0; i < colorTimes->size(); i++){
+    color_tmp.push_back((*colorTimes)[i].color);
+    start_tmp.push_back((*colorTimes)[i].start);
+    end_tmp.push_back((*colorTimes)[i].end);
+  }
+
+  if(m_colors != color_tmp){
+    m_colors = color_tmp;
+    update_status = true;
+  }
+  if(m_start != start_tmp){
+    m_start = start_tmp;
+    update_status = true;
+  }
+  if(m_end != end_tmp){
+    m_end = end_tmp;
+    update_status = true;
+  }
+  if(offset != m_offset){
+    m_offset = offset;
+    update_status = true;
+  }
+  if(stride != m_stride){
+    m_stride = stride;
+    update_status = true;
+  }
+  if(update_status){
+    update_connections();
+  }
 }
