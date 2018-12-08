@@ -15,14 +15,19 @@ public:
   int getTypenumber()                 override;
   int get_calculation_specification() override;
   void calc(int id, int start, int length, int sign, cv::Mat& result, float& factor, cv::Mat& fac_mat) override;
-  void compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& current_frame, int sign);
+  void compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& current_frame, int frame_num, int seg_id);
   void manipulate(cv::Mat ref_frame, float threshhold, int offset, int stride);
-
+  void create_time_map();
 private:
-  std::vector<cv::Vec3f> m_colors;
-  std::vector<int> m_start;
-  std::vector<int> m_end;
-  cv::Mat mask;
+  std::vector<cv::Vec3f>  m_colors;
+  std::vector<int>        m_start;
+  std::vector<int>        m_end;
+  cv::Mat                 mask;
+  std::map<int,cv::Mat>   m_time_map;
+  cv::Point               m_pnt_min;
+  cv::Point               m_pnt_max;
+  int                     m_ptr_delta;
+
 };
 
 #endif

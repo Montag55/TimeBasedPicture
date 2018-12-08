@@ -11,7 +11,11 @@
 
 
 Paint::Paint(std::shared_ptr< Base > mother, int id, int type, std::shared_ptr<std::vector<ColorCoords>> colorTimes , int offset, int stride):
-Interpretation{ mother, id, type, offset, stride}
+Interpretation{ mother, id, type, offset, stride},
+m_time_map{},
+m_pnt_min{mother->get_min_Point()},
+m_pnt_max{mother->get_max_Point()},
+m_ptr_delta{mother->get_img_delta()}
 {
   for(unsigned int i = 0; i < colorTimes->size(); i++){
     m_colors.push_back((*colorTimes)[i].color);
@@ -33,107 +37,102 @@ int Paint::getTypenumber(){
 int Paint::get_calculation_specification(){
   return m_calc_specification;  //standard sum-game
 }
+void Paint::create_time_map(){
+  std::cout<<"creating time map\n";
+  std::cout<<"impimmlment here :)\n";
+}
 
 void Paint::calc(int id, int start, int length, int sign, cv::Mat& result, float& factor, cv::Mat& fac_mat) {
-  // auto start_time = std::chrono::high_resolution_clock::now();
-  // cv::Mat tmp_frame;
-  // m_video->set( CV_CAP_PROP_POS_MSEC, start/*frameTime*/);
-  //
-  // for(int i = 0; i < length; i++){
-  //   if(start + i < m_offset || (start - m_offset + i) % (m_stride + 1) != 0 ){
-  //     m_video->grab();
-  //   }
-  //   else{
-  //     m_video->read(tmp_frame);
-  //     if(tmp_frame.empty()){
-  //       std::cout << "frame not loaded. \n";
-  //     }
-  //
-  //     tmp_frame.convertTo(tmp_frame, m_img_type);   //do this for the whole video right at the start!?
-  //     compute_frame(result, fac_mat, tmp_frame, sign);
-  //   }
-  //
-  //   auto end_time = std::chrono::high_resolution_clock::now();
-  //   auto duration = std::chrono::duration_cast< std::chrono::milliseconds >( end_time - start_time ).count();
-  //   #ifdef show_time
-  //       std::cout << "\t\t + Paint ("<<length<<") time: \t" << duration << std::endl;
-  //   #endif
-  // }
+  auto start_time = std::chrono::high_resolution_clock::now();
+
+  int seg_start = m_base->get_seg_start(id);
+  int seg_end = m_base->get_seg_end(id);
+
+  cv::Mat tmp_frame;
+  m_video->set( CV_CAP_PROP_POS_MSEC, start/*frameTime*/);
+  if( start == seg_start )
+    create_time_map();
+
+  for(int i = 0; i < length; i++){
+    if(start + i < m_offset || (start - m_offset + i) % (m_stride + 1) != 0 ){
+      m_video->grab();
+    }
+    else{
+      m_video->read(tmp_frame);
+      if(tmp_frame.empty()){
+        std::cout << "frame not loaded. \n";
+      }
+
+      tmp_frame.convertTo(tmp_frame, m_img_type);   //do this for the whole video right at the start!?
+      compute_frame(result, fac_mat, tmp_frame, start + i, id);
+    }
+
+    auto end_time = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast< std::chrono::milliseconds >( end_time - start_time ).count();
+    #ifdef show_time
+        std::cout << "\t\t + Paint ("<<length<<") time: \t" << duration << std::endl;
+    #endif
+  }
 }
 
-void Paint::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& current_frame, int sign) {
+void Paint::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& current_frame, int frame_num,  int seg_id) {
+    cv::Mat out = cv::Mat(m_pnt_max.y, m_pnt_max.x, m_img_type, cv::Scalar(0,0,0));
+    for (unsigned int row = m_pnt_min.y; row < m_pnt_max.y; ++row) {
+      //ptr:
+      float* ptr_map            =  (float*) m_time_map[seg_id].ptr(row);
+      float* ptr_out            =  (float*) out.ptr(row);
+      float* ptr_res            =  (float*) result.ptr(row);
+      float* ptr_fac            =  (float*) fac_mat.ptr(row);
+      const float* ptr_current  =  (float*) current_frame.ptr(row);
 
-  // funktioniert prime; doppelt so schnell (berechnung aber nicht selbst)
-  // cv::Mat mask;
-  // cv::absdiff(current_frame, m_reference, mask);
-  // mask = (mask > m_threshhold);
-  // mask.convertTo(mask, CV_32FC3);
-  // int from_to[] = { 0,0, 0,1, 0,2};
-  // cv::mixChannels(&mask, 1, &mask, 1, from_to, 3);
-  // result += current_frame.mul(mask) * (float) ((float)sign / ((float)255));
-  // fac_mat += mask * (float) ((float)sign / ((float)255));
+      for (unsigned int col = m_pnt_min.x; col < m_pnt_max.x; col++) {
+        //ptr:
+        float *uc_pixel_map           = ptr_map;
+        float *uc_pixel_out           = ptr_out;
+        float *uc_pixel_res           = ptr_res;
+        float *uc_pixel_fac           = ptr_fac;
+        const float *uc_pixel_current = ptr_current;
 
-  // cv::Mat out = cv::Mat(m_pnt_max.y, m_pnt_max.x, m_img_type, cv::Scalar(0,0,0));
-  // for (unsigned int row = m_pnt_min.y; row < m_pnt_max.y; ++row) {
-  //   //ptr:
-  //   float* ptr_out            =  (float*) out.ptr(row);
-  //   float* ptr_res            =  (float*) result.ptr(row);
-  //   float* ptr_fac            =  (float*) fac_mat.ptr(row);
-  //   const float* ptr_ref      =  (float*) m_reference.ptr(row);
-  //   const float* ptr_current  =  (float*) current_frame.ptr(row);
-  //
-  //   for (unsigned int col = m_pnt_min.x; col < m_pnt_max.x; col++) {
-  //     //ptr:
-  //     float *uc_pixel_out           = ptr_out;
-  //     float *uc_pixel_res           = ptr_res;
-  //     float *uc_pixel_fac           = ptr_fac;
-  //     const float *uc_pixel_ref     = ptr_ref;
-  //     const float *uc_pixel_current = ptr_current;
-  //
-  //     //current frame != ref frame -> result frame/ result fac
-  //     // float distance_RGB = sqrt(pow(uc_pixel_ref[0] - uc_pixel_current[0], 2) +
-  //     //                           pow(uc_pixel_ref[1] - uc_pixel_current[1], 2) +
-  //     //                           pow(uc_pixel_ref[2] - uc_pixel_current[2], 2));
-  //
-  //     cv::Scalar ref = utils::rgb2lab(uc_pixel_ref[0], uc_pixel_ref[1], uc_pixel_ref[2]);
-  //     cv::Scalar current = utils::rgb2lab(uc_pixel_current[0], uc_pixel_current[1], uc_pixel_current[2]);
-  //     float distance_RGB = utils::dE2000(ref, current, 0.1f, 100.0f, 100.0f);
-  //     //float distance_RGB = utils::CIE76(ref, current, 1.0f, 0.0f, 0.0f);
-  //     //float distance_RGB = utils::CIE94(ref, current, 5.0f, 100.0f, 100.0f);
-  //
-  //     uc_pixel_out[0] = distance_RGB;
-  //     uc_pixel_out[1] = distance_RGB;
-  //     uc_pixel_out[2] = distance_RGB;
-  //     //std::cout<<" distance: "<<distance_RGB <<"\n";
-  //     if(distance_RGB > m_threshhold){
-  //       if(sign > 0) {
-  //         uc_pixel_res[0] += uc_pixel_current[0];
-  //         uc_pixel_res[1] += uc_pixel_current[1];
-  //         uc_pixel_res[2] += uc_pixel_current[2];
-  //         uc_pixel_fac[0] += 1;
-  //         uc_pixel_fac[1] += 1;
-  //         uc_pixel_fac[2] += 1;
-  //       }
-  //       else {
-  //         uc_pixel_res[0] -= uc_pixel_current[0];
-  //         uc_pixel_res[1] -= uc_pixel_current[1];
-  //         uc_pixel_res[2] -= uc_pixel_current[2];
-  //         uc_pixel_fac[0] -= 1;
-  //         uc_pixel_fac[1] -= 1;
-  //         uc_pixel_fac[2] -= 1;
-  //       }
-  //     }
-  //
-  //     //shift ptr:
-  //     ptr_out     += m_ptr_delta;
-  //     ptr_res     += m_ptr_delta;
-  //     ptr_current += m_ptr_delta;
-  //     ptr_ref     += m_ptr_delta;
-  //     ptr_fac     += m_ptr_delta;
-  //   }
-  // }
-  // cv::imwrite("./pimmel.png", out);
-}
+        float start_border = uc_pixel_map[0];
+        float end_border = uc_pixel_map[1];
+
+        if(frame_num > (int)start_border && frame_num <= (int)end_border){
+          uc_pixel_res[0] += uc_pixel_current[0];
+          uc_pixel_res[1] += uc_pixel_current[1];
+          uc_pixel_res[2] += uc_pixel_current[2];
+          uc_pixel_fac[0] += 1;
+          uc_pixel_fac[1] += 1;
+          uc_pixel_fac[2] += 1;
+        }
+        else if(frame_num == (int)start_border) {
+          float weight = 1 - fabs((float)start_border - (int)start_border);
+          uc_pixel_res[0] += weight * uc_pixel_current[0];
+          uc_pixel_res[1] += weight * uc_pixel_current[1];
+          uc_pixel_res[2] += weight * uc_pixel_current[2];
+          uc_pixel_fac[0] += weight;
+          uc_pixel_fac[1] += weight;
+          uc_pixel_fac[2] += weight;
+        }
+        else if(frame_num == (int)end_border + 1){
+          float weight = fabs((float)end_border - (int)end_border);
+          uc_pixel_res[0] += weight * uc_pixel_current[0];
+          uc_pixel_res[1] += weight * uc_pixel_current[1];
+          uc_pixel_res[2] += weight * uc_pixel_current[2];
+          uc_pixel_fac[0] += weight;
+          uc_pixel_fac[1] += weight;
+          uc_pixel_fac[2] += weight;
+        }
+
+        //shift ptr:
+        ptr_out     += m_ptr_delta;
+        ptr_res     += m_ptr_delta;
+        ptr_current += m_ptr_delta;
+        ptr_fac     += m_ptr_delta;
+        ptr_map += 2;
+      }
+    }
+
+  }
 
 void Paint::manipulate(cv::Mat ref_frame, float threshhold, int offset, int stride){
   // bool update_status = false;
