@@ -17,6 +17,8 @@ m_pnt_min{mother->get_min_Point()},
 m_pnt_max{mother->get_max_Point()},
 m_ptr_delta{mother->get_img_delta()}
 {
+  update_Mask();
+
   for(unsigned int i = 0; i < colorTimes->size(); i++){
     m_colors.push_back((*colorTimes)[i].color);
     m_start.push_back((*colorTimes)[i].start);
@@ -38,30 +40,60 @@ int Paint::get_calculation_specification(){
   return m_calc_specification;  //standard sum-game
 }
 
+void Paint::update_Mask(){
+  m_mask = cv::imread("maskPaintInterpretation" + std::to_string(get_id()) + ".png");
+
+  if(m_mask.empty()){
+    m_mask = cv::Mat(m_pnt_max.y, m_pnt_max.x, CV_32FC3, cv::Scalar(0, 0, 0));
+    std::cout << "image not loaded. Loading empty Image\n";
+  }
+  else {
+    m_mask.convertTo(m_mask, CV_32FC3);
+  }
+}
+
 void Paint::create_time_map(int id){
   bool error_occured  = false;
-  std::cout<<"creating time map\n";
-  //read color mask pixel for pixel
-  cv::Mat pixel_times = cv::Mat( m_pnt_max.y,  m_pnt_max.x, CV_32FC2, cv::Vec2f(0.0f,0.0f));
+  cv::Mat pixel_times = cv::Mat( m_pnt_max.y,  m_pnt_max.x, CV_32FC2, cv::Scalar(0.0f,0.0f));
+
   for (unsigned int row = m_pnt_min.y; row < m_pnt_max.y; ++row) {
     //ptr:
     float* ptr_map            =  (float*) pixel_times.ptr(row);
-    float* ptr_color          =  (float*) mask.ptr(row);
+    float* ptr_color          =  (float*) m_mask.ptr(row);
 
     for (unsigned int col = m_pnt_min.x; col < m_pnt_max.x; col++) {
       //ptr:
       float *uc_pixel_map             = ptr_map;
       float *uc_pixel_color           = ptr_color;
-
-      //black: start time= -1, end time= -1 // so it is not included!
-      //otherwise: compare clr to clr_vec clrs. and set start time and end time corresponding
-      // if color does not exist remember to print err. msg at the end of this fct! and pretend clr would be black
-      std::cout<<"impimmlment here :)\n";
-
       float start_border = -1;
-      float end_border=-1;
-      ptr_map[0] = start_border;  //store startframe inclusive
-      ptr_map[1] = end_border;    //store endframe inclusive
+      float end_border = -1;
+
+      cv::Vec3f tmp_px_color = cv::Vec3f(uc_pixel_color[0], uc_pixel_color[1], uc_pixel_color[2]);
+
+      if(tmp_px_color == cv::Vec3f(0, 0, 0) /* black */){
+          start_border = -1;
+          end_border = -1;
+      }
+      else /* color */{
+        bool color_check = false;
+        for(unsigned int idx = 0; idx < m_colors.size(); idx++){
+          if(m_colors[idx] == tmp_px_color){
+            start_border = m_start[idx];
+            end_border = m_end[idx];
+            color_check = true;
+            break;
+          }
+        }
+        if(color_check == false){
+          std::cout << tmp_px_color << std::endl;
+          error_occured = true;
+          start_border = -1;
+          end_border = -1;
+        }
+      }
+
+      uc_pixel_map[0] = start_border;  //store startframe inclusive
+      uc_pixel_map[1] = end_border;    //store endframe inclusive
       //shift ptr:
       ptr_map     += 2;
       ptr_color   += 3;
@@ -69,8 +101,10 @@ void Paint::create_time_map(int id){
   }
 
   if(error_occured){
-    std::cout<<"was sth. wrong with clrs?, a color in image was not clr vec!\n";
+    std::cout<<"was sth. wrong with colors?, a color in image was not in the color vec!\n";
   }
+
+  std::cout<<"created time map\n";
   m_time_map[id] = pixel_times;
 }
 
@@ -183,5 +217,6 @@ void Paint::manipulate(std::shared_ptr<std::vector<ColorCoords>> colorTimes, int
   }
   if(update_status){
     update_connections();
+    update_Mask();
   }
 }

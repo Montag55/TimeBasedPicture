@@ -77,7 +77,7 @@ void Segment::revert_influence(){
       skip = true;
     intensity = m_intensity_global_actual;
   }
-  else if(m_interpretation->getTypenumber() == 2 || m_interpretation->getTypenumber() == 3 || m_interpretation->getTypenumber() == 4 || m_interpretation->getTypenumber() == 5 || m_interpretation->getTypenumber() == 6 || m_interpretation->getTypenumber() == 7){
+  else if(m_interpretation->getTypenumber() == 2 || m_interpretation->getTypenumber() == 3 || m_interpretation->getTypenumber() == 4 || m_interpretation->getTypenumber() == 5 || m_interpretation->getTypenumber() == 6  || m_interpretation->getTypenumber() == 7 || m_interpretation->getTypenumber() == 9){
     normalize_factor(influence, factors);
     influence = influence * m_intensity_local_actual * m_intensity_global_actual;
     factors = factors * m_intensity_global_actual;
@@ -119,7 +119,7 @@ void Segment::upload_influence(){
 
     intensity = m_intensity_global_actual;
   }
-  else if(m_interpretation->getTypenumber() == 2 || m_interpretation->getTypenumber() == 3 || m_interpretation->getTypenumber() == 4 || m_interpretation->getTypenumber() == 5 || m_interpretation->getTypenumber() == 6 || m_interpretation->getTypenumber() == 7){
+  else if(m_interpretation->getTypenumber() == 2 || m_interpretation->getTypenumber() == 3 || m_interpretation->getTypenumber() == 4 || m_interpretation->getTypenumber() == 5 || m_interpretation->getTypenumber() == 6 || m_interpretation->getTypenumber() == 7 || m_interpretation->getTypenumber() == 9){
     normalize_factor(influence, factors);
     influence = influence * m_intensity_local_actual * m_intensity_global_actual;
     factors = factors * m_intensity_global_actual;
