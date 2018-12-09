@@ -5,14 +5,14 @@
         "types": [
             {
                 "name": "offset",
-                "type": "number",
+                "type": "number_edit",
                 "min": 0,
                 "max": 100,
                 "step": 1
             },
             {
                 "name": "stride",
-                "type": "number",
+                "type": "number_edit",
                 "min": 0,
                 "max": 100,
                 "step": 1
@@ -25,23 +25,23 @@
         "types": [
             {
                 "name": "offset",
-                "type": "number",
+                "type": "number_edit",
                 "min": 0,
                 "max": 100,
                 "step": 1
             },
             {
                 "name": "stride",
-                "type": "number",
+                "type": "number_edit",
                 "min": 0,
                 "max": 100,
                 "step": 1
             },
             {
                 "name": "start",
-                "type": "number",
+                "type": "number_edit",
                 "min": 0,
-                "max": 1000,
+                "max": 0,
                 "step": 1
             },
             {
@@ -56,14 +56,14 @@
         "types": [
             {
                 "name": "offset",
-                "type": "number",
+                "type": "number_edit",
                 "min": 0,
                 "max": 100,
                 "step": 1
             },
             {
                 "name": "stride",
-                "type": "number",
+                "type": "number_edit",
                 "min": 0,
                 "max": 100,
                 "step": 1
@@ -74,7 +74,7 @@
             },
             {
                 "name": "threshold",
-                "type": "number",
+                "type": "number_edit",
                 "min": 0,
                 "max": 255,
                 "step": 1
@@ -87,14 +87,14 @@
         "types": [
             {
                 "name": "offset",
-                "type": "number",
+                "type": "number_edit",
                 "min": 0,
                 "max": 100,
                 "step": 1
             },
             {
                 "name": "stride",
-                "type": "number",
+                "type": "number_edit",
                 "min": 0,
                 "max": 100,
                 "step": 1
@@ -105,7 +105,7 @@
             },
             {
                 "name": "threshhold",
-                "type": "number",
+                "type": "number_edit",
                 "min": 0,
                 "max": 255,
                 "step": 1
@@ -118,21 +118,21 @@
         "types": [
             {
                 "name": "offset",
-                "type": "number",
+                "type": "number_edit",
                 "min": 0,
                 "max": 100,
                 "step": 1
             },
             {
                 "name": "stride",
-                "type": "number",
+                "type": "number_edit",
                 "min": 0,
                 "max": 100,
                 "step": 1
             },
             {
                 "name": "threshold",
-                "type": "number",
+                "type": "number_edit",
                 "min": 0,
                 "max": 255,
                 "step": 1
@@ -149,14 +149,14 @@
         "types": [
             {
                 "name": "offset",
-                "type": "number",
+                "type": "number_edit",
                 "min": 0,
                 "max": 100,
                 "step": 1
             },
             {
                 "name": "stride",
-                "type": "number",
+                "type": "number_edit",
                 "min": 0,
                 "max": 100,
                 "step": 1
@@ -167,7 +167,7 @@
             },
             {
                 "name": "threshold",
-                "type": "number",
+                "type": "number_edit",
                 "min": 0,
                 "max": 255,
                 "step": 1
@@ -180,70 +180,70 @@
         "types": [
             {
                 "name": "offset",
-                "type": "number",
+                "type": "number_edit",
                 "min": 0,
                 "max": 100,
                 "step": 1
             },
             {
                 "name": "stride",
-                "type": "number",
+                "type": "number_edit",
                 "min": 0,
                 "max": 100,
                 "step": 1
             },
             {
                 "name": "start",
-                "type": "number",
+                "type": "number_edit",
                 "min": 0,
                 "max": 50,
                 "step": 1
             },
             {
                 "name": "end",
-                "type": "number",
+                "type": "number_edit",
                 "min": 0,
                 "max": 50,
                 "step": 1
             },
             {
                 "name": "mode",
-                "type": "number",
+                "type": "number_slider",
                 "min": 0,
                 "max": 1,
                 "step": 1
             },
             {
                 "name": "pntx",
-                "type": "number",
+                "type": "number_slider",
                 "min": 0,
                 "max": 1920,
                 "step": 1
             },
             {
                 "name": "pnty",
-                "type": "number",
+                "type": "number_slider",
                 "min": 0,
                 "max": 1080,
                 "step": 1
             },
             {
                 "name": "radius",
-                "type": "number",
+                "type": "number_slider",
                 "min": 0,
                 "max": 540,
                 "step": 1
             },
             {
                 "name": "fade_dir",
-                "type": "number",
+                "type": "number_slider",
                 "min": 0,
                 "max": 1,
                 "step": 1
             },
             {
                 "name": "param",
-                "type": "number",
+                "type": "number_edit",
                 "min": 0,
                 "max": 10,
                 "step": 0.01
@@ -256,16 +256,16 @@
         "types": [
           {
               "name": "offset",
-              "type": "number",
+              "type": "number_slider",
               "min": 0,
-              "max": 100,
+              "max": 0,
               "step": 1
           },
           {
               "name": "stride",
-              "type": "number",
+              "type": "number_slider",
               "min": 0,
-              "max": 100,
+              "max": 0,
               "step": 1
           },
             {

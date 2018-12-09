@@ -7,7 +7,7 @@
 
 //Connect interpretation
 
-//Open file 
+//Open file
 //folder/frame${count}.jpg
 
 //
@@ -22,7 +22,7 @@ let Interpretations = (function () {
         addDom = anchor.querySelector('.add');
         addDom.addEventListener('click', add);
         container = anchor.querySelector('.container');
-        
+
         active = null;
         activeId = -1;
 
@@ -61,7 +61,7 @@ let Interpretations = (function () {
                 let label = document.createElement('p');
                 label.innerText = type.name;
                 parent.appendChild(label);
-                if (type.type === 'number') {
+                if (type.type === 'number_slider') {
                     let slider = document.createElement('input');
                     slider.type = 'range';
                     slider.min = type.min;
@@ -77,6 +77,23 @@ let Interpretations = (function () {
                     });
                     interpretation_object.setFunctions.push(function (v) {
                         slider.value = v[index];
+                    });
+                }else if (type.type === 'number_edit') {
+                    let edit = document.createElement('input');
+                    edit.type = 'number';
+                    edit.min = type.min;
+                    edit.max = type.max;
+                    edit.step = type.step;
+                    edit.name = type.name;
+                    parent.appendChild(edit);
+                    edit.addEventListener('change', function () {
+                        update();
+                    });
+                    interpretation_object.valueFunctions.push(function () {
+                        return [edit.value];
+                    });
+                    interpretation_object.setFunctions.push(function (v) {
+                        edit.value = v[index];
                     });
                 } else if (type.type === 'string') {
                     let text = document.createElement('input');
@@ -104,7 +121,7 @@ let Interpretations = (function () {
                     transfer.onChange(function () {
                         update();
                     });
-                    
+
                 } else if (type.type === 'color') {
                     let color = new ColorPicker([document.querySelector('.image img'), document.querySelector('.player').querySelector('canvas')]);
                     parent.appendChild(color.dom);
