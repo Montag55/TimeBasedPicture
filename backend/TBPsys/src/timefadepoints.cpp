@@ -39,6 +39,100 @@ int Timefadepoints::get_calculation_specification(){
   return m_calc_specification; //standard sum-game
 }
 
+void Timefadepoints::create_time_map(int id){
+  bool error_occured  = false;
+  int seg_start = m_base->get_seg_start(id);
+  int seg_end = m_base->get_seg_end(id);
+
+  std::cout<<"calc time map\n";
+  cv::Mat pixel_times = cv::Mat( m_pnt_max.y,  m_pnt_max.x, CV_32FC2, cv::Vec2f(0.0f,0.0f));
+  for (unsigned int row = m_pnt_min.y; row < m_pnt_max.y; ++row) {
+    //ptr:
+    float* ptr_map            =  (float*) pixel_times.ptr(row);
+
+    for (unsigned int col = m_pnt_min.x; col < m_pnt_max.x; col++) {
+      //ptr:
+      float *uc_pixel_map           = ptr_map;
+
+      std::list<cv::Vec3f> pnts_sorted; //start, end, distance
+      for(int i = 0; i < (*m_points).size(); i++){
+        //calc distance
+        float pnt_dis = -1;
+        //std::cout<<(*m_points)[i][0]<<", "<<(*m_points)[i][1]<<"\n";
+        if( m_mode_d == 0 /*abd 1D*/) {
+          pnt_dis = abs(col - (*m_points)[i][0]) + abs(row - (*m_points)[i][1]);
+        }
+        else /*euklid 2D*/ {
+          pnt_dis = sqrt(pow(col - (*m_points)[i][0], 2) + pow(row - (*m_points)[i][1], 2));
+        }
+        //insert according to distance
+        if(pnts_sorted.size() == 0){
+          pnts_sorted.push_back(cv::Vec3f((*m_points)[i][2], (*m_points)[i][3], pnt_dis));
+        }
+        else{
+          bool inserted = false;
+          for(std::list<cv::Vec3f>::iterator o = pnts_sorted.begin(); o != pnts_sorted.end(); ++o){
+            if((*o)[2] > pnt_dis){
+              pnts_sorted.insert(o, cv::Vec3f((*m_points)[i][2], (*m_points)[i][3], pnt_dis));
+              inserted = true;
+              break;
+            }
+          }
+          if(!inserted){
+            pnts_sorted.push_back(cv::Vec3f((*m_points)[i][2], (*m_points)[i][3], pnt_dis));
+          }
+        }
+      }
+      //calc borders:
+      pnts_sorted.resize(m_num_pnts);
+      float ref_dis = (*pnts_sorted.begin())[2] + (pnts_sorted.back())[2];
+      float start_border = 0;
+      float end_border = 0;
+      float fac_sum = 0;
+
+      for(std::list<cv::Vec3f>::iterator o = pnts_sorted.begin(); o != pnts_sorted.end(); ++o){
+
+        if( m_param < 0 /*abs 1D*/){
+          fac_sum += utils::sigmoid(ref_dis - (*o)[2], -m_param, ref_dis / 2);
+        }
+        else /*euklid 2D*/{
+          fac_sum += sqrt(std::pow(abs(ref_dis - (*o)[2]), m_param));
+        }
+        //std::cout<<std::pow(abs(ref_dis-(*o)[2]),m_param)<<"val\n";
+      }
+
+      float seg_delta = seg_end - seg_start;
+
+      for(std::list<cv::Vec3f>::iterator o = pnts_sorted.begin(); o != pnts_sorted.end(); ++o){
+
+        double influence = 0;
+        if( m_param < 0 /*abs 1D*/){
+          influence = utils::sigmoid(ref_dis - (*o)[2], -m_param, ref_dis / 2) / fac_sum;
+        }
+        else if(m_param > 0){
+          influence = sqrt(std::pow(abs(ref_dis - (*o)[2]), m_param)) / fac_sum;
+        }
+
+        //std::cout<<"influ "<< influence<<"\n";
+        start_border += (*o)[0] * influence;
+        end_border += (*o)[1] * influence;
+      }
+
+      start_border = seg_start + start_border * seg_delta;
+      end_border = seg_start + end_border * seg_delta;
+      uc_pixel_map[0] = start_border;
+      uc_pixel_map[1] = end_border;
+      //shift ptr:
+      ptr_map     += 2;
+    }
+  }
+
+  if(error_occured){
+    std::cout<<"was sth. wrong creating time map!\n";
+  }
+  m_time_map[id] = pixel_times;
+}
+
 void Timefadepoints::calc(int id, int start, int length, int sign, cv::Mat& result, float& factor, cv::Mat& fac_mat) {
   auto start_time = std::chrono::high_resolution_clock::now();
 
@@ -47,92 +141,8 @@ void Timefadepoints::calc(int id, int start, int length, int sign, cv::Mat& resu
 
   cv::Mat tmp_frame;
   m_video->set( CV_CAP_PROP_POS_MSEC, start/*frameTime*/);
-  if( start == seg_start ){
-    std::cout<<"calc time map\n";
-    cv::Mat pixel_times = cv::Mat( m_pnt_max.y,  m_pnt_max.x, CV_32FC2, cv::Vec2f(0.0f,0.0f));
-    for (unsigned int row = m_pnt_min.y; row < m_pnt_max.y; ++row) {
-      //ptr:
-      float* ptr_map            =  (float*) pixel_times.ptr(row);
-
-      for (unsigned int col = m_pnt_min.x; col < m_pnt_max.x; col++) {
-        //ptr:
-        float *uc_pixel_map           = ptr_map;
-
-        std::list<cv::Vec3f> pnts_sorted; //start, end, distance
-        for(int i = 0; i < (*m_points).size(); i++){
-          //calc distance
-          float pnt_dis = -1;
-          //std::cout<<(*m_points)[i][0]<<", "<<(*m_points)[i][1]<<"\n";
-          if( m_mode_d == 0 /*abd 1D*/) {
-            pnt_dis = abs(col - (*m_points)[i][0]) + abs(row - (*m_points)[i][1]);
-          }
-          else /*euklid 2D*/ {
-            pnt_dis = sqrt(pow(col - (*m_points)[i][0], 2) + pow(row - (*m_points)[i][1], 2));
-          }
-          //insert according to distance
-          if(pnts_sorted.size() == 0){
-            pnts_sorted.push_back(cv::Vec3f((*m_points)[i][2], (*m_points)[i][3], pnt_dis));
-          }
-          else{
-            bool inserted = false;
-            for(std::list<cv::Vec3f>::iterator o = pnts_sorted.begin(); o != pnts_sorted.end(); ++o){
-              if((*o)[2] > pnt_dis){
-                pnts_sorted.insert(o, cv::Vec3f((*m_points)[i][2], (*m_points)[i][3], pnt_dis));
-                inserted = true;
-                break;
-              }
-            }
-            if(!inserted){
-              pnts_sorted.push_back(cv::Vec3f((*m_points)[i][2], (*m_points)[i][3], pnt_dis));
-            }
-          }
-        }
-
-        //calc borders:
-        pnts_sorted.resize(m_num_pnts);
-        float ref_dis = (*pnts_sorted.begin())[2] + (pnts_sorted.back())[2];
-        float start_border = 0;
-        float end_border = 0;
-        float fac_sum = 0;
-
-        for(std::list<cv::Vec3f>::iterator o = pnts_sorted.begin(); o != pnts_sorted.end(); ++o){
-
-          if( m_param < 0 /*abs 1D*/){
-            fac_sum += utils::sigmoid(ref_dis - (*o)[2], -m_param, ref_dis / 2);
-          }
-          else /*euklid 2D*/{
-            fac_sum += sqrt(std::pow(abs(ref_dis - (*o)[2]), m_param));
-          }
-          //std::cout<<std::pow(abs(ref_dis-(*o)[2]),m_param)<<"val\n";
-        }
-
-        float seg_delta = seg_end - seg_start;
-
-        for(std::list<cv::Vec3f>::iterator o = pnts_sorted.begin(); o != pnts_sorted.end(); ++o){
-
-          double influence = 0;
-          if( m_param < 0 /*abs 1D*/){
-            influence = utils::sigmoid(ref_dis - (*o)[2], -m_param, ref_dis / 2) / fac_sum;
-          }
-          else if(m_param > 0){
-            influence = sqrt(std::pow(abs(ref_dis - (*o)[2]), m_param)) / fac_sum;
-          }
-
-          //std::cout<<"influ "<< influence<<"\n";
-          start_border += (*o)[0] * influence;
-          end_border += (*o)[1] * influence;
-        }
-
-        start_border = seg_start + start_border * seg_delta;
-        end_border = seg_start + end_border * seg_delta;
-        uc_pixel_map[0] = start_border;
-        uc_pixel_map[1] = end_border;
-        //shift ptr:
-        ptr_map     += 2;
-      }
-    }
-    m_time_map[id] = pixel_times;
-  }
+  if( start == seg_start )
+    create_time_map(id);
 
   for(int i = 0; i < length; i++){
     if(start + i < m_offset || (start - m_offset + i) % (m_stride + 1) != 0 ){
@@ -151,7 +161,7 @@ void Timefadepoints::calc(int id, int start, int length, int sign, cv::Mat& resu
     auto end_time = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast< std::chrono::milliseconds >( end_time - start_time ).count();
     #ifdef show_time
-        std::cout << "\t\t + Circularfade ("<<length<<") time: \t" << duration << std::endl;
+        std::cout << "\t\t + Timefadepoints ("<<length<<") time: \t" << duration << std::endl;
     #endif
   }
 }

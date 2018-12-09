@@ -43,57 +43,49 @@ int Circularfade::get_calculation_specification(){
   return m_calc_specification;
 }
 
-void Circularfade::calc(int id, int start, int length, int sign, cv::Mat& result, float& factor, cv::Mat& fac_mat) {
-  auto start_time = std::chrono::high_resolution_clock::now();
-
+void Circularfade::create_time_map(int id){
+  std::cout<<"calc time map\n";
   int seg_start = m_base->get_seg_start(id);
   int seg_end = m_base->get_seg_end(id);
+  cv::Mat pixel_times = cv::Mat( m_pnt_max.y,  m_pnt_max.x, CV_32FC2, cv::Vec2f(0.0f,0.0f));
+  for (unsigned int row = m_pnt_min.y; row < m_pnt_max.y; ++row) {
+    //ptr:
+    float* ptr_map            =  (float*) pixel_times.ptr(row);
 
-  cv::Mat tmp_frame;
-  m_video->set( CV_CAP_PROP_POS_MSEC, start/*frameTime*/);
-  if( start == seg_start ){
-    std::cout<<"calc time map\n";
-    cv::Mat pixel_times = cv::Mat( m_pnt_max.y,  m_pnt_max.x, CV_32FC2, cv::Vec2f(0.0f,0.0f));
-    for (unsigned int row = m_pnt_min.y; row < m_pnt_max.y; ++row) {
-      //ptr:
-      float* ptr_map            =  (float*) pixel_times.ptr(row);
+    for (unsigned int col = m_pnt_min.x; col < m_pnt_max.x; col++) {
+      float *uc_pixel_map           = ptr_map;
+      //
+      float distance = sqrt(pow((float)col - m_mid.x, 2) + pow((float)row - m_mid.y, 2));
 
-      for (unsigned int col = m_pnt_min.x; col < m_pnt_max.x; col++) {
-        float *uc_pixel_map           = ptr_map;
-        //
-        float distance = sqrt(pow((float)col - m_mid.x, 2) + pow((float)row - m_mid.y, 2));
+      float null_null = sqrt(pow(m_pnt_min.x - m_mid.x, 2) + pow(m_pnt_min.y - m_mid.y, 2));
+      float null_max = sqrt(pow(m_pnt_min.x - m_mid.x, 2) + pow(m_pnt_max.y - m_mid.y, 2));
+      float max_null = sqrt(pow(m_pnt_max.x - m_mid.x, 2) + pow(m_pnt_min.y - m_mid.y, 2));
+      float max_max = sqrt(pow(m_pnt_max.x - m_mid.x, 2) + pow(m_pnt_max.y - m_mid.y, 2));
+      float max_distance = 0;
 
-        float null_null = sqrt(pow(m_pnt_min.x - m_mid.x, 2) + pow(m_pnt_min.y - m_mid.y, 2));
-        float null_max = sqrt(pow(m_pnt_min.x - m_mid.x, 2) + pow(m_pnt_max.y - m_mid.y, 2));
-        float max_null = sqrt(pow(m_pnt_max.x - m_mid.x, 2) + pow(m_pnt_min.y - m_mid.y, 2));
-        float max_max = sqrt(pow(m_pnt_max.x - m_mid.x, 2) + pow(m_pnt_max.y - m_mid.y, 2));
-        float max_distance = 0;
+      if(max_distance < null_null)
+        max_distance = null_null;
+      else if(max_distance < null_max)
+        max_distance = null_max;
+      else if(max_distance < max_null)
+        max_distance = max_null;
+      else if(max_distance < max_max)
+        max_distance = max_max;
 
-        if(max_distance < null_null)
-          max_distance = null_null;
-        else if(max_distance < null_max)
-          max_distance = null_max;
-        else if(max_distance < max_null)
-          max_distance = max_null;
-        else if(max_distance < max_max)
-          max_distance = max_max;
-
-        if(m_fade_direction){
-          if(distance < m_radius){
-            float start_border=  m_start;
-            float end_border = m_end;
-            uc_pixel_map[0] = start_border;
-            uc_pixel_map[1] = end_border;
+      float start_border=  -1;
+      float end_border= -1;
+      if(m_fade_direction){
+        if(distance < m_radius){
+          start_border=  m_start;
+          end_border = m_end;
         }
         else{
             max_distance -= m_radius;
             distance -= m_radius;
             if(m_mode==0){
-
               //power
               max_distance = pow(max_distance, m_parameter);
               distance = pow(distance, m_parameter);
-
             }
             else if(m_mode==1){
 
@@ -103,7 +95,6 @@ void Circularfade::calc(int id, int start, int length, int sign, cv::Mat& result
               max_distance = utils::sigmoid(max_distance, m_parameter, max_distance/2);
               max_distance -= min_clip;
               distance -= min_clip;
-
             }
             else{
               //default: linear
@@ -112,60 +103,63 @@ void Circularfade::calc(int id, int start, int length, int sign, cv::Mat& result
             }
             //write
             float fade_fac = distance / max_distance;
-            float start_border= fade_fac * (seg_start - m_start) + m_start;
-            float end_border = fade_fac * (seg_end - m_end) + m_end;
-            uc_pixel_map[0] = start_border;
-            uc_pixel_map[1] = end_border;
+            start_border= fade_fac * (seg_start - m_start) + m_start;
+            end_border = fade_fac * (seg_end - m_end) + m_end;
           }
+      }
+      else{
+        if(distance > m_radius){
+          start_border= m_start;
+          end_border = m_end;
         }
         else{
-          if(distance > m_radius){
-            float start_border= m_start;
-            float end_border = m_end;
-            uc_pixel_map[0] = start_border;
-            uc_pixel_map[1] = end_border;
+          max_distance = m_radius;
+          distance      = m_radius - distance;
+          if(m_mode == 0){
+            //power
+            max_distance = pow(max_distance, m_parameter);
+            distance = pow(distance, m_parameter);
+          }
+          else if(m_mode == 1){
+            //sigmoid
+            distance = utils::sigmoid(distance, m_parameter, max_distance/2);
+            float min_clip = utils::sigmoid(0, m_parameter, max_distance/2);
+            max_distance = utils::sigmoid(max_distance, m_parameter, max_distance/2);
+            max_distance -= min_clip;
+            distance -= min_clip;
           }
           else{
-            max_distance = m_radius;
-            distance = m_radius - distance;
-            if(m_mode == 0){
-
-              //power
-              max_distance = pow(max_distance, m_parameter);
-              distance = pow(distance, m_parameter);
-
-            }
-            else if(m_mode == 1){
-
-              //sigmoid
-              distance = utils::sigmoid(distance, m_parameter, max_distance/2);
-              float min_clip = utils::sigmoid(0, m_parameter, max_distance/2);
-              max_distance = utils::sigmoid(max_distance, m_parameter, max_distance/2);
-              max_distance -= min_clip;
-              distance -= min_clip;
-
-            }
-            else{
-              //default: linear
-              max_distance = pow(max_distance, 1);
-              distance = pow(distance, 1);
-            }
-            float fade_fac = distance / max_distance;
-            float start_border= fade_fac * (seg_start - m_start) + m_start;
-            float end_border = fade_fac * (seg_end - m_end) + m_end;
-            uc_pixel_map[0] = start_border;
-            uc_pixel_map[1] = end_border;
+            //default: linear
+            max_distance = pow(max_distance, 1);
+            distance = pow(distance, 1);
           }
+          float fade_fac = distance / max_distance;
+          start_border= fade_fac * (seg_start - m_start) + m_start;
+          end_border = fade_fac * (seg_end - m_end) + m_end;
         }
-
-
-        //
-        ptr_map     += 2;
       }
-    }
-    m_time_map[id] = pixel_times;
 
+      uc_pixel_map[0] = start_border;
+      uc_pixel_map[1] = end_border;
+      ptr_map     += 2;
+    }
   }
+  m_time_map[id] = pixel_times;
+
+}
+
+
+
+void Circularfade::calc(int id, int start, int length, int sign, cv::Mat& result, float& factor, cv::Mat& fac_mat) {
+  auto start_time = std::chrono::high_resolution_clock::now();
+
+  int seg_start = m_base->get_seg_start(id);
+  int seg_end = m_base->get_seg_end(id);
+
+  cv::Mat tmp_frame;
+  m_video->set( CV_CAP_PROP_POS_MSEC, start/*frameTime*/);
+  if( start == seg_start )
+    create_time_map(id);
   for(int i = 0; i < length; i++){
     if(start + i < m_offset || (start - m_offset + i) % (m_stride + 1) != 0 ){
       m_video->grab();
