@@ -85,7 +85,6 @@ void Paint::create_time_map(int id){
           }
         }
         if(color_check == false){
-          std::cout << tmp_px_color << std::endl;
           error_occured = true;
           start_border = -1;
           end_border = -1;
@@ -142,6 +141,23 @@ void Paint::calc(int id, int start, int length, int sign, cv::Mat& result, float
 }
 
 void Paint::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& current_frame, int frame_num,  int seg_id) {
+
+    // cv::Mat mask_start;
+    // cv::Mat mask_end;
+    //
+    // int from_to_s[] = {0,0 , 0,1, 0,2};
+    // cv::mixChannels(&m_time_map[seg_id], 1, &tmp_time_map_C3, 1, from_to_s, 3);
+    // mask_start = (tmp_time_map_C3 <= frame_num);
+    // mask_start.convertTo(mask_start, CV_32FC3);
+    //
+    // int from_to_e[] = {1,0 , 1,1, 1,2};
+    // cv::mixChannels(&m_time_map[seg_id], 1, &tmp_time_map_C3, 1, from_to_e, 3);
+    // mask_end = (tmp_time_map_C3 >= frame_num);
+    // mask_end.convertTo(mask_end, CV_32FC3);mask_end
+    //
+    // result += mask_end.mul(mask_start).mul(current_frame) / 255;
+    // fac_mat += mask_end.mul(mask_start) / 255;
+
     cv::Mat out = cv::Mat(m_pnt_max.y, m_pnt_max.x, m_img_type, cv::Scalar(0,0,0));
     for (unsigned int row = m_pnt_min.y; row < m_pnt_max.y; ++row) {
       //ptr:
@@ -179,7 +195,6 @@ void Paint::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& current_fr
         ptr_map += 2;
       }
     }
-
   }
 
 void Paint::manipulate(std::shared_ptr<std::vector<ColorCoords>> colorTimes, int offset, int stride){
