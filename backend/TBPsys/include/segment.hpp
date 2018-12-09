@@ -11,6 +11,7 @@ segment and interpretation later...
 #include <mutex>
 
 class Base;
+#include "struct.hpp"
 #include "base.hpp"
 #include "interpretation.hpp"
 #include "average.hpp"
@@ -23,6 +24,7 @@ class Base;
 #include "circularfade.hpp"
 #include "timefadepoints.hpp"
 #include "singleimage.hpp"
+#include "paint.hpp"
 
 class Segment {
 public:

@@ -243,6 +243,22 @@ void manipulate_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
       std::cout << "manipulate_segment() failed. \n";
     }
   }
+  else if(typ_i == 9){
+    std::shared_ptr<std::vector<ColorCoords>> colorTimes = std::make_shared<std::vector<ColorCoords>>();
+
+    for(int idx = 3; idx < args.Length(); idx += 5){
+      ColorCoords tmp;
+      tmp.color = cv::Vec3f(args[idx]->NumberValue(), args[idx+2]->NumberValue(), args[idx+2]->NumberValue());
+      tmp.start = args[idx+3]->IntegerValue();
+      tmp.end = args[idx+4]->IntegerValue();
+      colorTimes->push_back(tmp);
+    }
+
+    if(!base->manipulate_interpretation(id, colorTimes, offset, stride)){
+      correct = "false";
+      std::cout << "manipulate_segment() failed. \n";
+    }
+  }
   else{
     std::cout<<"not yet implemented manipulation\n";
   }
@@ -351,7 +367,7 @@ void add_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
     float parameter  = args[10]->NumberValue();
 
     cv::Point mid = cv::Point(mid_x, mid_y);
-    
+
     interpret_id = base->add_interpretation(typ_i, offset, stride, start, end, mode, mid, radius, fade_dir, parameter);
   }
   else if(typ_i == 7){
@@ -365,12 +381,24 @@ void add_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
     }
 
     interpret_id = base->add_interpretation(typ_i, offset, stride, mode_distance, mode_function, parameter, points);
-
   }
   else if(typ_i == 8){
     v8::String::Utf8Value param1( args[3]->ToString() );
     std::string file_path = std::string( *param1 );
     interpret_id = base->add_interpretation(typ_i, file_path);
+  }
+  else if(typ_i == 9){
+    std::shared_ptr<std::vector<ColorCoords>> colorTimes = std::make_shared<std::vector<ColorCoords>>();
+
+    for(int idx = 3; idx < args.Length(); idx += 5){
+      ColorCoords tmp;
+      tmp.color = cv::Vec3f(args[idx]->NumberValue(), args[idx+2]->NumberValue(), args[idx+2]->NumberValue());
+      tmp.start = args[idx+3]->IntegerValue();
+      tmp.end = args[idx+4]->IntegerValue();
+      colorTimes->push_back(tmp);
+    }
+
+    interpret_id = base->add_interpretation(typ_i, offset, stride, colorTimes);
   }
 
   if(interpret_id >= 0 ) {
