@@ -143,6 +143,14 @@ bool Base::manipulate_interpretation(int id, int offset, int stride){
   return true;
 }
 
+bool Base::manipulate_interpretation(int id, std::shared_ptr<std::vector<ColorCoords>> colorTimes, int offset, int stride){
+  if(m_interpretations[id]->getTypenumber() == 9){
+    Paint& interpretation = dynamic_cast<Paint&>(*m_interpretations[id]);
+    interpretation.manipulate(colorTimes, offset, stride);
+  }
+  return true;
+}
+
 bool Base::manipulate_interpretation(int id, int ref_id, float threshhold, int offset, int stride){
 
   std::string path = " ";
@@ -398,6 +406,22 @@ int Base::add_interpretation(int typ_i, int offset, int stride, int ref_id, floa
     }
 
     m_interpretations.push_back(std::make_shared<Reduce>(shared_from_this(), id, typ_i, ref_img, threshhold, offset, stride));
+  }
+  else{
+    id = -1;
+    std::cout<< "Wrong interpretation. \n";
+  }
+
+  return id;
+}
+
+int Base::add_interpretation(int typ_i, int offset, int stride, std::shared_ptr<std::vector<ColorCoords>> colorTimes){
+  std::cout<<"\t > interpretation: ";
+  int id = m_interpretations.size();
+
+  if(typ_i == 9 /*Paint*/){
+    std::cout<< "Paint \n";
+    m_interpretations.push_back(std::make_shared<Paint>(shared_from_this(), id, typ_i, colorTimes, offset, stride));
   }
   else{
     id = -1;
