@@ -82,8 +82,8 @@ void Circularfade::calc(int id, int start, int length, int sign, cv::Mat& result
           if(distance < m_radius){
             float start_border=  m_start;
             float end_border = m_end;
-            ptr_map[0] = start_border;
-            ptr_map[1] = end_border;
+            uc_pixel_map[0] = start_border;
+            uc_pixel_map[1] = end_border;
         }
         else{
             max_distance -= m_radius;
@@ -114,16 +114,16 @@ void Circularfade::calc(int id, int start, int length, int sign, cv::Mat& result
             float fade_fac = distance / max_distance;
             float start_border= fade_fac * (seg_start - m_start) + m_start;
             float end_border = fade_fac * (seg_end - m_end) + m_end;
-            ptr_map[0] = start_border;
-            ptr_map[1] = end_border;
+            uc_pixel_map[0] = start_border;
+            uc_pixel_map[1] = end_border;
           }
         }
         else{
           if(distance > m_radius){
             float start_border= m_start;
             float end_border = m_end;
-            ptr_map[0] = start_border;
-            ptr_map[1] = end_border;
+            uc_pixel_map[0] = start_border;
+            uc_pixel_map[1] = end_border;
           }
           else{
             max_distance = m_radius;
@@ -153,8 +153,8 @@ void Circularfade::calc(int id, int start, int length, int sign, cv::Mat& result
             float fade_fac = distance / max_distance;
             float start_border= fade_fac * (seg_start - m_start) + m_start;
             float end_border = fade_fac * (seg_end - m_end) + m_end;
-            ptr_map[0] = start_border;
-            ptr_map[1] = end_border;
+            uc_pixel_map[0] = start_border;
+            uc_pixel_map[1] = end_border;
           }
         }
 

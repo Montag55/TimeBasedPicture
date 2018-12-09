@@ -125,8 +125,8 @@ void Timefadepoints::calc(int id, int start, int length, int sign, cv::Mat& resu
 
         start_border = seg_start + start_border * seg_delta;
         end_border = seg_start + end_border * seg_delta;
-        ptr_map[0] = start_border;
-        ptr_map[1] = end_border;
+        uc_pixel_map[0] = start_border;
+        uc_pixel_map[1] = end_border;
         //shift ptr:
         ptr_map     += 2;
       }
