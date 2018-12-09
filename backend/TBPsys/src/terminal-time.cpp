@@ -218,7 +218,24 @@ int main (int argc, char **argv){
             std::string file_path = v[4];
             interpret_id = base->add_interpretation(typ_i, file_path);
           }
+          else if(typ_i == 9 /*Paint*/){
+            std::shared_ptr<std::vector<ColorCoords>> colorTimes = std::make_shared<std::vector<ColorCoords>>();
 
+            for(unsigned int idx = 4; idx < v.size(); idx += 5){
+              ColorCoords tmp;
+              tmp.color = cv::Vec3f(std::stof(v[idx]), std::stof(v[idx+1]), std::stof(v[idx+2]));
+              tmp.start = std::stoi(v[idx+3]);
+              tmp.end = std::stoi(v[idx+4]);
+              colorTimes->push_back(tmp);
+            }
+
+            interpret_id = base->add_interpretation(typ_i, offset, stride, colorTimes);
+            std::cout << "\t > ColorTimes: [";
+            for(unsigned int i = 0; i < colorTimes->size(); i++){
+              std::cout << (*colorTimes)[i].color << ", " << (*colorTimes)[i].start << ", " << (*colorTimes)[i].end << "; ";
+            }
+            std::cout << "]\n";
+          }
           if(interpret_id >= 0 ) {
             std::cout << "\t > offset: " << offset << "\n";
             std::cout << "\t > stride: " << stride << "\n";
@@ -394,15 +411,19 @@ int main (int argc, char **argv){
                                std::stof(v[idx+2]), std::stof(v[idx+3])};
                 points->push_back(tmp);
               }
-
-              std::cout << "\t > mode_distance: " << mode_distance << "\n";
-              std::cout << "\t > mode_function: " << mode_function << "\n";
-              std::cout << "\t > parameter: " << parameter << "\n";
-              std::cout << "\t > points: [";
-              for(unsigned int i = 0; i < points->size(); i++){
-                std::cout << (*points)[i] << ", ";
+              if(base->manipulate_interpretation(id, mode_distance, mode_function, parameter, points, offset, stride)){
+                std::cout << "\t > mode_distance: " << mode_distance << "\n";
+                std::cout << "\t > mode_function: " << mode_function << "\n";
+                std::cout << "\t > parameter: " << parameter << "\n";
+                std::cout << "\t > points: [";
+                for(unsigned int i = 0; i < points->size(); i++){
+                  std::cout << (*points)[i] << ", ";
+                }
+                std::cout << "]\n";
               }
-              std::cout << "]\n";
+              else{
+                std::cout << "\t > manipulate interpretation id: " << id << " failed. \n";
+              }
             }
             else if(typ_i == 8 /*Singleimage*/){
               std::string file_path = v[5];
@@ -415,6 +436,30 @@ int main (int argc, char **argv){
               else{
                 std::cout << "\t > manipulate interpretation id: " << id << " failed. \n";
               }
+            }
+            else if(typ_i == 9 /*Paint*/){
+              std::shared_ptr<std::vector<ColorCoords>> colorTimes = std::make_shared<std::vector<ColorCoords>>();
+
+              for(unsigned int idx = 5; idx < v.size(); idx += 5){
+                ColorCoords tmp;
+                tmp.color = cv::Vec3f(std::stof(v[idx]), std::stof(v[idx+1]), std::stof(v[idx+2]));
+                tmp.start = std::stoi(v[idx+3]);
+                tmp.end = std::stoi(v[idx+4]);
+                colorTimes->push_back(tmp);
+              }
+
+              if(base->manipulate_interpretation(id, colorTimes, offset, stride)){
+                std::cout << "\t > interpretation id: " << id << "\n";
+                std::cout << "\t > typ: " << typ_i << "\n";
+                std::cout << "\t > ColorTimes: [";
+                for(unsigned int i = 0; i < colorTimes->size(); i++){
+                  std::cout << (*colorTimes)[i].color << ", " << (*colorTimes)[i].start << ", " << (*colorTimes)[i].end << ", ";
+                }
+                std::cout << "]\n";              }
+              else{
+                std::cout << "\t > manipulate interpretation id: " << id << " failed. \n";
+              }
+
             }
             else {
               std::cout<<"not yet implemented manipulation\n";

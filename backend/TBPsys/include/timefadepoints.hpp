@@ -19,7 +19,7 @@ public:
   void calc(int id, int start, int length, int sign, cv::Mat& result, float& factor, cv::Mat& fac_mat) override;
   void manipulate(int mode_d, int num_pnts, float param, std::shared_ptr< std::vector<cv::Vec4f>> points, int offset, int stride);
   void compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& current_frame, int frame_num, int seg_id);
-
+  void create_time_map(int id);
 private:
   int m_mode_d;
   int m_num_pnts;
