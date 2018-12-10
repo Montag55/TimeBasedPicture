@@ -42,7 +42,7 @@ int main (int argc, char **argv){
   int   offset      = 0;
   int   stride      = 0;
   float threshhold  = 0;
-  
+
 
 
   std::cout<<"here\n";
@@ -117,7 +117,7 @@ int main (int argc, char **argv){
       }
       else{
         std::cout<<"Segment["<<0<<"] Progress: "<<progress<<" ->save\n";
-        base->save("reduce_cyc_"+std::to_string(i*10)+".jpg");
+        base->save("reduce_cyc_"+std::to_string(i*10)+".png");
         std::this_thread::sleep_for(std::chrono::milliseconds(1000)); //safety reason
         wait= false;
       }

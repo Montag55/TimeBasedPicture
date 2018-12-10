@@ -131,7 +131,7 @@ void Segment::upload_influence(){
 
 
   if(m_hasMask){
-    updateMask("mask" + std::to_string(m_id) + ".jpg");
+    updateMask("mask" + std::to_string(m_id) + ".png");
     cv::Mat tmp_mask = cv::Mat(m_mother->get_max_Point().y, m_mother->get_max_Point().x, CV_32FC3, cv::Scalar(0,0,0));
     int from_to[] = { 0,0, 0,1, 0,2};
     cv::mixChannels(&m_mask, 1, &tmp_mask, 1, from_to, 3);

@@ -52,8 +52,8 @@ int main (int argc, char **argv){
     std::string file_path;
 
     if(argc == 1) {
-      std::cout<<"no path specified: default=./../../../videos/street/frame%01d.jpg\n";
-      file_path = "./../../../videos/street/frame%01d.jpg";
+      std::cout<<"no path specified: default=./../../../videos/street/frame%01d.png\n";
+      file_path = "./../../../videos/street/frame%01d.png";
     }
     else {
       file_path = argv[1];

@@ -58,7 +58,7 @@ ipcMain.on("getProgress", (event, arg) => {
 })
 
 ipcMain.on("init", (event, arg) => {
-  let res = wrapper.init(`${arg}frame%01d.jpg`)
+  let res = wrapper.init(`${arg}frame%01d.png`)
   event.sender.send('init', arg + ' ' + parseInt(res.split(' ')[1]));
 })
 

@@ -99,13 +99,13 @@ let Timeline = (function () {
         ScrollY.init();
         ScrollX.init();
         Segments.init();
-    
+
         scrollReset.addEventListener('click', function () {
             ScrollX.reset();
             ScrollY.reset();
         });
 
-        setTimeout(function () {  
+        setTimeout(function () {
             show(1);
             ScrollX.set(0, count / 10000);
         }, 1000);
@@ -115,7 +115,7 @@ let Timeline = (function () {
         paused = true;
     }
     //init('../videos/bootraffa/');
- 
+
     function initVideo(path) {
         for (let i = 1; i <= MAX_FRAMES; i++) {
             let tempLabel = document.createElement('P');
@@ -127,7 +127,7 @@ let Timeline = (function () {
             tempImg.classList.add('img');
             let img = document.createElement('IMG');
             tempImg.appendChild(img);
-            img.src = `${path}frame${i}.jpg`;
+            img.src = `${path}frame${i}.png`;
             document.documentElement.style.setProperty('--frame-width', 100 / MAX_FRAMES + '%');
             document.documentElement.style.setProperty('--video-height', 15 + '%');
             mainVideo.appendChild(tempImg);
@@ -137,9 +137,9 @@ let Timeline = (function () {
         }
         window.addEventListener('load', function () {
             show(1);
-            
-            
-            
+
+
+
 
         });
     }
