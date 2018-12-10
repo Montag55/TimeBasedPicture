@@ -10,10 +10,11 @@
 #include <../include/utils.hpp>
 
 
-BoostColor::BoostColor( std::shared_ptr<Base> mother, int id, int type, float threshhold, std::shared_ptr<std::vector<float>> colors, int offset, int stride):
+BoostColor::BoostColor( std::shared_ptr<Base> mother, int id, int type, float threshhold, int modi, std::shared_ptr<std::vector<float>> colors, int offset, int stride):
 Interpretation{ mother, id, type, offset, stride},
 m_colors{colors},
 m_threshhold{threshhold},
+m_modi{modi},
 m_ptr_delta{mother->get_img_delta()},
 m_pnt_min{mother->get_min_Point()},
 m_pnt_max{mother->get_max_Point()}
@@ -75,11 +76,34 @@ void BoostColor::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& curre
       float *uc_pixel_fac           = ptr_fac;
       const float *uc_pixel_current = ptr_current;
 
+
+
       float distance_RGB = -1;
+      cv::Scalar current = utils::rgb2lab(uc_pixel_current[0], uc_pixel_current[1], uc_pixel_current[2]);
+
       for(unsigned int i = 0; i < m_colors->size(); i+=3){
-        float distance_tmp  = sqrt(pow((*m_colors)[i] - uc_pixel_current[0], 2) +
-                                   pow((*m_colors)[i+1] - uc_pixel_current[1], 2) +
-                                   pow((*m_colors)[i+2] - uc_pixel_current[2], 2));
+
+        float distance_tmp = -1;
+        cv::Scalar color_tmp = utils::rgb2lab((*m_colors)[i], (*m_colors)[i+1], (*m_colors)[i+2]);
+
+        if(m_modi == 0){
+          distance_tmp  = sqrt(pow((*m_colors)[i] - uc_pixel_current[0], 2) +
+                                     pow((*m_colors)[i+1] - uc_pixel_current[1], 2) +
+                                     pow((*m_colors)[i+2] - uc_pixel_current[2], 2));
+        }
+        else if(m_modi == 1){
+          std::cout << "no monochrom yet" << std::endl;
+        }
+        else if(m_modi == 2){
+          distance_RGB = utils::dE2000(color_tmp, current, 0.1f, 100.0f, 100.0f);
+        }
+        else if(m_modi == 3){
+          distance_RGB = utils::CIE76(color_tmp, current, 1.0f, 0.0f, 0.0f);
+        }
+        else if(m_modi == 4){
+          distance_RGB = utils::CIE94(color_tmp, current, 5.0f, 100.0f, 100.0f);
+        }
+
 
         if(distance_tmp <= m_threshhold){
           distance_RGB = distance_tmp;
@@ -117,7 +141,7 @@ void BoostColor::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& curre
   }
 }
 
-void BoostColor::manipulate(float threshhold, std::shared_ptr<std::vector<float>> colors, int offset, int stride){
+void BoostColor::manipulate(float threshhold, int modi, std::shared_ptr<std::vector<float>> colors, int offset, int stride){
 
   bool update_status = false;
   if((*m_colors) != (*colors)){
@@ -126,6 +150,10 @@ void BoostColor::manipulate(float threshhold, std::shared_ptr<std::vector<float>
   }
   if(m_threshhold != threshhold){
     m_threshhold = threshhold;
+    update_status = true;
+  }
+  if(m_modi != modi){
+    m_modi = modi;
     update_status = true;
   }
   if(offset != m_offset){

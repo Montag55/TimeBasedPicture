@@ -100,7 +100,9 @@ int main (int argc, char **argv){
           }
           else if(typ_i == 1 /*Transferfunction*/){
             std::shared_ptr<std::vector<float>> weights = std::make_shared<std::vector<float>>();
+            int modi = -1;
             float start = std::stoi (v[4]);
+
 
             for(int idx = 5; idx < v.size(); idx++){
               weights->push_back(std::stof(v[idx]));
@@ -111,42 +113,47 @@ int main (int argc, char **argv){
               std::cout << (*weights)[i] << ", ";
             }
             std::cout << "]\n";
-            interpret_id  = base->add_interpretation(typ_i, offset, stride,  start, weights);
+            interpret_id  = base->add_interpretation(typ_i, offset, stride, start, modi, weights);
           }
           else if(typ_i == 2 /*Overplott*/){
             if(std::any_of(v[4].begin(), v[4].begin() + 2, ::isdigit)){
               int ref_id        = std::stoi (v[4]);
               float threshhold  = std::stof (v[5]);
-              interpret_id  = base->add_interpretation(typ_i, offset, stride, ref_id, threshhold);
+              int modi          = std::stoi (v[6]);
+              interpret_id  = base->add_interpretation(typ_i, offset, stride, ref_id, threshhold, modi);
             }
             else{
               std::string ref_file_path = v[4];
               float threshhold = std::stof(v[5]);
-              interpret_id = base->add_interpretation(typ_i, offset, stride, ref_file_path, threshhold);
+              int modi          = std::stoi (v[6]);
+              interpret_id = base->add_interpretation(typ_i, offset, stride, ref_file_path, threshhold, modi);
             }
           }
           else if(typ_i == 3 /*Boost*/){
             if(std::any_of(v[4].begin(), v[4].begin() + 2, ::isdigit)){
               int ref_id        = std::stoi (v[4]);
               float threshhold  = std::stof (v[5]);
-              interpret_id  = base->add_interpretation(typ_i, offset, stride, ref_id, threshhold);
+              int modi          = std::stoi (v[6]);
+              interpret_id  = base->add_interpretation(typ_i, offset, stride, ref_id, threshhold, modi);
             }
             else{
               std::string ref_file_path = v[4];
               float threshhold = std::stof(v[5]);
-              interpret_id = base->add_interpretation(typ_i, offset, stride, ref_file_path, threshhold);
+              int modi         = std::stoi (v[6]);
+              interpret_id = base->add_interpretation(typ_i, offset, stride, ref_file_path, threshhold, modi);
             }
           }
           else if(typ_i == 4 /*BoostColor*/){
             std::shared_ptr<std::vector<float>> colors = std::make_shared<std::vector<float>>();
             float threshhold  = std::stoi (v[4]);
+            int modi          = std::stoi (v[5]);
 
-            for(int idx = 5; idx < v.size(); idx++){
+            for(int idx = 6; idx < v.size(); idx++){
               colors->push_back(std::stof(v[idx]));
             }
 
             if(colors->size()%3 == 0){
-              interpret_id = base->add_interpretation(typ_i, offset, stride, threshhold, colors);
+              interpret_id = base->add_interpretation(typ_i, offset, stride, threshhold, modi, colors);
               std::cout << "\t > threshhold: " << threshhold << "\n";
               std::cout << "\t > colors: ";
               for(unsigned int i = 0; i < colors->size(); i+=3){
@@ -162,12 +169,14 @@ int main (int argc, char **argv){
             if(std::any_of(v[4].begin(), v[4].begin() + 2, ::isdigit)){
               int ref_id        = std::stoi (v[4]);
               float threshhold  = std::stof (v[5]);
-              interpret_id  = base->add_interpretation(typ_i, offset, stride, ref_id, threshhold);
+              int modi          = std::stoi (v[6]);
+              interpret_id  = base->add_interpretation(typ_i, offset, stride, ref_id, threshhold, modi);
             }
             else{
               std::string ref_file_path = v[4];
               float threshhold = std::stof(v[5]);
-              interpret_id = base->add_interpretation(typ_i, offset, stride, ref_file_path, threshhold);
+              int modi          = std::stoi (v[6]);
+              interpret_id = base->add_interpretation(typ_i, offset, stride, ref_file_path, threshhold, modi);
             }
           }
           else if(typ_i == 6 /*CircularFade*/){
@@ -286,12 +295,13 @@ int main (int argc, char **argv){
             else if(typ_i == 1 /*Transferfrunction*/ ) {
               float start  = std::stoi (v[5]);
               std::shared_ptr<std::vector<float>> weights = std::make_shared<std::vector<float>>();
+              int modi = -1;
 
               for(int idx = 6; idx < v.size(); idx++){
                 weights->push_back(std::stof(v[idx]));
               }
 
-              if(base->manipulate_interpretation(id, start, weights, offset, stride)){
+              if(base->manipulate_interpretation(id, start, modi, weights, offset, stride)){
                 std::cout << "\t > interpretation id: " << id << "\n";
                 std::cout << "\t > typ: " << typ_i << "\n";
                 std::cout << "\t > start_frame: " << start << "\n";
@@ -312,12 +322,14 @@ int main (int argc, char **argv){
               if(std::any_of(v[5].begin(), v[5].begin() + 2, ::isdigit)){
                 int ref_id        = std::stoi (v[5]);
                 float threshhold  = std::stof (v[6]);
+                int modi          = std::stoi (v[7]);
 
-                if(base->manipulate_interpretation(id, ref_id, threshhold, offset, stride)){
+                if(base->manipulate_interpretation(id, ref_id, threshhold, modi, offset, stride)){
                   std::cout << "\t > interpretation id: " << id << "\n";
                   std::cout << "\t > typ: " << typ_i << "\n";
                   std::cout << "\t > reference id: " << ref_id << "\n";
                   std::cout << "\t > threshhold: " << threshhold << "\n";
+                  std::cout << "\t > modi: " << modi << "\n";
                   std::cout << "\t > offset: " << offset << "\n";
                   std::cout << "\t > stride: " << stride << "\n";
                 }
@@ -345,18 +357,20 @@ int main (int argc, char **argv){
             else if(typ_i == 4 /*BoostColor*/){
               std::shared_ptr<std::vector<float>> colors = std::make_shared<std::vector<float>>();
               float threshhold = std::stof(v[5]);
+              int modi         = std::stoi(v[6]);
 
-              for(int idx = 6; idx < v.size(); idx++){
+              for(int idx = 7; idx < v.size(); idx++){
                 colors->push_back(std::stof(v[idx]));
               }
 
               if(colors->size()%3 != 0)
                 std::cout << "\t too few arguments (tpye, float, [r, g, b]*n) \n";
 
-              if(base->manipulate_interpretation(id, threshhold, colors, offset, stride)){
+              if(base->manipulate_interpretation(id, threshhold, modi, colors, offset, stride)){
                 std::cout << "\t > interpretation id: " << id << "\n";
                 std::cout << "\t > typ: " << typ_i << "\n";
                 std::cout << "\t > threshhold: " << threshhold << "\n";
+                std::cout << "\t > modi: " << modi << "\n";
                 std::cout << "\t > offset: " << offset << "\n";
                 std::cout << "\t > stride: " << stride << "\n";
                 std::cout << "\t > colors: ";

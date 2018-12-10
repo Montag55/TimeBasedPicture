@@ -78,6 +78,13 @@
                 "min": 0,
                 "max": 255,
                 "step": 1
+            },
+            {
+                "name": "modi",
+                "type": "number_slider",
+                "min": 0,
+                "max": 4,
+                "step": 1
             }
         ]
     },
@@ -109,6 +116,13 @@
                 "min": 0,
                 "max": 255,
                 "step": 1
+            },
+            {
+                "name": "modi",
+                "type": "number_slider",
+                "min": 0,
+                "max": 4,
+                "step": 1
             }
         ]
     },
@@ -135,6 +149,13 @@
                 "type": "number_edit",
                 "min": 0,
                 "max": 255,
+                "step": 1
+            },
+            {
+                "name": "modi",
+                "type": "number_slider",
+                "min": 0,
+                "max": 4,
                 "step": 1
             },
             {
@@ -170,6 +191,13 @@
                 "type": "number_edit",
                 "min": 0,
                 "max": 255,
+                "step": 1
+            },
+            {
+                "name": "modi",
+                "type": "number_slider",
+                "min": 0,
+                "max": 4,
                 "step": 1
             }
         ]

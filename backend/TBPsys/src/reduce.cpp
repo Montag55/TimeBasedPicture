@@ -9,10 +9,11 @@
 #include <../include/base.hpp>
 
 
-Reduce::Reduce( std::shared_ptr<Base> mother, int id, int type, cv::Mat ref, float threshhold, int offset, int stride):
+Reduce::Reduce( std::shared_ptr<Base> mother, int id, int type, cv::Mat ref, float threshhold, int modi, int offset, int stride):
 Interpretation{ mother, id, type, offset, stride},
 m_reference{ref},
 m_threshhold{threshhold},
+m_modi{modi},
 m_ptr_delta{mother->get_img_delta()},
 m_pnt_min{mother->get_min_Point()},
 m_pnt_max{mother->get_max_Point()}
@@ -61,15 +62,20 @@ void Reduce::calc(int id, int start, int length, int sign, cv::Mat& result, floa
 
 void Reduce::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& current_frame, int sign) {
 
-  // funktioniert prime; doppelt so schnell (berechnung aber nicht selbst)
-  // cv::Mat mask;
-  // cv::absdiff(current_frame, m_reference, mask);
-  // mask = (mask > m_threshhold);
-  // mask.convertTo(mask, CV_32FC3);
-  // int from_to[] = { 0,0, 0,1, 0,2};
-  // cv::mixChannels(&mask, 1, &mask, 1, from_to, 3);
-  // result += current_frame.mul(mask) * (float) ((float)sign / ((float)255));
-  // fac_mat += mask * (float) ((float)sign / ((float)255));
+  // if(m_modi == 0){
+  //   cv::Mat mask;
+  //   cv::absdiff(current_frame, m_reference, mask);
+  //   cv::Mat mask_fac = mask.clone();
+  //   mask = cv::Scalar(m_threshhold, m_threshhold, m_threshhold) - mask;
+  //   mask_fac = (mask_fac < m_threshhold);
+  //   int from_to[] = { 0,0, 0,1, 0,2};
+  //   cv::mixChannels(&mask_fac, 1, &mask_fac, 1, from_to, 3);
+  //   mask_fac.convertTo(mask_fac, CV_32FC3);
+  //   mask = mask.mul(mask_fac);
+  //   result += current_frame.mul(mask) * (float) ((float)sign / ((float)255));
+  //   fac_mat += mask * (float) ((float)sign / ((float)255));
+  // }
+
   for (unsigned int row = m_pnt_min.y; row < m_pnt_max.y; ++row) {
     //ptr:
     float* ptr_res            =  (float*) result.ptr(row);
@@ -84,13 +90,33 @@ void Reduce::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& current_f
       const float *uc_pixel_ref     = ptr_ref;
       const float *uc_pixel_current = ptr_current;
 
-      //current frame != ref frame -> result frame/ result fac
-      float distance_RGB = sqrt(pow(uc_pixel_ref[0] - uc_pixel_current[0], 2) +
-                                pow(uc_pixel_ref[1] - uc_pixel_current[1], 2) +
-                                pow(uc_pixel_ref[2] - uc_pixel_current[2], 2));
+
+      float distance_RGB = -1;
+      cv::Scalar ref = utils::rgb2lab(uc_pixel_ref[0], uc_pixel_ref[1], uc_pixel_ref[2]);
+      cv::Scalar current = utils::rgb2lab(uc_pixel_current[0], uc_pixel_current[1], uc_pixel_current[2]);
+
+      if(m_modi == 0){
+        distance_RGB = sqrt(pow(uc_pixel_ref[0] - uc_pixel_current[0], 2) +
+                            pow(uc_pixel_ref[1] - uc_pixel_current[1], 2) +
+                            pow(uc_pixel_ref[2] - uc_pixel_current[2], 2));
+      }
+      else if(m_modi == 1){
+        std::cout << "no monochrome yet" << std::endl;
+      }
+      else if(m_modi == 2){
+        distance_RGB = utils::dE2000(ref, current, 0.1f, 100.0f, 100.0f);
+      }
+      else if(m_modi == 2){
+        distance_RGB = utils::dE2000(ref, current, 0.1f, 100.0f, 100.0f);
+      }
+      else if(m_modi == 3){
+        distance_RGB = utils::CIE76(ref, current, 1.0f, 0.0f, 0.0f);
+      }
+      else if(m_modi == 4){
+        distance_RGB = utils::CIE94(ref, current, 5.0f, 100.0f, 100.0f);
+      }
 
 
-      //std::cout<<" distance: "<<distance_RGB <<"\n";
       if(distance_RGB < m_threshhold){
         if(sign > 0) {
           uc_pixel_res[0] += (m_threshhold-distance_RGB)*uc_pixel_current[0];
@@ -117,9 +143,10 @@ void Reduce::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& current_f
       ptr_fac     += m_ptr_delta;
     }
   }
+
 }
 
-void Reduce::manipulate(cv::Mat ref_frame, float threshhold, int offset, int stride){
+void Reduce::manipulate(cv::Mat ref_frame, float threshhold, int modi, int offset, int stride){
   bool update_status = false;
   cv::Mat tmp;
   double min = 0, max = 0;
@@ -132,6 +159,10 @@ void Reduce::manipulate(cv::Mat ref_frame, float threshhold, int offset, int str
   }
   if(m_threshhold != threshhold){
     m_threshhold = threshhold;
+    update_status = true;
+  }
+  if(m_modi != modi){
+    m_modi = modi;
     update_status = true;
   }
   if(offset != m_offset){

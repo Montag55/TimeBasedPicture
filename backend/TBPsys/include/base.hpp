@@ -32,10 +32,10 @@ public:
   int                 add_segment(int start, int end, float local_i, float global_i);
   int                 add_interpretation(int typ_i, std::string file_path);
   int                 add_interpretation(int typ_i, int offset, int stride);
-  int                 add_interpretation(int typ_i, int offset, int stride, int ref_id, float threshhold);
-  int                 add_interpretation(int typ_i, int offset, int stride, std::string ref_file_path, float threshhold);
+  int                 add_interpretation(int typ_i, int offset, int stride, int ref_id, float threshhold, int modi);
+  int                 add_interpretation(int typ_i, int offset, int stride, std::string ref_file_path, float threshhold, int modi);
   int                 add_interpretation(int typ_i, int offset, int stride, std::shared_ptr<std::vector<ColorCoords>> colorTimes);
-  int                 add_interpretation(int typ_i, int offset, int stride, float threshhold, std::shared_ptr<std::vector<float>> values);
+  int                 add_interpretation(int typ_i, int offset, int stride, float threshhold, int modi, std::shared_ptr<std::vector<float>> values);
   int                 add_interpretation(int typ_i, int offset, int stride, int start, int end, int mode, cv::Point mid, float radius, bool fade_direction, float parameter);
   int                 add_interpretation(int typ_i, int offset, int stride, int mode_distance, int mode_function, float parameter, std::shared_ptr<std::vector<cv::Vec4f>> points);
   bool                delete_segment(int id);
@@ -43,9 +43,9 @@ public:
   bool                manipulate_segment(int id, int start, int end, float local_i, float global_i, bool hasMask);
   bool                manipulate_interpretation(int id, int offset, int stride);
   bool                manipulate_interpretation(int id, std::shared_ptr<std::vector<ColorCoords>> colorTimes, int offset, int stride);
-  bool                manipulate_interpretation(int id, int ref_id, float threshhold, int offset, int stride);
-  bool                manipulate_interpretation(int id, std::string ref_file_path, float threshhold, int offset, int stride);
-  bool                manipulate_interpretation(int id, float threshhold, std::shared_ptr<std::vector<float>> values, int offset, int stride);
+  bool                manipulate_interpretation(int id, int ref_id, float threshhold, int modi, int offset, int stride);
+  bool                manipulate_interpretation(int id, std::string ref_file_path, float threshhold, int modi, int offset, int stride);
+  bool                manipulate_interpretation(int id, float threshhold, int modi, std::shared_ptr<std::vector<float>> values, int offset, int stride);
   bool                manipulate_interpretation(int id, int start, int end, int mode, cv::Point mid, float radius, bool fade_direction, float parameter, int offset, int stride);
   bool                manipulate_interpretation(int id, int mode_distance, int mode_function, float parameter, std::shared_ptr<std::vector<cv::Vec4f>> points, int offset, int stride);
 

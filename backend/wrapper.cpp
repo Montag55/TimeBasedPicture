@@ -158,12 +158,13 @@ void manipulate_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
   else if(typ_i == 1){
     std::shared_ptr<std::vector<float>> weights = std::make_shared<std::vector<float>>();
     int start = args[3]->IntegerValue();
+    int modi = -1;
 
     for(int idx = 4; idx < args.Length(); idx++){
       weights->push_back(args[idx]->NumberValue());
     }
 
-    if(!base->manipulate_interpretation(id, start, weights, offset, stride)){
+    if(!base->manipulate_interpretation(id, start, modi, weights, offset, stride)){
       correct = "false";
       std::cout << "manipulate_segment() failed. \n";
     }
@@ -175,16 +176,18 @@ void manipulate_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
     if(std::any_of(ref_file_path.begin(), ref_file_path.begin() + 2, ::isdigit)){
       int ref_id = args[3]->IntegerValue();
       float threshhold = args[4]->NumberValue();
+      int modi = args[5]->IntegerValue();
 
-      if(!base->manipulate_interpretation(id, ref_id, threshhold, offset, stride)){
+      if(!base->manipulate_interpretation(id, ref_id, threshhold, modi, offset, stride)){
         correct = "false";
         std::cout << "manipulate_segment() failed. \n";
       }
     }
     else{
       float threshhold = args[4]->NumberValue();
+      int modi = args[5]->IntegerValue();
 
-      if(!base->manipulate_interpretation(id, ref_file_path, threshhold, offset, stride)){
+      if(!base->manipulate_interpretation(id, ref_file_path, threshhold, modi, offset, stride)){
         correct = "false";
         std::cout << "manipulate_segment() failed. \n";
       }
@@ -193,12 +196,14 @@ void manipulate_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
   else if(typ_i == 4){
     std::shared_ptr<std::vector<float>> colors = std::make_shared<std::vector<float>>();
     float threshhold = args[3]->NumberValue();
+    int modi = args[4]->IntegerValue();
 
-    for(int idx = 4; idx < args.Length(); idx++){
+
+    for(int idx = 5; idx < args.Length(); idx++){
       colors->push_back(args[idx]->NumberValue());
     }
 
-    if(!base->manipulate_interpretation(id, threshhold, colors, offset, stride)){
+    if(!base->manipulate_interpretation(id, threshhold, modi, colors, offset, stride)){
       correct = "false";
       std::cout << "manipulate_segment() failed. \n";
     }
@@ -323,36 +328,40 @@ void add_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
   else if(typ_i == 1){
     std::shared_ptr<std::vector<float>> weights = std::make_shared<std::vector<float>>();
     float start  = args[3]->NumberValue();
+    int modi = -1;
 
     for(int idx = 4; idx < args.Length(); idx++){
       weights->push_back(args[idx]->NumberValue());
     }
 
-    interpret_id = base->add_interpretation(typ_i, offset, stride, start, weights);
+    interpret_id = base->add_interpretation(typ_i, offset, stride, start, modi, weights);
   }
   else if(typ_i == 2 || typ_i == 3 || typ_i == 5){
     if(args[3]->IsNumber()){
       int ref_id        = args[3]->IntegerValue();
       float threshhold  = args[4]->NumberValue();
-      interpret_id = base->add_interpretation(typ_i, offset, stride, ref_id, threshhold);
+      int modi        = args[5]->IntegerValue();
+      interpret_id = base->add_interpretation(typ_i, offset, stride, ref_id, threshhold, modi);
     }
     else{
       v8::String::Utf8Value param1( args[3]->ToString() );
       std::string ref_file_path = std::string( *param1 );
       float threshhold = args[4]->NumberValue();
-      interpret_id = base->add_interpretation(typ_i, offset, stride, ref_file_path, threshhold);
+      int modi        = args[5]->IntegerValue();
+      interpret_id = base->add_interpretation(typ_i, offset, stride, ref_file_path, threshhold, modi);
     }
   }
   else if(typ_i == 4){
     std::shared_ptr<std::vector<float>> colors = std::make_shared<std::vector<float>>();
     float threshhold  = args[3]->NumberValue();
+    int modi = args[4]->IntegerValue();
 
-    for(int idx = 4; idx < args.Length(); idx++){
+    for(int idx = 5; idx < args.Length(); idx++){
       colors->push_back(args[idx]->NumberValue());
     }
 
     if(colors->size()%3 == 0)
-      interpret_id = base->add_interpretation(typ_i, offset, stride, threshhold, colors);
+      interpret_id = base->add_interpretation(typ_i, offset, stride, threshhold, modi, colors);
     else
       std::cout << "\t too few arguments (tpye, float, [r, g, b]*n) \n";
   }
