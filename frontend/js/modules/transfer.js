@@ -25,7 +25,7 @@ class TransferFunction {
 
     window.addEventListener("mouseup", (function(e){
       if(e.button === 0) {
-        if(this.dragged != null){
+        if(this.dragged !== null){
           this.dragged = null;
         }
         else if(this.transformX(e.pageX) < this.width && this.transformY(e.pageY) < this.height && e.target === this.canvas){
@@ -38,7 +38,6 @@ class TransferFunction {
           }
         }
       } else if(e.button === 2){
-
         for(let i = 1, len = this.points.length - 1; i < len; i++){
           if(this.points[i].isInside({x: this.transformX(e.pageX)/this.width, y: this.transformY(e.pageY)/this.height}, this.width, this.height)){
             this.points.splice(i, 1);
@@ -49,7 +48,6 @@ class TransferFunction {
           }
         }
       }
-
       this.draw();
     }).bind(this));
 
@@ -84,6 +82,7 @@ class TransferFunction {
   }
 
   draw() {
+    console.log(this.points);
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
     for(let i = 0, len = this.points.length - 1; i < len; i++){

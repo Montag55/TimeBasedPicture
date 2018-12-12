@@ -154,6 +154,18 @@ let Interpretations = (function () {
                     color.onChange(function () {
                         update();
                     });
+                } else if (type.type === 'points') {
+                    let points = new PointPicker([document.querySelector('.image img'), document.querySelector('.player').querySelector('canvas')]);
+                    parent.appendChild(points.dom);
+                    interpretation_object.valueFunctions.push(function () {
+                        return points.getValues();
+                    });
+                    interpretation_object.setFunctions.push(function (v) {
+                        return points.setValues(v.splice(index, v.length));
+                    });
+                    points.onChange(function () {
+                        update();
+                    });
                 }
             });
             interpretation_object.getValues = function () {

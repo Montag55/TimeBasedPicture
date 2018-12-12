@@ -235,6 +235,9 @@ void manipulate_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
       points->push_back(args[idx]->NumberValue());
     }
 
+      std::cout << mode_distance<< " " << mode_function << " " << parameter;
+        std::cout << points;
+
     if(!base->manipulate_interpretation(id, mode_distance, mode_function, parameter, points, offset, stride)){
       correct = "false";
       std::cout << "manipulate_segment() failed. \n";
@@ -389,6 +392,8 @@ void add_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
       points->push_back(args[idx]->NumberValue());
     }
 
+    std::cout << mode_distance<< " " << mode_function << " " << parameter;
+    std::cout << points;
     interpret_id = base->add_interpretation(typ_i, offset, stride, mode_distance, mode_function, parameter, points);
   }
   else if(typ_i == 8){

@@ -110,7 +110,7 @@
 .preview .editor canvas {
     width: 90%;
     background-color: var(--gray-900);
-    margin-left: 4%;
+    margin-left: 0%;
 }
 
 .preview .editor .inter {
