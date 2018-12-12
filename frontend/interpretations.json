@@ -81,10 +81,8 @@
             },
             {
                 "name": "modi",
-                "type": "number_slider",
-                "min": 0,
-                "max": 4,
-                "step": 1
+                "type": "select",
+                "options": ["RGB", "Monochrom", "C2000", "C94", "C76"]
             }
         ]
     },
@@ -119,10 +117,8 @@
             },
             {
                 "name": "modi",
-                "type": "number_slider",
-                "min": 0,
-                "max": 4,
-                "step": 1
+                "type": "select",
+                "options": ["RGB", "Monochrom", "C2000", "C94", "C76"]
             }
         ]
     },
@@ -153,10 +149,8 @@
             },
             {
                 "name": "modi",
-                "type": "number_slider",
-                "min": 0,
-                "max": 4,
-                "step": 1
+                "type": "select",
+                "options": ["RGB", "Monochrom", "C2000", "C94", "C76"]
             },
             {
                 "name": "colors",
@@ -195,10 +189,8 @@
             },
             {
                 "name": "modi",
-                "type": "number_slider",
-                "min": 0,
-                "max": 4,
-                "step": 1
+                "type": "select",
+                "options": ["RGB", "Monochrom", "C2000", "C94", "C76"]
             }
         ]
     },
@@ -294,7 +286,7 @@
               "type": "number_slider",
               "min": 0,
               "max": 0,
-              "step": 1
+              "step": 1 
           },
             {
                 "name": "ref",

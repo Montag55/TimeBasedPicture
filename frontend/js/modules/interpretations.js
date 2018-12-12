@@ -85,6 +85,7 @@ let Interpretations = (function () {
                     edit.max = type.max;
                     edit.step = type.step;
                     edit.name = type.name;
+                    edit.value = 0;
                     parent.appendChild(edit);
                     edit.addEventListener('change', function () {
                         update();
@@ -92,6 +93,25 @@ let Interpretations = (function () {
                     interpretation_object.valueFunctions.push(function () {
                         return [edit.value];
                     });
+                    interpretation_object.setFunctions.push(function (v) {
+                        edit.value = v[index];
+                    });
+                } else if (type.type === 'select') {
+                    let edit = document.createElement('select');
+                    edit.name = type.name;
+                    parent.appendChild(edit);
+                    type.options.forEach(function (name, index) {
+                        let option = document.createElement('option');
+                        option.innerText = name;
+                        option.value = index;
+                        edit.appendChild(option);
+                    });
+                    edit.addEventListener('change', function () {
+                        update();
+                    });
+                    interpretation_object.valueFunctions.push(function () {
+                        return [edit.value];
+                    })
                     interpretation_object.setFunctions.push(function (v) {
                         edit.value = v[index];
                     });
