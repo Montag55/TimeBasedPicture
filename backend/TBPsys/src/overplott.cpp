@@ -88,37 +88,37 @@ void Overplott::calc(int id, int start, int length, int sign, cv::Mat& result, f
 }
 
 void Overplott::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& current_frame) {
-  if(m_modi == 0){
-    cv::Mat mask;
-    cv::absdiff(current_frame, m_reference, mask);
-    mask = (mask > m_threshhold);
-    mask.convertTo(mask, CV_32FC3);
-    int from_to[] = { 0,0, 0,1, 0,2};
-    cv::mixChannels(&mask, 1, &mask, 1, from_to, 3);
-    result = current_frame.mul(mask) * (float) ((float)1 / ((float)255));
-    fac_mat = mask * (float) ((float)1 / ((float)255));
-  }
-  else if(m_modi == 1){
-    cv::Mat mask;
-    cv::Mat grey_ref = m_reference.clone();
-    cv::Mat grey_current = current_frame.clone();
-    cv::Mat tmp = cv::Mat(m_base->get_height(), m_base->get_width(), m_base->get_img_type(), cv::Scalar(0,0,0));
-
-    cv::cvtColor(current_frame, grey_current, CV_BGR2GRAY);
-    cv::cvtColor(m_reference, grey_ref, CV_BGR2GRAY);
-    grey_current.convertTo(grey_current, CV_32FC3);
-    grey_ref.convertTo(grey_ref, CV_32FC3);
-
-    cv::absdiff(grey_current, grey_ref, mask);
-    mask = (mask > m_threshhold);
-    mask.convertTo(mask, CV_32FC3);
-
-    int from_to[] = { 0,0, 0,1, 0,2};
-    cv::mixChannels(&mask, 1, &tmp, 1, from_to, 3);
-    result = current_frame.mul(tmp) * (float) ((float)1 / ((float)255));
-    fac_mat = tmp * (float) ((float)1 / ((float)255));
-  }
-  else if(m_modi == 2 || m_modi == 3 || m_modi == 4){
+  // if(m_modi == 0){
+  //   cv::Mat mask;
+  //   cv::absdiff(current_frame, m_reference, mask);
+  //   mask = (mask > m_threshhold);
+  //   mask.convertTo(mask, CV_32FC3);
+  //   int from_to[] = { 0,0, 0,1, 0,2};
+  //   cv::mixChannels(&mask, 1, &mask, 1, from_to, 3);
+  //   result = current_frame.mul(mask) * (float) ((float)1 / ((float)255));
+  //   fac_mat = mask * (float) ((float)1 / ((float)255));
+  // }
+  // else if(m_modi == 1){
+  //   cv::Mat mask;
+  //   cv::Mat grey_ref = m_reference.clone();
+  //   cv::Mat grey_current = current_frame.clone();
+  //   cv::Mat tmp = cv::Mat(m_base->get_height(), m_base->get_width(), m_base->get_img_type(), cv::Scalar(0,0,0));
+  //
+  //   cv::cvtColor(current_frame, grey_current, CV_BGR2GRAY);
+  //   cv::cvtColor(m_reference, grey_ref, CV_BGR2GRAY);
+  //   grey_current.convertTo(grey_current, CV_32FC3);
+  //   grey_ref.convertTo(grey_ref, CV_32FC3);
+  //
+  //   cv::absdiff(grey_current, grey_ref, mask);
+  //   mask = (mask > m_threshhold);
+  //   mask.convertTo(mask, CV_32FC3);
+  //
+  //   int from_to[] = { 0,0, 0,1, 0,2};
+  //   cv::mixChannels(&mask, 1, &tmp, 1, from_to, 3);
+  //   result = current_frame.mul(tmp) * (float) ((float)1 / ((float)255));
+  //   fac_mat = tmp * (float) ((float)1 / ((float)255));
+  // }
+  //else if(m_modi == 0 || m_modi == 1 || m_modi == 2 || m_modi == 3 || m_modi == 4){
     for (unsigned int row = m_pnt_min.y; row < m_pnt_max.y; ++row) {
       //ptr:
       float* ptr_res            =  (float*) result.ptr(row);
@@ -142,7 +142,14 @@ void Overplott::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& curren
         cv::Scalar ref = utils::rgb2lab(uc_pixel_ref[0], uc_pixel_ref[1], uc_pixel_ref[2]);
         cv::Scalar current = utils::rgb2lab(uc_pixel_current[0], uc_pixel_current[1], uc_pixel_current[2]);
 
-        if(m_modi == 2){
+        if(m_modi == 0){
+          distance_RGB = sqrt(pow(uc_pixel_ref[0] - uc_pixel_current[0], 2) +
+                                     pow(uc_pixel_ref[1] - uc_pixel_current[1], 2) +
+                                     pow(uc_pixel_ref[2] - uc_pixel_current[2], 2));
+        }else if(m_modi == 1){
+          distance_RGB = abs(((uc_pixel_ref[0]+uc_pixel_ref[1] + uc_pixel_ref[2])/3)-((uc_pixel_current[0]+uc_pixel_current[1] + uc_pixel_current[2])/3));
+
+        }else if(m_modi == 2){
           distance_RGB = utils::dE2000(ref, current, 0.1f, 100.0f, 100.0f);
         }
         else if(m_modi == 3){
@@ -170,7 +177,6 @@ void Overplott::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& curren
         ptr_fac     += m_ptr_delta;
       }
     }
-  }
 }
 
 void Overplott::late_merge(cv::Mat& result, cv::Mat& facs, cv::Mat& tmp_result){
