@@ -1,9 +1,11 @@
 
 
-* {
+*, *::after, *::before {
     margin: 0;
     padding: 0;
     -webkit-user-select: none;
+    -webkit-user-drag: none;
+    -webkit-app-region: no-drag;
     cursor: default;
 }
 
