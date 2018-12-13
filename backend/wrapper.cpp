@@ -119,7 +119,7 @@ void manipulate_segment(const v8::FunctionCallbackInfo<v8::Value>& args){
   bool hasMask =    args[5]->BooleanValue();
   std::string correct = "true";
 
-  if(!base->manipulate_segment(id, start, end, local_i, global_i, hasMask)){
+  if(!base->manipulate_segment(id, start, end, local_i, global_i, true)){
     correct = "false";
     std::cout << "manipulate_segment() failed. \n";
   }
@@ -228,15 +228,17 @@ void manipulate_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
   else if(typ_i == 7){
     std::shared_ptr<std::vector<cv::Vec4f>> points = std::make_shared<std::vector<cv::Vec4f>>();
     int mode_distance  = args[3]->IntegerValue();
-    int mode_function  = args[4]->NumberValue();
+    int mode_function  = args[4]->IntegerValue();
     float parameter    = args[5]->NumberValue();
 
-    for(int idx = 6; idx < args.Length(); idx++){
-      points->push_back(args[idx]->NumberValue());
+    for(int idx = 6; idx < args.Length(); idx += 4){
+      cv::Vec4f tmp {args[idx]->NumberValue(), args[idx+1]->NumberValue(),
+                    args[idx+2]->NumberValue(), args[idx+3]->NumberValue()};
+      points->push_back(tmp);
+
     }
 
-      std::cout << mode_distance<< " " << mode_function << " " << parameter;
-        std::cout << points;
+
 
     if(!base->manipulate_interpretation(id, mode_distance, mode_function, parameter, points, offset, stride)){
       correct = "false";
@@ -388,12 +390,12 @@ void add_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
     int mode_function  = args[4]->NumberValue();
     float parameter    = args[5]->NumberValue();
 
-    for(int idx = 6; idx < args.Length(); idx++){
-      points->push_back(args[idx]->NumberValue());
+    for(int idx = 6; idx < args.Length(); idx += 4){
+      cv::Vec4f tmp {args[idx]->NumberValue(), args[idx+1]->NumberValue(),
+                     args[idx+2]->NumberValue(), args[idx+3]->NumberValue()};
+      points->push_back(tmp);
     }
 
-    std::cout << mode_distance<< " " << mode_function << " " << parameter;
-    std::cout << points;
     interpret_id = base->add_interpretation(typ_i, offset, stride, mode_distance, mode_function, parameter, points);
   }
   else if(typ_i == 8){

@@ -11,7 +11,7 @@ endif()
 
 
 set(SOURCES1 src/terminal-time.cpp src/base.cpp src/segment.cpp src/interpretation.cpp src/average.cpp src/transferfunction.cpp src/timefadepoints.cpp src/boost.cpp src/reduce.cpp src/boostColor.cpp src/utils.cpp src/overplott.cpp src/circularfade.cpp src/singleimage.cpp src/paint.cpp)
-set(SOURCES2 src/testlab.cpp       src/base.cpp src/segment.cpp src/interpretation.cpp src/average.cpp src/transferfunction.cpp src/timefadepoints.cpp src/boost.cpp src/reduce.cpp src/boostColor.cpp src/utils.cpp src/overplott.cpp src/circularfade.cpp src/singleimage.cpp src/paint.cpp)
+# set(SOURCES2 src/testlab.cpp       src/base.cpp src/segment.cpp src/interpretation.cpp src/average.cpp src/transferfunction.cpp src/timefadepoints.cpp src/boost.cpp src/reduce.cpp src/boostColor.cpp src/utils.cpp src/overplott.cpp src/circularfade.cpp src/singleimage.cpp src/paint.cpp)
 
 ################################################################################
 # search
@@ -36,9 +36,9 @@ include_directories(SYSTEM ${OpenCV_INCLUDE_DIRS})
 ################################################################################
 
 add_executable(Time_Terminal ${SOURCES1})
-add_executable(Lab ${SOURCES2})
+# add_executable(Lab ${SOURCES2})
 target_link_libraries(Time_Terminal ${OpenCV_LIBS})
-target_link_libraries(Lab ${OpenCV_LIBS})
+# target_link_libraries(Lab ${OpenCV_LIBS})
 
 
 if(show_time)

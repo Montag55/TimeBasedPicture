@@ -9,6 +9,8 @@
 #include <../include/base.hpp>
 #include <../include/utils.hpp>
 
+// addinterpretation 9 0 0 0 0 255 0 10 0 255 0 40 50 255 0 0 80 90 255 255 0 0 100 0 255 255 50 50
+
 
 Paint::Paint(std::shared_ptr< Base > mother, int id, int type, std::shared_ptr<std::vector<ColorCoords>> colorTimes , int offset, int stride):
 Interpretation{ mother, id, type, offset, stride},
@@ -85,6 +87,7 @@ void Paint::create_time_map(int id){
           }
         }
         if(color_check == false){
+          std::cout << tmp_px_color << std::endl;
           error_occured = true;
           start_border = -1;
           end_border = -1;

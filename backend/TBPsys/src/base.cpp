@@ -44,6 +44,8 @@ Base::Base(std::string const& video_name) :
 
 Base::~Base(){
   std::cout << "Base-Destruction: \n";
+  m_interpretations.clear();
+  m_segments.clear();
 }
 
 void Base::thread_calc_loop(){ //waits for work and makes calculataion

@@ -340,12 +340,14 @@ int main (int argc, char **argv){
               else{
                 std::string ref_file_path = v[5];
                 float threshhold = std::stof(v[6]);
+                int modi         = std::stoi (v[7]);
 
-                if(base->manipulate_interpretation(id, ref_file_path, threshhold, offset, stride)){
+                if(base->manipulate_interpretation(id, ref_file_path, threshhold, modi, offset, stride)){
                   std::cout << "\t > interpretation id: " << id << "\n";
                   std::cout << "\t > typ: " << typ_i << "\n";
                   std::cout << "\t > reference path: " << ref_file_path << "\n";
                   std::cout << "\t > threshhold: " << threshhold << "\n";
+                  std::cout << "\t > modi: " << modi << "\n";
                   std::cout << "\t > offset: " << offset << "\n";
                   std::cout << "\t > stride: " << stride << "\n";
                 }

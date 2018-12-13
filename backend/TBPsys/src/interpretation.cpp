@@ -34,7 +34,10 @@ int Interpretation::get_stride()
 }
 
 Interpretation::~Interpretation(){
-  //std::cout<<"\t > deleting interpretation id:" << m_id << "\n";
+  std::cout << "~Interpretation \n";
+  // m_base = NULL;
+  // m_video = NULL;
+  // delete m_all_connections;
 }
 
 void Interpretation::add_connection( int id, Segment* segment){
