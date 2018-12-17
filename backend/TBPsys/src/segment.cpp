@@ -94,6 +94,10 @@ void Segment::revert_influence(){
     cv::mixChannels(&m_mask, 1, &tmp_mask, 1, from_to, 3);
     factors = factors.mul(tmp_mask);
     influence = influence.mul(tmp_mask);
+    if( m_interpretation->getTypenumber() == 0 || m_interpretation->getTypenumber() == 1 || m_interpretation->getTypenumber() == 8){
+      intensity = 0;
+      factors = tmp_mask * m_intensity_global_actual;
+    }
   }
 
   if(!skip){
@@ -137,6 +141,12 @@ void Segment::upload_influence(){
     cv::mixChannels(&m_mask, 1, &tmp_mask, 1, from_to, 3);
     factors = factors.mul(tmp_mask);
     influence = influence.mul(tmp_mask);
+    if( m_interpretation->getTypenumber() == 0 || m_interpretation->getTypenumber() == 1 || m_interpretation->getTypenumber() == 8){
+      intensity = 0;
+      factors = tmp_mask * m_intensity_global_actual;
+    }
+    cv::imwrite("infl"+std::to_string(m_id)+".png", influence);
+    cv::imwrite("fact"+std::to_string(m_id)+".png", factors);
   }
 
   if(!skip){
