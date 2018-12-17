@@ -145,8 +145,6 @@ void Segment::upload_influence(){
       intensity = 0;
       factors = tmp_mask * m_intensity_global_actual;
     }
-    cv::imwrite("infl"+std::to_string(m_id)+".png", influence);
-    cv::imwrite("fact"+std::to_string(m_id)+".png", factors);
   }
 
   if(!skip){
