@@ -4,7 +4,7 @@
     --top-bar-height: 25px;
 
     --tab-buttons-height: 4vh;
-    
+
     --gray-50: #FAFAFA;
     --gray-100: #F5F5F5;
     --gray-200: #EEEEEE;
@@ -54,7 +54,7 @@
     --segment-grid-color: rgba(0, 0, 0, 0.1);
 
     --video-height: 15%;
-    --segment-height: 20%;
+    --segment-height: 15%;
 
     --frame-width: 1%;
 }
