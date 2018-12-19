@@ -270,6 +270,16 @@ let Segments = (function () {
             imageData: maskCtx.createImageData(mask.width, mask.height)
         };
 
+        //Save blank mask
+        let canvas = document.createElement('canvas');
+        canvas.width = mask.width;
+        canvas.height = mask.height;
+        let dataUrl = canvas.toDataURL('image/png');
+        let base64Data = dataUrl.replace(/^data:image\/png;base64,/, "");
+        fs.writeFile(`mask${id}.png`, base64Data, 'base64', function (err) {
+            console.log(err);
+        });
+
         segments[id] = segment;
 
         asideWrapper.appendChild(aside);
