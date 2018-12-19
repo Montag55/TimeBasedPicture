@@ -67,6 +67,10 @@
     margin-top: 10%;
 }
 
+.preview .aside .interpretations select {
+    margin-left: 0%;
+}
+
 .preview .interpretations .container {
     max-height: 60%;
     height: 40%;
@@ -167,6 +171,12 @@
     margin-left: 4%;
     font-size: 1.3vh;
     text-indent: 1vh;
+}
+
+.preview .aside select {
+    width: 90%; 
+    height: 2vh;
+    margin-left: 4%;
 }
 
 .preview .player {
