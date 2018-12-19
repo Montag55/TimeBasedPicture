@@ -9,7 +9,7 @@
 
 class BoostColor : public Interpretation{
 public:
-  BoostColor(std::shared_ptr< Base > mother, int id, int type, float threshhold, int modi, std::shared_ptr<std::vector<float>> color, int offset, int stride);
+  BoostColor(std::shared_ptr< Base > mother, int id, float threshhold, int modi, std::shared_ptr<std::vector<float>> color, int offset, int stride);
   ~BoostColor()                       override;
   int getTypenumber()                 override;
   int get_calculation_specification() override;

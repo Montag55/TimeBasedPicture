@@ -12,8 +12,8 @@
 // addinterpretation 9 0 0 0 0 255 0 10 0 255 0 40 50 255 0 0 80 90 255 255 0 0 100 0 255 255 50 50
 
 
-Paint::Paint(std::shared_ptr< Base > mother, int id, int type, std::shared_ptr<std::vector<ColorCoords>> colorTimes , int offset, int stride):
-Interpretation{ mother, id, type, offset, stride},
+Paint::Paint(std::shared_ptr< Base > mother, int id, std::shared_ptr<std::vector<ColorCoords>> colorTimes , int offset, int stride):
+Interpretation{ mother, id, offset, stride},
 m_time_map{},
 m_pnt_min{mother->get_min_Point()},
 m_pnt_max{mother->get_max_Point()},
@@ -26,8 +26,9 @@ m_ptr_delta{mother->get_img_delta()}
     m_start.push_back((*colorTimes)[i].start);
     m_end.push_back((*colorTimes)[i].end);
   }
-
-  m_calc_specification = 2;
+  m_type                  = 9; //paint
+  m_calc_specification    = 2; //once
+  m_upload_specification  = 1; //with fac mat
 }
 
 Paint::~Paint(){

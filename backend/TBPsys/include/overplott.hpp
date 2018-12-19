@@ -10,7 +10,7 @@
 
 class Overplott : public Interpretation{
 public:
-  Overplott(std::shared_ptr< Base > mother, int id, int type, cv::Mat ref, float threshhold, int modi, int offset, int stride);
+  Overplott(std::shared_ptr< Base > mother, int id, cv::Mat ref, float threshhold, int modi, int offset, int stride);
   ~Overplott()                        override;
   int getTypenumber()                 override;
   int get_calculation_specification() override;

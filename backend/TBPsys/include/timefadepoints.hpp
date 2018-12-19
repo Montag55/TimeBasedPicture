@@ -12,7 +12,7 @@
 class Timefadepoints : public Interpretation{
 public:
   //KONSTRUTOREN----------------------------------------------------------------
-  Timefadepoints(std::shared_ptr< Base > mother, int id, int type, int mode_distance, int num_pnts, float param, std::shared_ptr< std::vector<cv::Vec4f>> points, int offset, int stride);
+  Timefadepoints(std::shared_ptr< Base > mother, int id, int mode_distance, int num_pnts, float param, std::shared_ptr< std::vector<cv::Vec4f>> points, int offset, int stride);
   ~Timefadepoints()                   override;
   int getTypenumber()                 override;
   int get_calculation_specification() override;

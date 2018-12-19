@@ -8,8 +8,8 @@
 #include <vector>
 //            addinterpretation 7 0 0 1 4 2 0 0 0 0 0 1079 0.5 0.5 1919 0 0.7 0.7 1919 1079 0.8 1
 
-Timefadepoints::Timefadepoints(std::shared_ptr< Base > mother, int id, int type, int mode_d, int num_pnts, float param, std::shared_ptr< std::vector<cv::Vec4f>> points,  int offset, int stride):
-Interpretation{mother, id, type, offset, stride},
+Timefadepoints::Timefadepoints(std::shared_ptr< Base > mother, int id, int mode_d, int num_pnts, float param, std::shared_ptr< std::vector<cv::Vec4f>> points,  int offset, int stride):
+Interpretation{mother, id, offset, stride},
 m_mode_d{mode_d},
 m_num_pnts{num_pnts},
 m_param{param},
@@ -19,7 +19,9 @@ m_pnt_min{mother->get_min_Point()},
 m_pnt_max{mother->get_max_Point()},
 m_time_map{}
 {
-  m_calc_specification = 0;
+  m_type                = 7; // fadepnts
+  m_calc_specification  = 0; // free
+  m_upload_specification = 1; //with fac mat
   if(m_num_pnts < 2 && num_pnts != -1){
     m_num_pnts = -1;
     std::cout << "\t ! number of points smaller 2. Automaticly set to 2. \n";

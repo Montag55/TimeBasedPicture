@@ -8,7 +8,7 @@
 
 class Singleimage : public Interpretation{
 public:
-  Singleimage(std::shared_ptr< Base > mother, int id, int type, cv::Mat image);
+  Singleimage(std::shared_ptr< Base > mother, int id, cv::Mat image);
   ~Singleimage()                          override;
   int getTypenumber()                 override;
   int get_calculation_specification() override;

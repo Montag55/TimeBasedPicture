@@ -10,8 +10,8 @@
 #include <../include/utils.hpp>
 
 
-Overplott::Overplott( std::shared_ptr<Base> mother, int id, int type, cv::Mat ref, float threshhold, int modi, int offset, int stride):
-Interpretation{ mother, id, type, offset, stride},
+Overplott::Overplott( std::shared_ptr<Base> mother, int id,  cv::Mat ref, float threshhold, int modi, int offset, int stride):
+Interpretation{ mother, id,  offset, stride},
 m_reference{ref},
 m_threshhold{threshhold},
 m_modi{modi},
@@ -19,7 +19,9 @@ m_ptr_delta{mother->get_img_delta()},
 m_pnt_min{mother->get_min_Point()},
 m_pnt_max{mother->get_max_Point()}
 {
-  m_calc_specification = 1;
+  m_type                  = 2;  //overplott
+  m_calc_specification    = 1;  //extending
+  m_upload_specification  = 1;  //with fac mat
 }
 
 Overplott::~Overplott(){
