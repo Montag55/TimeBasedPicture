@@ -40,7 +40,6 @@ Base::Base(std::string const& video_name) :
     std::cout<<"frame_start:"<<m_frame_start<<"\n";
     std::cout<<"frame_last:"<<m_frame_last<<"\n";
     std::cout<<"intensity:"<<m_intensity<<"\n";
-    compressVideoFiles();
   }
 
 Base::~Base(){
@@ -68,13 +67,20 @@ void Base::compressVideoFiles(){
   compression_params.push_back(cv::IMWRITE_JPEG_QUALITY);
   compression_params.push_back(20);
 
-  for(int i = 0; i < m_frame_last; i++) {
+  auto start_time = std::chrono::high_resolution_clock::now();
+
+
+  for(int i = 0; i < m_frame_last + 1; i++) {
     m_video->read(tmp_frame);
     if(tmp_frame.empty()){
       std::cout<<"empty\n";
     }
     cv::imwrite(directory + "/frame" + std::to_string(i) + ".jpg" , tmp_frame, compression_params);
   }
+
+  auto end_time = std::chrono::high_resolution_clock::now();
+  auto duration = std::chrono::duration_cast< std::chrono::milliseconds >( end_time - start_time ).count();
+  std::cout << "\t\t + time: \t" << duration << std::endl;
 }
 
 void Base::thread_calc_loop(){ //waits for work and makes calculataion
