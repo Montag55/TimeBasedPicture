@@ -63,7 +63,8 @@ function requestUpdate(segment) {
         start: segment.start,
         end: segment.end,
         global_i: segment.global_i,
-        local_i: segment.local_i
+        local_i: segment.local_i,
+        enableMask: segment.enableMask
     };
     ipcRenderer.send('manipulateSegment', JSON.stringify(data));
     ipcRenderer.send('update', '');

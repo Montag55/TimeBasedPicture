@@ -17,7 +17,10 @@ let Segments = (function () {
         maskCtx = null,
         enableMask = null,
         showMask = null,
-        brushSize = null;
+        brushSize = null,
+        left = null,
+        right = null,
+        change = null;
 
     function init(width, height) {
         segments = {};
@@ -33,14 +36,56 @@ let Segments = (function () {
 
         enableMask = document.querySelector('.enableMask');
         showMask = document.querySelector('.showMask');
-        brushSize = document.querySelector('.brushMask');
+        brushSize = document.querySelector('.brushSize');
 
         showMask.addEventListener('change', function () {
             mask.style.display = (showMask.checked) ? 'block' : 'none';
         });
 
+        enableMask.addEventListener('change', function () {
+            segments[Edit.getActive()].enableMask = enableMask.checked;
+            requestUpdate(segments[Edit.getActive()]);
+        });
+        mask.addEventListener('mousedown', function (e) {
+            left = e.button === 0;
+            right = e.button === 2;
+        });
+
+        mask.addEventListener('mouseup', function () {
+            left = false;
+            right = false;
+        });
+
         mask.addEventListener('mousemove', function (e) {
-            console.log(e);
+            if (left) {
+                change = true;
+                maskCtx.globalCompositeOperation = 'source-over';
+                maskCtx.fillStyle = 'white';
+                maskCtx.beginPath();
+                let p = getScale({x: e.pageX, y: e.pageY});
+                maskCtx.arc(p.x, p.y, brushSize.value, 0, 2 * Math.PI);
+                maskCtx.fill();
+            } else if (right) {
+                change = true;
+                maskCtx.globalCompositeOperation = 'destination-out';
+                maskCtx.beginPath();
+                let p = getScale({x: e.pageX, y: e.pageY});
+                maskCtx.arc(p.x, p.y, brushSize.value, 0, Math.PI * 2);
+                maskCtx.fill();
+            }
+        });
+
+        window.addEventListener('mouseup', function (e) {
+            if (change === true) {
+                segments[Edit.getActive()].imageData = maskCtx.getImageData(0, 0, mask.width, mask.height);
+                let dataUrl = mask.toDataURL('image/png');
+                let base64Data = dataUrl.replace(/^data:image\/png;base64,/, "");
+                fs.writeFile(`mask${Edit.getActive()}.png`, base64Data, 'base64', function (err) {
+                    console.log(err);
+                });
+                requestUpdate(segments[Edit.getActive()]);
+            }
+            change = false;
         });
 
         addButton.addEventListener('click', function () {
@@ -55,6 +100,18 @@ let Segments = (function () {
         });
 
         window.addEventListener('mousemove', mousemove);
+    }
+
+    function getScale(pos) {
+        let rect = mask.getBoundingClientRect();
+        let scaleX = mask.width / rect.width;
+        let scaleY = mask.height / rect.height;
+        let x = scaleX * (pos.x - rect.left);
+        let y = scaleY * (pos.y - rect.top);
+        return {
+            x: x,
+            y: y
+        };
     }
 
     function loadMask(segment) {
@@ -209,6 +266,7 @@ let Segments = (function () {
             end: end,
             global_i: 1,
             local_i: 1,
+            enableMask: false,
             imageData: maskCtx.createImageData(mask.width, mask.height)
         };
 

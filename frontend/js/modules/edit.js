@@ -49,7 +49,6 @@ let Edit = (function () {
         segment.end = end.value;
         segment.global_i = global_i.value;
         segment.local_i = local_i.value;
-        console.log(segment)
         Segments.setSegment(edit_id,  segment);
     }
 
@@ -68,10 +67,15 @@ let Edit = (function () {
         });
     }
 
+    function getActive() {
+        return active;
+    }
+
     return {
         init: init,
         show: show,
         addInterpretation: addInterpretation,
-        updateInterpretation: updateInterpretation
+        updateInterpretation: updateInterpretation,
+        getActive: getActive
     };
 }());
