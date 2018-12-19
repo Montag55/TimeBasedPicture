@@ -25,6 +25,8 @@ class Base : public std::enable_shared_from_this<Base> {
 public:
   Base(std::string const& video_name);
   ~Base();
+  void create_Leons_folder();
+
 
   //ORGA::::::::::::::::::::::::::::::::::::::::::::::::
   bool                save(std::string file);
