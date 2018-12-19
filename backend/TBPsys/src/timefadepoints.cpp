@@ -19,7 +19,7 @@ m_pnt_min{mother->get_min_Point()},
 m_pnt_max{mother->get_max_Point()},
 m_time_map{}
 {
-  m_calc_specification = 2;
+  m_calc_specification = 0;
   if(m_num_pnts < 2 && num_pnts != -1){
     m_num_pnts = -1;
     std::cout << "\t ! number of points smaller 2. Automaticly set to 2. \n";
@@ -159,7 +159,7 @@ void Timefadepoints::calc(int id, int start, int length, int sign, cv::Mat& resu
       }
 
       tmp_frame.convertTo(tmp_frame, m_img_type);   //do this for the whole video right at the start!?
-      compute_frame(result, fac_mat, tmp_frame, start + i, id);
+      compute_frame(result, fac_mat, tmp_frame, start + i, id, sign);
     }
 
     auto end_time = std::chrono::high_resolution_clock::now();
@@ -170,7 +170,7 @@ void Timefadepoints::calc(int id, int start, int length, int sign, cv::Mat& resu
   }
 }
 
-void Timefadepoints::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& current_frame, int frame_num, int seg_id) {
+void Timefadepoints::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& current_frame, int frame_num, int seg_id, int sign) {
   for (unsigned int row = m_pnt_min.y; row < m_pnt_max.y; ++row) {
     //ptr:
     float* ptr_map            =  (float*) m_time_map[seg_id].ptr(row);
@@ -189,15 +189,16 @@ void Timefadepoints::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& c
       float end_border = uc_pixel_map[1];
 
       if(frame_num > (int)start_border && frame_num <= (int)end_border){
-        uc_pixel_res[0] += uc_pixel_current[0];
-        uc_pixel_res[1] += uc_pixel_current[1];
-        uc_pixel_res[2] += uc_pixel_current[2];
-        uc_pixel_fac[0] += 1;
-        uc_pixel_fac[1] += 1;
-        uc_pixel_fac[2] += 1;
+        uc_pixel_res[0] += sign*uc_pixel_current[0];
+        uc_pixel_res[1] += sign*uc_pixel_current[1];
+        uc_pixel_res[2] += sign*uc_pixel_current[2];
+        uc_pixel_fac[0] += sign;
+        uc_pixel_fac[1] += sign;
+        uc_pixel_fac[2] += sign;
       }
       else if(frame_num == (int)start_border) {
         float weight = 1 - fabs((float)start_border - (int)start_border);
+        weight*=sign;
         uc_pixel_res[0] += weight * uc_pixel_current[0];
         uc_pixel_res[1] += weight * uc_pixel_current[1];
         uc_pixel_res[2] += weight * uc_pixel_current[2];
@@ -207,6 +208,7 @@ void Timefadepoints::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& c
       }
       else if(frame_num == (int)end_border + 1){
         float weight = fabs((float)end_border - (int)end_border);
+        weight*=sign;
         uc_pixel_res[0] += weight * uc_pixel_current[0];
         uc_pixel_res[1] += weight * uc_pixel_current[1];
         uc_pixel_res[2] += weight * uc_pixel_current[2];
