@@ -19,6 +19,9 @@ public:
   void compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& current_frame, int frame_num, int seg_id);
   void manipulate(std::shared_ptr<std::vector<ColorCoords>> colorTimes, int offset, int stride);
   void create_time_map(int id);
+  int get_time_min(int current);
+  int get_time_max(int current);
+
 private:
   std::vector<cv::Vec3f>  m_colors;
   std::vector<int>        m_start;

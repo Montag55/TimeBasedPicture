@@ -566,8 +566,23 @@ bool Segment::interpret_one_way( int & work_size){
   }
   //endpoint:
   if( work_size > 0 ){
+
     if(m_frame_last_actual == -1) {//not yet computed!
        m_frame_last_actual = dest_start;
+     }
+
+     if(m_interpretation->getTypenumber() == 9) {
+       // std::cout<< "checking shortcut: "<< m_frame_last_actual<<"\n";
+       Paint& interpretation = dynamic_cast<Paint&>(*m_interpretation);
+       int new_frame = interpretation.get_time_min(m_frame_last_actual);
+
+       if( new_frame == -1){
+         m_frame_last_actual = dest_end;
+       }
+       else{
+         m_frame_last_actual = new_frame;
+       }
+       // std::cout<< "now: "<< m_frame_last_actual<<"\n";
      }
 
      if(m_frame_last_actual < dest_end) {
@@ -597,6 +612,7 @@ bool Segment::interpret_one_way( int & work_size){
 
     upload_influence();
   }
+
 
   if((dest_start == m_frame_start_actual) && (dest_end == m_frame_last_actual)) {
     exit_status = true;  //ist = soll
