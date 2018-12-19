@@ -127,7 +127,7 @@ let Timeline = (function () {
             tempImg.classList.add('img');
             let img = document.createElement('IMG');
             tempImg.appendChild(img);
-            img.src = `../previewImages/frame${i}.jpg`;
+            img.src = `${path}preview/frame${i}.jpg`;
             document.documentElement.style.setProperty('--frame-width', 100 / MAX_FRAMES + '%');
             document.documentElement.style.setProperty('--video-height', 15 + '%');
             mainVideo.appendChild(tempImg);

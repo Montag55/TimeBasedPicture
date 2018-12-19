@@ -36,7 +36,11 @@ let Segments = (function () {
         brushSize = document.querySelector('.brushMask');
 
         showMask.addEventListener('change', function () {
-            //mask.style.display = ()
+            mask.style.display = (showMask.checked) ? 'block' : 'none';
+        });
+
+        mask.addEventListener('mousemove', function (e) {
+            console.log(e);
         });
 
         addButton.addEventListener('click', function () {

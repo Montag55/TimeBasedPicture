@@ -2,6 +2,7 @@ let Masking = (function () {
     let canvas, context, down, toolsDom, tools, active, checkbox;
 
     function init() {
+        return;
         canvas = document.querySelector('.mask');
         context = canvas.getContext('2d');
 
