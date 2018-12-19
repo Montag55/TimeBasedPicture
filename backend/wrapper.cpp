@@ -47,7 +47,7 @@ void init(const v8::FunctionCallbackInfo<v8::Value>& args){
   }
   else{
     base =  std::make_shared<Base>(video_path);
-    std::string output = "1 " + std::to_string(vid.get(CV_CAP_PROP_FRAME_COUNT)) + " " +
+    std::string output = "1 " + std::to_string(vid.get(CV_CAP_PROP_FRAME_COUNT)-1) + " " +
                          std::to_string(vid.get(CV_CAP_PROP_FRAME_WIDTH)) + " " +
                          std::to_string(vid.get(CV_CAP_PROP_FRAME_HEIGHT));
     msg = v8::String::NewFromUtf8( isolate , output.c_str());
@@ -117,7 +117,7 @@ void manipulate_segment(const v8::FunctionCallbackInfo<v8::Value>& args){
   float local_i =   args[3]->NumberValue();
   float global_i =  args[4]->NumberValue();
   bool hasMask =    args[5]->BooleanValue();
-  
+
   std::string correct = "true";
 
   if(!base->manipulate_segment(id, start, end, local_i, global_i, hasMask)){
