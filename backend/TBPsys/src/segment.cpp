@@ -682,6 +682,9 @@ void Segment::manipulate(int start, int end, float local_i, float global_i, bool
   end += 1;//including the end frame to calculation
   m_mutex_soll.lock();
   m_frame_start_destin = start;
+  if(m_frame_last_destin != end && m_interpretation->get_calculation_specification() == 2){
+    m_needs_reset = true;
+  }
   m_frame_last_destin = end;
   m_intensity_local_destin = local_i;
   m_intensity_global_destin = global_i;
