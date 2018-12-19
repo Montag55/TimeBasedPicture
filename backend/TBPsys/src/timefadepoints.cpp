@@ -20,8 +20,8 @@ m_pnt_max{mother->get_max_Point()},
 m_time_map{}
 {
   m_calc_specification = 2;
-  if(m_num_pnts < 2){
-    m_num_pnts = 2;
+  if(m_num_pnts < 2 && num_pnts != -1){
+    m_num_pnts = -1;
     std::cout << "\t ! number of points smaller 2. Automaticly set to 2. \n";
   }
 }
@@ -84,7 +84,10 @@ void Timefadepoints::create_time_map(int id){
         }
       }
       //calc borders:
-      pnts_sorted.resize(m_num_pnts);
+      if(m_num_pnts!=-1){
+        pnts_sorted.resize(m_num_pnts);
+      }
+
       float ref_dis = (*pnts_sorted.begin())[2] + (pnts_sorted.back())[2];
       float start_border = 0;
       float end_border = 0;
@@ -228,8 +231,8 @@ void Timefadepoints::manipulate(int mode_d, int num_pnts, float param, std::shar
     update_status = true;
   }
   if(m_num_pnts != num_pnts){
-    if(num_pnts < 2){
-      num_pnts = 2;
+    if(num_pnts < 2 && num_pnts != -1){
+      num_pnts = -1;
       std::cout << "\t ! number of points smaller 2. Automaticly set to 2. \n";
     }
 
