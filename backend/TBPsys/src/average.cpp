@@ -8,10 +8,12 @@
 #include <../include/average.hpp>
 #include <../include/base.hpp>
 
-Average::Average(std::shared_ptr<Base> mother, int id, int type, int offset, int stride):
-Interpretation{mother, id, type, offset, stride}
+Average::Average(std::shared_ptr<Base> mother, int id, int offset, int stride):
+Interpretation{mother, id,  offset, stride}
 {
-  m_calc_specification = 0;
+  m_type                  = 0;  //avg
+  m_calc_specification    = 0;  //free
+  m_upload_specification  = 0;  //with uni_fac
 }
 
 Average::~Average(){}

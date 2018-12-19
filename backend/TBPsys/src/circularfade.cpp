@@ -11,8 +11,8 @@
 #include <../include/utils.hpp>
 
 
-Circularfade::Circularfade(std::shared_ptr<Base> mother, int id, int type, int start, int end, int mode, cv::Point mid, float radius, bool fade_direction, float parameter, int offset, int stride):
-Interpretation{ mother, id, type, offset, stride},
+Circularfade::Circularfade(std::shared_ptr<Base> mother, int id, int start, int end, int mode, cv::Point mid, float radius, bool fade_direction, float parameter, int offset, int stride):
+Interpretation{ mother, id, offset, stride},
 m_start{start},
 m_end{end},
 m_mode{mode},
@@ -25,7 +25,9 @@ m_pnt_min{mother->get_min_Point()},
 m_pnt_max{mother->get_max_Point()},
 m_time_map{}
 {
-  m_calc_specification = 2;
+  m_type                  = 6; // circfade
+  m_calc_specification    = 2; // once
+  m_upload_specification  = 1; // with fac mat
   if(m_mode > 1)
     std::cout << "\t ! you fool. Now the mode = linealinear." << std::endl;
 

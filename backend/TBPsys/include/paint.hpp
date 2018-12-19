@@ -10,7 +10,7 @@
 
 class Paint : public Interpretation{
 public:
-  Paint(std::shared_ptr< Base > mother, int id, int type, std::shared_ptr<std::vector<ColorCoords>> colorTimes , int offset, int stride);
+  Paint(std::shared_ptr< Base > mother, int id, std::shared_ptr<std::vector<ColorCoords>> colorTimes , int offset, int stride);
   ~Paint()                            override;
   int getTypenumber()                 override;
   int get_calculation_specification() override;

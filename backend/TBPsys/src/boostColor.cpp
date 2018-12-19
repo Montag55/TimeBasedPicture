@@ -10,8 +10,8 @@
 #include <../include/utils.hpp>
 
 
-BoostColor::BoostColor( std::shared_ptr<Base> mother, int id, int type, float threshhold, int modi, std::shared_ptr<std::vector<float>> colors, int offset, int stride):
-Interpretation{ mother, id, type, offset, stride},
+BoostColor::BoostColor( std::shared_ptr<Base> mother, int id, float threshhold, int modi, std::shared_ptr<std::vector<float>> colors, int offset, int stride):
+Interpretation{ mother, id, offset, stride},
 m_colors{colors},
 m_threshhold{threshhold},
 m_modi{modi},
@@ -19,7 +19,9 @@ m_ptr_delta{mother->get_img_delta()},
 m_pnt_min{mother->get_min_Point()},
 m_pnt_max{mother->get_max_Point()}
 {
-  m_calc_specification = 0;
+  m_type                = 4;  //boost clr
+  m_calc_specification  = 0;  //free
+  m_upload_specification = 1; //with fac mat
   //std::cout << "CIELAB Distance: " << utils::dE2000(cv::Scalar(50, 3.1571, -77.2803), cv::Scalar(50, 0, -82.7485), 1.0f, 1.0f, 1.0f) << std::endl;
 }
 

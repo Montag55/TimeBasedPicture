@@ -281,7 +281,7 @@ int Base::add_interpretation(int typ_i, std::string file_path){
       image.convertTo(image, m_img_type );   //do this for the whole video right at the start!?
     }
 
-    m_interpretations.push_back(std::make_shared<Singleimage>(shared_from_this(), id, typ_i, image));
+    m_interpretations.push_back(std::make_shared<Singleimage>(shared_from_this(), id, image));
   }
   else{
     id = -1;
@@ -297,7 +297,7 @@ int Base::add_interpretation(int typ_i, int offset, int stride){
 
   if(typ_i == 0 /*Average*/){
     std::cout<<"Average\n";
-    m_interpretations.push_back(std::make_shared<Average>(shared_from_this(), id, typ_i, offset, stride));
+    m_interpretations.push_back(std::make_shared<Average>(shared_from_this(), id, offset, stride));
   }
   else{
     id = -1;
@@ -323,7 +323,7 @@ int Base::add_interpretation(int typ_i, int offset, int stride, std::string ref_
       ref_img.convertTo( ref_img, m_img_type );   //do this for the whole video right at the start!?
     }
 
-    m_interpretations.push_back(std::make_shared<Overplott>(shared_from_this(), id, typ_i, ref_img, threshhold, modi, offset, stride));
+    m_interpretations.push_back(std::make_shared<Overplott>(shared_from_this(), id, ref_img, threshhold, modi, offset, stride));
   }
   else if(typ_i == 3 /*Boost*/){
     std::cout<< "Boost \n";
@@ -338,7 +338,7 @@ int Base::add_interpretation(int typ_i, int offset, int stride, std::string ref_
       ref_img.convertTo( ref_img, m_img_type );   //do this for the whole video right at the start!?
     }
 
-    m_interpretations.push_back(std::make_shared<Boost>(shared_from_this(), id, typ_i, ref_img, threshhold, modi, offset, stride));
+    m_interpretations.push_back(std::make_shared<Boost>(shared_from_this(), id, ref_img, threshhold, modi, offset, stride));
   }
   else if(typ_i == 5 /*Reduce*/){
     std::cout<< "Reduce \n";
@@ -353,7 +353,7 @@ int Base::add_interpretation(int typ_i, int offset, int stride, std::string ref_
       ref_img.convertTo( ref_img, m_img_type );   //do this for the whole video right at the start!?
     }
 
-    m_interpretations.push_back(std::make_shared<Reduce>(shared_from_this(), id, typ_i, ref_img, threshhold, modi, offset, stride));
+    m_interpretations.push_back(std::make_shared<Reduce>(shared_from_this(), id, ref_img, threshhold, modi, offset, stride));
   }
 
   return id;
@@ -382,7 +382,7 @@ int Base::add_interpretation(int typ_i, int offset, int stride, int ref_id, floa
       ref_img.convertTo( ref_img, m_img_type );   //do this for the whole video right at the start!?
     }
 
-    m_interpretations.push_back(std::make_shared<Overplott>(shared_from_this(), id, typ_i, ref_img, threshhold, modi, offset, stride));
+    m_interpretations.push_back(std::make_shared<Overplott>(shared_from_this(), id, ref_img, threshhold, modi, offset, stride));
   }
   else if(typ_i == 3 /*Boost*/){
     std::cout<< "Boost \n";
@@ -404,7 +404,7 @@ int Base::add_interpretation(int typ_i, int offset, int stride, int ref_id, floa
       ref_img.convertTo( ref_img, m_img_type );   //do this for the whole video right at the start!?
     }
 
-    m_interpretations.push_back(std::make_shared<Boost>(shared_from_this(), id, typ_i, ref_img, threshhold, modi, offset, stride));
+    m_interpretations.push_back(std::make_shared<Boost>(shared_from_this(), id, ref_img, threshhold, modi, offset, stride));
   }
   else if(typ_i == 5 /*Reduce*/){
     std::cout<< "Reduce \n";
@@ -426,7 +426,7 @@ int Base::add_interpretation(int typ_i, int offset, int stride, int ref_id, floa
       ref_img.convertTo( ref_img, m_img_type );   //do this for the whole video right at the start!?
     }
 
-    m_interpretations.push_back(std::make_shared<Reduce>(shared_from_this(), id, typ_i, ref_img, threshhold, modi, offset, stride));
+    m_interpretations.push_back(std::make_shared<Reduce>(shared_from_this(), id, ref_img, threshhold, modi, offset, stride));
   }
   else{
     id = -1;
@@ -442,7 +442,7 @@ int Base::add_interpretation(int typ_i, int offset, int stride, std::shared_ptr<
 
   if(typ_i == 9 /*Paint*/){
     std::cout<< "Paint \n";
-    m_interpretations.push_back(std::make_shared<Paint>(shared_from_this(), id, typ_i, colorTimes, offset, stride));
+    m_interpretations.push_back(std::make_shared<Paint>(shared_from_this(), id, colorTimes, offset, stride));
   }
   else{
     id = -1;
@@ -458,11 +458,11 @@ int Base::add_interpretation(int typ_i, int offset, int stride, float threshhold
 
   if (typ_i == 1 ){
     std::cout<<"Transferfunction \n";
-    m_interpretations.push_back(std::make_shared<Transferfunction>(shared_from_this(), id, typ_i, threshhold, values, offset, stride));
+    m_interpretations.push_back(std::make_shared<Transferfunction>(shared_from_this(), id, threshhold, values, offset, stride));
   }
   else if(typ_i == 4 && values->size()%3 == 0){
     std::cout << "BoostColor \n";
-    m_interpretations.push_back(std::make_shared<BoostColor>(shared_from_this(), id, typ_i, threshhold, modi, values, offset, stride));
+    m_interpretations.push_back(std::make_shared<BoostColor>(shared_from_this(), id, threshhold, modi, values, offset, stride));
   }
   else{
     id = -1;
@@ -486,7 +486,7 @@ int Base::add_interpretation(int typ_i, int offset, int stride, int start, int e
       start = tmp;
     }
 
-    m_interpretations.push_back(std::make_shared<Circularfade>(shared_from_this(), id, typ_i, start, end, mode, mid, radius, fade_direction, parameter, offset, stride));
+    m_interpretations.push_back(std::make_shared<Circularfade>(shared_from_this(), id, start, end, mode, mid, radius, fade_direction, parameter, offset, stride));
   }
   else{
     id = -1;
@@ -502,7 +502,7 @@ int Base::add_interpretation(int typ_i, int offset, int stride, int mode_distanc
 
   if (typ_i == 7){
     std::cout<<"TimeFadePoints \n";
-    m_interpretations.push_back(std::make_shared<Timefadepoints>(shared_from_this(), id, typ_i, mode_distance, mode_function, param, points, offset, stride));
+    m_interpretations.push_back(std::make_shared<Timefadepoints>(shared_from_this(), id, mode_distance, mode_function, param, points, offset, stride));
   }
   else{
     id = -1;

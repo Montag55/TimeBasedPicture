@@ -10,7 +10,7 @@
 
 class Circularfade : public Interpretation{
 public:
-  Circularfade(std::shared_ptr<Base> mother, int id, int type, int start, int end, int mode, cv::Point mid, float radius, bool fade_direction, float parameter,int offset, int stride);
+  Circularfade(std::shared_ptr<Base> mother, int id, int start, int end, int mode, cv::Point mid, float radius, bool fade_direction, float parameter,int offset, int stride);
   ~Circularfade()                     override;
   int getTypenumber()                 override;
   int get_calculation_specification() override;

@@ -22,7 +22,7 @@ Segment::Segment(int start_frame, int last_frame, double intensity_local, double
   m_values_fac{cv::Mat(mother->get_height(), mother->get_width(), mother->get_img_type(), cv::Scalar(0,0,0))},
   m_mask{cv::Mat(mother->get_height(), mother->get_width(), CV_32FC1, cv::Scalar(0))},
   m_uni_fac{0.0f},
-  m_interpretation{std::make_shared<Average>(mother, -1, 0, 0, 0)},
+  m_interpretation{std::make_shared<Average>(mother, -1, 0, 0)},
   m_mutex_soll{},
   m_mutex_state{},
   m_percent{0.0f},
@@ -115,7 +115,7 @@ void Segment::upload_influence(){
   cv::Mat factors = m_values_fac.clone();
   cv::Mat influence = m_values_abs.clone();
 
-  if( m_interpretation->getTypenumber() == 0 || m_interpretation->getTypenumber() == 1 || m_interpretation->getTypenumber() == 8){
+  if(m_interpretation->get_upload_specification() == 0){
     if(m_uni_fac != 0)
       influence = (m_values_abs * ((float) 1 / ((float) m_uni_fac))) * m_intensity_local_actual * m_intensity_global_actual;
     else
@@ -123,7 +123,7 @@ void Segment::upload_influence(){
 
     intensity = m_intensity_global_actual;
   }
-  else if(m_interpretation->getTypenumber() == 2 || m_interpretation->getTypenumber() == 3 || m_interpretation->getTypenumber() == 4 || m_interpretation->getTypenumber() == 5 || m_interpretation->getTypenumber() == 6 || m_interpretation->getTypenumber() == 7 || m_interpretation->getTypenumber() == 9){
+  else if(m_interpretation->get_upload_specification() == 1){
     normalize_factor(influence, factors);
     influence = influence * m_intensity_local_actual * m_intensity_global_actual;
     factors = factors * m_intensity_global_actual;

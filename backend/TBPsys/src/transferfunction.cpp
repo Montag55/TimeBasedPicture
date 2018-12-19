@@ -8,13 +8,15 @@
 #include <vector>
 //Transferfunction(VideoCapture& vid, int img_type, int id, int start_pnt,  std::shared_ptr<std::vector<float>> weights);
 
-Transferfunction::Transferfunction(std::shared_ptr<Base> mother, int id, int type, int start_pnt,  std::shared_ptr< std::vector< float > > points, int offset, int stride):
-Interpretation{mother, id, type, offset, stride},
+Transferfunction::Transferfunction(std::shared_ptr<Base> mother, int id,  int start_pnt,  std::shared_ptr< std::vector< float > > points, int offset, int stride):
+Interpretation{mother, id, offset, stride},
 m_points{points},
 m_start_pnt{start_pnt},
 m_weight_map{}
 {
-  m_calc_specification = 2;
+  m_type                  = 1;  // transfer
+  m_calc_specification    = 2;  // once
+  m_upload_specification  = 0;  //with uni fac
 }
 
 

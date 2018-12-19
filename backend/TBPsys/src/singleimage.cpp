@@ -8,11 +8,13 @@
 #include <../include/singleimage.hpp>
 #include <../include/base.hpp>
 
-Singleimage::Singleimage(std::shared_ptr<Base> mother, int id, int type, cv::Mat image):
-Interpretation{mother, id, type, 0, 0},
+Singleimage::Singleimage(std::shared_ptr<Base> mother, int id, cv::Mat image):
+Interpretation{mother, id, 0, 0},
 m_image{image}
 {
-  m_calc_specification = 0;
+  m_type                  = 8;  //singel image
+  m_calc_specification    = 0;  //free
+  m_upload_specification  = 0;  //uni fac
 }
 
 Singleimage::~Singleimage(){}
