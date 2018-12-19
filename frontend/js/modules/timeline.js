@@ -39,8 +39,8 @@ let Timeline = (function () {
     }
     menu.addEventListener('click', openDialog);
 
-    function init(path, count) {
-        MAX_FRAMES = count;
+    function init(path, start, end, width, height) {
+        MAX_FRAMES = end;
         FILE_PATH = path;
         mainVideo = document.querySelector('.main .scroll-wrapper .video');
         timeLabel = document.querySelector('.main .time-label');
@@ -98,7 +98,7 @@ let Timeline = (function () {
 
         ScrollY.init();
         ScrollX.init();
-        Segments.init();
+        Segments.init(width, height);
 
         scrollReset.addEventListener('click', function () {
             ScrollX.reset();
@@ -107,7 +107,7 @@ let Timeline = (function () {
 
         setTimeout(function () {
             show(1);
-            ScrollX.set(0, count / 10000);
+            ScrollX.set(0, end / 10000);
         }, 1000);
 
 
@@ -127,7 +127,7 @@ let Timeline = (function () {
             tempImg.classList.add('img');
             let img = document.createElement('IMG');
             tempImg.appendChild(img);
-            img.src = `${path}frame${i}.png`;
+            img.src = `../previewImages/frame${i}.jpg`;
             document.documentElement.style.setProperty('--frame-width', 100 / MAX_FRAMES + '%');
             document.documentElement.style.setProperty('--video-height', 15 + '%');
             mainVideo.appendChild(tempImg);
@@ -137,10 +137,6 @@ let Timeline = (function () {
         }
         window.addEventListener('load', function () {
             show(1);
-
-
-
-
         });
     }
 

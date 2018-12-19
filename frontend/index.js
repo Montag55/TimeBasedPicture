@@ -59,7 +59,11 @@ ipcMain.on("getProgress", (event, arg) => {
 
 ipcMain.on("init", (event, arg) => {
   let res = wrapper.init(`${arg}frame%01d.png`)
-  event.sender.send('init', arg + ' ' + parseInt(res.split(' ')[1]));
+  let start = parseInt(res.split(' ')[0]);
+  let end =  parseInt(res.split(' ')[1]);
+  let width =  parseInt(res.split(' ')[2]);
+  let height =  parseInt(res.split(' ')[3]);
+  event.sender.send('init', arg + ' ' + start + ' ' + end + ' ' + width + ' ' + height);
 })
 
 ipcMain.on('addSegment', (event, arg) => {

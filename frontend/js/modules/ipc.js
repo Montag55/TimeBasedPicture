@@ -21,7 +21,12 @@ ipcRenderer.on('update', (event, arg) => {
 
 ipcRenderer.on('init', (event, arg) => {
     let args = arg.split(' ');
-    Timeline.init(args[0], args[1]);
+    let path = args[0];
+    let start = args[1];
+    let end = args[2];
+    let width = args[3];
+    let height = args[4];
+    Timeline.init(path, start, end, width, height);
 });
 
 ipcRenderer.on('addedInterpretation', (event, arg) => {

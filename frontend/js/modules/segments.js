@@ -12,15 +12,21 @@ let Segments = (function () {
         mouseSegment = null,
         updateFlag = false,
         activeAside = null,
-        activeMain = null;
+        activeMain = null,
+        mask = null,
+        maskCtx = null;
 
-    function init() {
+    function init(width, height) {
         segments = {};
         count = 0;
         asideWrapper = document.querySelector('.aside .scroll-wrapper');
         mainWrapper = document.querySelector('.main .scroll-wrapper');
         addButton = document.querySelector('.aside .video');
 
+        mask = document.querySelector('.mask');
+        mask.width = width;
+        mask.height = height;
+        maskCtx = mask.getContext('2d');
         addButton.addEventListener('click', function () {
             requestAdd();
         });
