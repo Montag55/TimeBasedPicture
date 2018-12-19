@@ -96,9 +96,6 @@ class TransferFunction {
   drawPoint(p) {
     this.ctx.beginPath();
     this.ctx.arc(p.x*this.width, p.y*this.height, p.radius, 0, 2 * Math.PI);
-    this.ctx.lineWidth = 1;
-    this.ctx.strokeStyle = "#1DE9B6";
-    this.ctx.stroke();
     this.ctx.fillStyle = "#00BFA5";
     this.ctx.fill();
   }
@@ -142,7 +139,7 @@ class Point{
   constructor(x, y, r) {
     this.x = x || 0;
     this.y = y || 0;
-    this.radius = r || 4;
+    this.radius = r || 6;
   }
 
   isInside(p, width, height) {
