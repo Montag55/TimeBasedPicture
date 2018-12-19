@@ -120,9 +120,10 @@ void Timefadepoints::create_time_map(int id){
         start_border += (*o)[0] * influence;
         end_border += (*o)[1] * influence;
       }
-
+      /*: to map fade [0-1] to segment
       start_border = seg_start + start_border * seg_delta;
       end_border = seg_start + end_border * seg_delta;
+      */
       uc_pixel_map[0] = start_border;
       uc_pixel_map[1] = end_border;
       //shift ptr:
