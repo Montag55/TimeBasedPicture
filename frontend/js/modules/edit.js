@@ -14,7 +14,7 @@ let Edit = (function () {
         end = anchor.querySelector('.end');
         end.step = 1;
         end.max = MAX_FRAMES;
-        end.min = 0;
+        end.min = 1;
         active = 0;
 
         start.addEventListener('change', update);
