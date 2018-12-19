@@ -14,7 +14,10 @@ let Segments = (function () {
         activeAside = null,
         activeMain = null,
         mask = null,
-        maskCtx = null;
+        maskCtx = null,
+        enableMask = null,
+        showMask = null,
+        brushSize = null;
 
     function init(width, height) {
         segments = {};
@@ -27,6 +30,15 @@ let Segments = (function () {
         mask.width = width;
         mask.height = height;
         maskCtx = mask.getContext('2d');
+
+        enableMask = document.querySelector('.enableMask');
+        showMask = document.querySelector('.showMask');
+        brushSize = document.querySelector('.brushMask');
+
+        showMask.addEventListener('change', function () {
+            //mask.style.display = ()
+        });
+
         addButton.addEventListener('click', function () {
             requestAdd();
         });
@@ -39,6 +51,10 @@ let Segments = (function () {
         });
 
         window.addEventListener('mousemove', mousemove);
+    }
+
+    function loadMask(segment) {
+        maskCtx.putImageData(segment.imageData, 0, 0);
     }
 
     function addSegment(id) {
@@ -59,7 +75,10 @@ let Segments = (function () {
         </div>`;
         aside = new DOMParser().parseFromString(aside, 'text/html').children[0].children[1].children[0];
 
-        
+        aside.addEventListener('click', function () {
+            Edit.show(id);
+            loadMask(segments[id]);
+        });
 
         let toggle = aside.querySelector('.toggle');
         let toggleIcon = toggle.querySelector('i');
@@ -87,7 +106,7 @@ let Segments = (function () {
             remove(id);
         });
 
-        
+
 
         let main = `<div class="segment">
             <div class="block">
@@ -107,6 +126,11 @@ let Segments = (function () {
         let right = block.querySelector('.scale-right');
         let progress = block.querySelector('.progress');
 
+        block.addEventListener('click', function () {
+            Edit.show(id);
+            loadMask(segments[id]);
+        });
+
         bar.addEventListener('mousedown', function (e) {
             down = true;
             mouseId = id;
@@ -115,7 +139,7 @@ let Segments = (function () {
             oldX = downX;
             target = 'bar';
             Edit.show(mouseId);
-
+            loadMask(segments[mouseId]);
         });
 
         left.addEventListener('mousedown', function (e) {
@@ -126,7 +150,7 @@ let Segments = (function () {
             oldX = downX;
             target = 'left';
             Edit.show(mouseId);
-
+            loadMask(segments[mouseId]);
         });
 
         right.addEventListener('mousedown', function (e) {
@@ -137,7 +161,7 @@ let Segments = (function () {
             oldX = downX;
             target = 'right';
             Edit.show(mouseId);
-
+            loadMask(segments[mouseId]);
         });
 
         aside.addEventListener('click', function () {
@@ -154,6 +178,7 @@ let Segments = (function () {
         aside.addEventListener('mousedown', function () {
             console.log(mouseId);
             Edit.show(mouseId);
+            loadMask(segments[mouseId]);
         });
 
         main.addEventListener('click', function () {
@@ -179,7 +204,8 @@ let Segments = (function () {
             start: start,
             end: end,
             global_i: 1,
-            local_i: 1
+            local_i: 1,
+            imageData: maskCtx.createImageData(mask.width, mask.height)
         };
 
         segments[id] = segment;
@@ -229,11 +255,12 @@ let Segments = (function () {
             mouseSegment.end += posX - oldX;
             mouseSegment.end = Math.min(mouseSegment.end, MAX_FRAMES);
         }
-      
+
         updateFlag = true;
         update(mouseId);
         requestUpdate(segments[mouseId]);
         Edit.show(mouseId);
+        loadMask(segments[mouseId]);
         oldX = posX;
     }
 
@@ -258,7 +285,7 @@ let Segments = (function () {
             return;
         }
         Object.keys(segments).forEach(function (key) {
-            if (typeof(segments[key]) === 'undefined' || segments[key] === null) {
+            if (typeof (segments[key]) === 'undefined' || segments[key] === null) {
                 return;
             }
             let segment = segments[key];
@@ -267,7 +294,7 @@ let Segments = (function () {
     }
 
     function updateProgress(data) {
-        if (typeof(segments[data.id]) === 'undefined' || segments[data.id] === null) {
+        if (typeof (segments[data.id]) === 'undefined' || segments[data.id] === null) {
             return;
         }
         // segments[data.id].progress.style.width = 100 - parseFloat(data.progress) + "%";
