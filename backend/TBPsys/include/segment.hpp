@@ -72,7 +72,8 @@ private:
   int           m_id;
   float         m_percent;
   bool          m_work_done;
-  bool          m_hasMask;
+  bool          m_hasMask_destin;
+  bool          m_hasMask_actual;
 
   //Definition of BBOX:
   int           m_frame_start_destin;

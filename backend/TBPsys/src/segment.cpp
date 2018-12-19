@@ -27,7 +27,8 @@ Segment::Segment(int start_frame, int last_frame, double intensity_local, double
   m_mutex_state{},
   m_percent{0.0f},
   m_work_done{true},
-  m_hasMask{false},
+  m_hasMask_actual{false},
+  m_hasMask_destin{false},
   m_new_interpretation{NULL},
   m_needs_reset{false},
   m_id{id} {
@@ -88,7 +89,8 @@ void Segment::revert_influence(){
   }
 
 
-  if(m_hasMask){
+  if(m_hasMask_actual){
+    std::cout<<"XXXXXXXXXXrevert influence of mask\n";
     cv::Mat tmp_mask = cv::Mat(m_mother->get_max_Point().y, m_mother->get_max_Point().x, CV_32FC3, cv::Scalar(0,0,0));
     int from_to[] = { 0,0, 0,1, 0,2};
     cv::mixChannels(&m_mask, 1, &tmp_mask, 1, from_to, 3);
@@ -134,7 +136,9 @@ void Segment::upload_influence(){
   }
 
 
-  if(m_hasMask){
+  if(m_hasMask_actual){
+
+    std::cout<<"XXXXXXXXXXread mask for upload\n";
     updateMask("mask" + std::to_string(m_id) + ".png");
     cv::Mat tmp_mask = cv::Mat(m_mother->get_max_Point().y, m_mother->get_max_Point().x, CV_32FC3, cv::Scalar(0,0,0));
     int from_to[] = { 0,0, 0,1, 0,2};
@@ -166,6 +170,8 @@ bool Segment::work(int& work_size){
   m_mutex_state.unlock();
 
   update_intensity();
+
+
   m_mutex_soll.lock();
 
   //set new interpetation:
@@ -178,7 +184,13 @@ bool Segment::work(int& work_size){
       m_interpretation->add_connection(m_id, this);
       m_new_interpretation = NULL;
   }
-
+  //check wether mask is on/off:
+  if(m_hasMask_actual!=m_hasMask_destin)
+  {
+    revert_influence();
+    m_hasMask_actual=m_hasMask_destin;
+    upload_influence();
+  }
   //interpretation need reset:
   if(m_needs_reset) {
     revert_influence(); //dont know?
@@ -283,7 +295,7 @@ void Segment::update_intensity(){
 }
 
 void Segment::updateMask(std::string mask_path){
-  if(m_hasMask){
+  if(m_hasMask_actual){
     auto start_time = std::chrono::high_resolution_clock::now();
 
     cv::Mat new_mask = cv::imread("./" + mask_path);
@@ -293,6 +305,7 @@ void Segment::updateMask(std::string mask_path){
       std::cout << "reference image not loaded. Loading empty Image\n";
     }
     else{
+      std::cout<<"read nes mask right now\n";
       cv::cvtColor(new_mask, new_mask, CV_BGR2GRAY);
       new_mask.convertTo(new_mask, CV_32FC1);
     }
@@ -303,6 +316,9 @@ void Segment::updateMask(std::string mask_path){
     cv::minMaxLoc(tmp_mat_diff_check, &min, &max);
 
     if(max > 0){
+      std::cout<<"prep to read\n";
+      cv::imwrite("oldmask.png", m_mask);
+      cv::imwrite("newmask.png", new_mask);
       m_mask = new_mask;
       //cv::absdiff(m_mask, new_mask, m_mask);
     }
@@ -688,8 +704,7 @@ void Segment::manipulate(int start, int end, float local_i, float global_i, bool
   m_frame_last_destin = end;
   m_intensity_local_destin = local_i;
   m_intensity_global_destin = global_i;
-  m_hasMask = hasMask;
-
+  m_hasMask_destin = hasMask;
   m_mutex_soll.unlock();
   ready_to_work();
 }
