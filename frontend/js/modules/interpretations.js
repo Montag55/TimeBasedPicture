@@ -48,8 +48,11 @@ let Interpretations = (function () {
             parent.classList.add('inter');
             parent.id = interpretation.name;
             let heading = document.createElement('h1');
-            heading.innerText = interpretation.name;
+            heading.innerHTML = `<b>${interpretation.name}</b><br>`;
             parent.appendChild(heading);
+            let instance_name = document.createElement('span');
+            instance_name.classList.add('instance_name');
+            heading.appendChild(instance_name);
 
             let option = document.createElement('option');
             option.innerText = interpretation.name;
@@ -212,12 +215,18 @@ let Interpretations = (function () {
         div.classList.add('instance');
         div.innerText = `interpretation_${id}`;
         div.contentEditable = true;
+        instance.name = div.innerText;
         container.appendChild(div);
         div.addEventListener('click', function () {
             load(instance);
         });
 
         div.addEventListener('keyup', function () {
+            instance.name = this.innerText;
+            let interpretation = interpretations[instance.type];
+            if (interpretation.dom == active) {
+                interpretation.dom.querySelector('.instance_name').innerText = instance.name;
+            }
             Edit.updateInterpretation(this.innerText, id);
         });
         load(instance);
@@ -231,6 +240,7 @@ let Interpretations = (function () {
 
         let interpretation = interpretations[instance.type];
         active = interpretation.dom;
+        interpretation.dom.querySelector('.instance_name').innerText = instance.name;
         activeId = instance.id;
         active.classList.add('active');
         interpretation.setValues(instance.values);
