@@ -77,12 +77,12 @@ class TransferFunction {
   setValues(v) {
     this.points = [];
     for (let i = 0, len = v.length; i < len; i += 2) {
-      v.push(new Point(v[i], v[i + 1] / 10));
+      this.points.push(new Point(v[i], 1 - v[i + 1] / 10));
     }
   }
 
   draw() {
-    console.log(this.points);
+
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
     for(let i = 0, len = this.points.length - 1; i < len; i++){
@@ -132,7 +132,7 @@ class TransferFunction {
     let arr = [];
     this.points.forEach(function (p) {
       arr.push(p.x);
-      arr.push(p.y * 10.0);
+      arr.push(10 - p.y * 10.0);
     });
     return arr;
   }
