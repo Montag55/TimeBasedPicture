@@ -219,7 +219,7 @@ void manipulate_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
     bool fade_dir   = args[9]->IntegerValue();
     float parameter = args[10]->NumberValue();
 
-    cv::Point mid = cv::Point(mid_x, mid_y);
+    cv::Vec2f mid = cv::Vec2f(mid_x, mid_y);
 
     if(!base->manipulate_interpretation(id, start, end, mode, mid, radius, fade_dir, parameter, offset, stride)){
       correct = "false";
@@ -381,7 +381,7 @@ void add_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
     bool fade_dir    = args[9]->IntegerValue();
     float parameter  = args[10]->NumberValue();
 
-    cv::Point mid = cv::Point(mid_x, mid_y);
+    cv::Vec2f mid = cv::Vec2f(mid_x, mid_y);
 
     interpret_id = base->add_interpretation(typ_i, offset, stride, start, end, mode, mid, radius, fade_dir, parameter);
   }

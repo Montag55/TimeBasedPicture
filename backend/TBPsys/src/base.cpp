@@ -266,7 +266,7 @@ bool Base::manipulate_interpretation(int id, float threshhold, int modi, std::sh
   return true;
 }
 
-bool Base::manipulate_interpretation(int id, int start, int end, int mode, cv::Point mid, float radius, bool fade_direction, float parameter, int offset, int stride){
+bool Base::manipulate_interpretation(int id, int start, int end, int mode, cv::Vec2f mid, float radius, bool fade_direction, float parameter, int offset, int stride){
 
   if(m_interpretations[id]->getTypenumber() == 6){
     Circularfade& interpretation = dynamic_cast<Circularfade&>(*m_interpretations[id]);
@@ -488,7 +488,7 @@ int Base::add_interpretation(int typ_i, int offset, int stride, float threshhold
   return id;
 }
 
-int Base::add_interpretation(int typ_i, int offset, int stride, int start, int end, int mode, cv::Point mid, float radius, bool fade_direction, float parameter){
+int Base::add_interpretation(int typ_i, int offset, int stride, int start, int end, int mode, cv::Vec2f mid, float radius, bool fade_direction, float parameter){
   std::cout<<"\t > interpretation: ";
   int id = m_interpretations.size();
 
