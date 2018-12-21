@@ -255,7 +255,7 @@
     background-color: black;
 }
 
-.preview .player canvas.mask {
+.preview .player canvas.mask, .preview .player canvas.paint {
     width: 100%;
     z-index: 99;
     position: absolute;

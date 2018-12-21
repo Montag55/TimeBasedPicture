@@ -9,11 +9,20 @@ class PaintMask {
         this.addButton.innerHTML = '+';
         this.dom.appendChild(this.addButton);
 
+        this.showMask = document.createElement('input');
+        this.showMask.type = 'checkbox';
+        this.dom.appendChild(this.showMask);
+        this.showMask.addEventListener('change', (function () {
+            this.canvas.style.display = (this.showMask.checked) ? 'block' : 'none';
+        }).bind(this));
+
         this.brushSize = document.createElement('input');
-        this.brushSize.type = 'slider';
+        this.brushSize.type = 'range';
         this.brushSize.min = 1;
         this.brushSize.max = 1000;
         this.brushSize.value = 10;
+        this.dom.appendChild(this.brushSize);
+        this.brushSize.style.marginBottom = '1.5vh';
 
         this.colorContainer = document.createElement('div');
         this.dom.appendChild(this.colorContainer);
@@ -22,9 +31,48 @@ class PaintMask {
         this.activeColor = 'rgba(0, 0, 0, 0)';
         this.colors = [];
 
-        this.canvas.addEventListener('click', (function () {
-            this.context.fillStyle = this.activeColor;
-            this.context.fillRect(10, 10, 50, 50);
+        this.canvas.addEventListener('mousedown', (function (e) {
+            this.left = e.button === 0;
+            this.right = e.button === 2;
+        }).bind(this));
+
+        this.canvas.addEventListener('mousemove', (function (e) {
+            if (this.showMask.checked === false) {
+                return;
+            }           
+            if (this.left) {
+                this.change = true;
+                this.context.globalCompositeOperation = 'source-over';
+                this.context.fillStyle = this.activeColor;
+                this.context.beginPath();
+                let p = this.getScale({x: e.pageX, y: e.pageY});
+                this.context.arc(p.x, p.y, this.brushSize.value, 0, 2 * Math.PI);
+                this.context.fill();
+            } else if (this.right) {
+                this.change = true;
+                this.context.globalCompositeOperation = 'destination-out';
+                this.context.beginPath();
+                let p = this.getScale({x: e.pageX, y: e.pageY});
+                this.context.arc(p.x, p.y, this.brushSize.value, 0, Math.PI * 2);
+                this.context.fill();
+            }
+        }).bind(this));
+
+        window.addEventListener('mouseup', (function (e) {
+            this.left = false;
+            this.right = false;
+            if (this.change === true) {
+                if (typeof (Interpretations.getActive()) !== 'number') {
+                    return;
+                }
+                let dataUrl = this.canvas.toDataURL('image/png');
+                let base64Data = dataUrl.replace(/^data:image\/png;base64,/, "");
+                fs.writeFile(`maskPaintInterpretation${Interpretations.getActive()}.png`, base64Data, 'base64', function (err) {
+                    console.log(err);
+                });
+                Interpretations.update();
+            }
+            this.change = false;
         }).bind(this));
 
         this.addButton.addEventListener('click', (function () {
@@ -76,8 +124,8 @@ class PaintMask {
 
     getScale(pos) {
         let rect = this.canvas.getBoundingClientRect();
-        let scaleX = canvas.width / rect.width;
-        let scaleY = canvas.height / rect.height;
+        let scaleX = this.canvas.width / rect.width;
+        let scaleY = this.canvas.height / rect.height;
         let x = scaleX * (pos.x - rect.left);
         let y = scaleY * (pos.y - rect.top);
         return {
@@ -99,7 +147,15 @@ class PaintMask {
     }
 
     setImageData(data) {
+        if (typeof (data) !== 'ImageData') {
+            data = this.context.createImageData(this.canvas.width,this.canvas.height);
+        }
         this.context.putImageData(data, 0, 0);
+        let dataUrl = this.canvas.toDataURL('image/png');
+        let base64Data = dataUrl.replace(/^data:image\/png;base64,/, "");
+        fs.writeFile(`maskPaintInterpretation${Interpretations.getActive()}.png`, base64Data, 'base64', function (err) {
+            console.log(err);
+        });
     }
 
     getImageData() {
@@ -109,6 +165,7 @@ class PaintMask {
     setValues(v) {
         this.colors = [];
         this.colorContainer.innerHTML = '';
+        console.log(this.colorContainer.innerHTML);
         for (let i = 0, len = v.length; i < len; i += 5) {
             let color = new Color(v[i], v[i + 1], v[i + 2], v[i + 3], v[i + 4]);
             this.colors.push(color);
@@ -152,6 +209,7 @@ class PaintMask {
             }).bind(this));
 
             this.colorContainer.appendChild(colorDom);
+            this.update();
         }
     }
 }

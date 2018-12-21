@@ -152,7 +152,7 @@ let Interpretations = (function () {
                         return color.getValues();
                     });
                     interpretation_object.setFunctions.push(function (v) {
-                        return color.setValues(v.splice(index, v.length));
+                        color.setValues(v.splice(index, v.length));
                     });
                     color.onChange(function () {
                         update();
@@ -164,25 +164,25 @@ let Interpretations = (function () {
                         return points.getValues();
                     });
                     interpretation_object.setFunctions.push(function (v) {
-                        return points.setValues(v.splice(index, v.length));
+                        points.setValues(v.splice(index, v.length));
                     });
                     points.onChange(function () {
                         update();
                     });
                 } else if (type.type === 'mask') {
-                    let mask = new PaintMask(document.querySelector('.mask'));
+                    let mask = new PaintMask(document.querySelector('.paint'));
                     parent.appendChild(mask.dom);
                     interpretation_object.valueFunctions.push(function () {
                         return mask.getValues();
                     });
                     interpretation_object.setFunctions.push(function (v) {
-                        return mask.setValues(v.splice(index, v.length));
+                        mask.setValues(v.splice(index, v.length));
                     });
                     mask.onChange(function () {
                         update();
                     });
-                    interpretation_object.getImageData = function () {mask.getImageData};
-                    interpretation_object.setImageData = function () {mask.setImageData};
+                    interpretation_object.getImageData = function () { return mask.getImageData()};
+                    interpretation_object.setImageData = function (d) {mask.setImageData(d)};
                 }
             });
             interpretation_object.getValues = function () {
@@ -270,8 +270,14 @@ let Interpretations = (function () {
         requestConnect(segmentId, interpretationId);
     }
 
+    function getActive() {
+        return activeId;
+    }
+
     return {
         addId: addId,
-        connect: connect
+        connect: connect,
+        update: update,
+        getActive: getActive
     };
 }());
