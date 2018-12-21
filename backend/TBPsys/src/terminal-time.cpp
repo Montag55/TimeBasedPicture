@@ -189,7 +189,7 @@ int main (int argc, char **argv){
             bool fade_dir   = std::stoi (v[10]);
             float parameter   = std::stof (v[11]);
 
-            cv::Point mid = cv::Point(mid_x, mid_y);
+            cv::Vec2f mid = cv::Vec2f(mid_x, mid_y);
 
             std::cout << "\t > start: " << start << "\n";
             std::cout << "\t > end: " << end << "\n";
@@ -396,7 +396,7 @@ int main (int argc, char **argv){
               bool fade_dir   = std::stoi (v[11]);
               float parameter = std::stof (v[12]);
 
-              cv::Point mid = cv::Point(mid_x, mid_y);
+              cv::Vec2f mid = cv::Vec2f(mid_x, mid_y);
 
               if(base->manipulate_interpretation(id, start, end, mode, mid, radius, fade_dir, parameter ,offset, stride)){
                 std::cout << "\t > interpretation id: " << id << "\n";

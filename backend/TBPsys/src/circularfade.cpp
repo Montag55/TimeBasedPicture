@@ -11,7 +11,7 @@
 #include <../include/utils.hpp>
 
 
-Circularfade::Circularfade(std::shared_ptr<Base> mother, int id, int start, int end, int mode, cv::Point mid, float radius, bool fade_direction, float parameter, int offset, int stride):
+Circularfade::Circularfade(std::shared_ptr<Base> mother, int id, int start, int end, int mode, cv::Vec2f mid, float radius, bool fade_direction, float parameter, int offset, int stride):
 Interpretation{ mother, id, offset, stride},
 m_start{start},
 m_end{end},
@@ -28,6 +28,8 @@ m_time_map{}
   m_type                  = 6; // circfade
   m_calc_specification    = 2; // once
   m_upload_specification  = 1; // with fac mat
+
+  m_mid = cv::Vec2f(m_mid[0] * m_base->get_width(), m_mid[1] * m_base->get_height());
   if(m_mode > 1)
     std::cout << "\t ! you fool. Now the mode = linealinear." << std::endl;
 
@@ -57,12 +59,12 @@ void Circularfade::create_time_map(int id){
     for (unsigned int col = m_pnt_min.x; col < m_pnt_max.x; col++) {
       float *uc_pixel_map           = ptr_map;
       //
-      float distance = sqrt(pow((float)col - m_mid.x, 2) + pow((float)row - m_mid.y, 2));
+      float distance = sqrt(pow((float)col - m_mid[0], 2) + pow((float)row - m_mid[1], 2));
 
-      float null_null = sqrt(pow(m_pnt_min.x - m_mid.x, 2) + pow(m_pnt_min.y - m_mid.y, 2));
-      float null_max = sqrt(pow(m_pnt_min.x - m_mid.x, 2) + pow(m_pnt_max.y - m_mid.y, 2));
-      float max_null = sqrt(pow(m_pnt_max.x - m_mid.x, 2) + pow(m_pnt_min.y - m_mid.y, 2));
-      float max_max = sqrt(pow(m_pnt_max.x - m_mid.x, 2) + pow(m_pnt_max.y - m_mid.y, 2));
+      float null_null = sqrt(pow(m_pnt_min.x - m_mid[0], 2) + pow(m_pnt_min.y - m_mid[1], 2));
+      float null_max = sqrt(pow(m_pnt_min.x - m_mid[0], 2) + pow(m_pnt_max.y - m_mid[1], 2));
+      float max_null = sqrt(pow(m_pnt_max.x - m_mid[0], 2) + pow(m_pnt_min.y - m_mid[1], 2));
+      float max_max = sqrt(pow(m_pnt_max.x - m_mid[0], 2) + pow(m_pnt_max.y - m_mid[1], 2));
       float max_distance = 0;
 
       if(max_distance < null_null)
@@ -243,8 +245,14 @@ void Circularfade::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& cur
 
 }
 
-void Circularfade::manipulate(int start, int end, int mode, cv::Point mid, float radius, bool fade_direction, float parameter, int offset, int stride){
+void Circularfade::manipulate(int start, int end, int mode, cv::Vec2f mid, float radius, bool fade_direction, float parameter, int offset, int stride){
   bool update_status = false;
+
+  std::cout << "mid " << mid << std::endl;
+  mid = cv::Vec2f(mid[0] * m_base->get_width(), mid[1] * m_base->get_height());
+  std::cout << "mid " << mid << std::endl;
+  std::cout << "base " << m_base->get_width() << ", " << m_base->get_height() << std::endl;
+
   if(m_start != start){
     m_start = start;
     update_status = true;

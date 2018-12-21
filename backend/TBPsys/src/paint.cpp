@@ -88,7 +88,7 @@ void Paint::create_time_map(int id){
           }
         }
         if(color_check == false){
-          std::cout << tmp_px_color << std::endl;
+          // std::cout << tmp_px_color << std::endl;
           error_occured = true;
           start_border = -1;
           end_border = -1;
@@ -109,6 +109,32 @@ void Paint::create_time_map(int id){
 
   std::cout<<"created time map\n";
   m_time_map[id] = pixel_times;
+}
+
+int Paint::get_time_min(int current){
+  int tmp_s = -1;
+
+  for (int i = 0; i < m_start.size(); i++) {
+    if(m_start[i] <= current && m_end[i] >= current){
+      // std::cout <<"we cannot shortcut\n";
+      return current;
+    }
+  }
+
+  for (int i = 0; i < m_start.size(); i++) {
+    if(m_start[i] > current){
+      if(m_start[i] < tmp_s || tmp_s == -1) {
+        tmp_s = m_start[i];
+      }
+    }
+  }
+
+  return tmp_s;
+}
+
+int Paint::get_time_max(int current){
+  std::cout<<"Paint::get_time_max(int current) not yet implemented \n";
+  return -1;
 }
 
 void Paint::calc(int id, int start, int length, int sign, cv::Mat& result, float& factor, cv::Mat& fac_mat) {
@@ -162,11 +188,9 @@ void Paint::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& current_fr
     // result += mask_end.mul(mask_start).mul(current_frame) / 255;
     // fac_mat += mask_end.mul(mask_start) / 255;
 
-    cv::Mat out = cv::Mat(m_pnt_max.y, m_pnt_max.x, m_img_type, cv::Scalar(0,0,0));
     for (unsigned int row = m_pnt_min.y; row < m_pnt_max.y; ++row) {
       //ptr:
       float* ptr_map            =  (float*) m_time_map[seg_id].ptr(row);
-      float* ptr_out            =  (float*) out.ptr(row);
       float* ptr_res            =  (float*) result.ptr(row);
       float* ptr_fac            =  (float*) fac_mat.ptr(row);
       const float* ptr_current  =  (float*) current_frame.ptr(row);
@@ -174,7 +198,6 @@ void Paint::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& current_fr
       for (unsigned int col = m_pnt_min.x; col < m_pnt_max.x; col++) {
         //ptr:
         float *uc_pixel_map           = ptr_map;
-        float *uc_pixel_out           = ptr_out;
         float *uc_pixel_res           = ptr_res;
         float *uc_pixel_fac           = ptr_fac;
         const float *uc_pixel_current = ptr_current;
@@ -192,7 +215,6 @@ void Paint::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& current_fr
         }
 
         //shift ptr:
-        ptr_out     += m_ptr_delta;
         ptr_res     += m_ptr_delta;
         ptr_current += m_ptr_delta;
         ptr_fac     += m_ptr_delta;
