@@ -111,6 +111,23 @@
     width: 10%;
 }
 
+.paintMask {
+    width: 90%;
+}
+
+.paintMask .prev {
+    height: 2vh;
+}
+
+.paintMask .color {
+    margin-bottom: 1vh;
+}
+
+.paintMask .color.active{
+    border: 0px solid red;
+    outline: 1px solid white;   
+}
+
 .preview .editor canvas {
     width: 90%;
     background-color: var(--gray-900);

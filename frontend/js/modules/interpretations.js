@@ -169,6 +169,20 @@ let Interpretations = (function () {
                     points.onChange(function () {
                         update();
                     });
+                } else if (type.type === 'mask') {
+                    let mask = new PaintMask(document.querySelector('.mask'));
+                    parent.appendChild(mask.dom);
+                    interpretation_object.valueFunctions.push(function () {
+                        return mask.getValues();
+                    });
+                    interpretation_object.setFunctions.push(function (v) {
+                        return mask.setValues(v.splice(index, v.length));
+                    });
+                    mask.onChange(function () {
+                        update();
+                    });
+                    interpretation_object.getImageData = function () {mask.getImageData};
+                    interpretation_object.setImageData = function () {mask.setImageData};
                 }
             });
             interpretation_object.getValues = function () {
@@ -203,6 +217,9 @@ let Interpretations = (function () {
         let instance = instances[activeId];
         let interpretation = interpretations[instance.type];
         instance.values = interpretation.getValues();
+        if (instance.type === 'Paint') {
+            instance.imageData = interpretation.getImageData();
+        }
         let temp = interpretation.getValues();
         temp.unshift(activeId);
         requestManipulateInterpretation.apply(null, temp);
@@ -243,6 +260,9 @@ let Interpretations = (function () {
         interpretation.dom.querySelector('.instance_name').innerText = instance.name;
         activeId = instance.id;
         active.classList.add('active');
+        if (instance.type === 'Paint') {
+            interpretation.setImageData(instance.imageData);
+        }
         interpretation.setValues(instance.values);
     }
 

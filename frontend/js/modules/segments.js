@@ -119,6 +119,8 @@ let Segments = (function () {
     }
 
     function addSegment(id) {
+        showMask.checked = false;
+        enableMask.checked = false;
 
         let aside = `<div class="segment">
             <div class="name">
