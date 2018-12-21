@@ -62,3 +62,10 @@ void Interpretation::update_connections(){
     (*(it->second)).update_interpretation();
   m_mutex_connections.unlock();
 }
+
+void Interpretation::trigger_connections(){
+  m_mutex_connections.lock();
+  for (auto it=m_all_connections.begin(); it!=m_all_connections.end(); ++it)
+    (*(it->second)).trigger_interpretation();
+  m_mutex_connections.unlock();
+}

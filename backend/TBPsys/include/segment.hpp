@@ -57,8 +57,11 @@ public:
   void manipulate(int start, int end, float local_i, float global_i, bool hasMask);
   void set_interpretation(std::shared_ptr<Interpretation> interpret);
   void update_interpretation();
+  void trigger_interpretation();
   void delete_seg();
   void reset();
+  void soft_reset();
+
 
   float get_progress();
   int get_start();
@@ -102,6 +105,7 @@ private:
   std::mutex    m_mutex_soll;
   std::mutex    m_mutex_state;
   bool m_needs_reset;
+  bool m_needs_soft_reset;
 
 };
 #endif

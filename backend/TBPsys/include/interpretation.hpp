@@ -27,6 +27,7 @@ public:
   void add_connection(int id, Segment* segment );
   void delete_connection(int id);
   void update_connections();
+  void trigger_connections();
 
 protected:
   int                                           m_offset;

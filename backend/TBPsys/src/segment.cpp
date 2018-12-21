@@ -31,6 +31,7 @@ Segment::Segment(int start_frame, int last_frame, double intensity_local, double
   m_hasMask_destin{false},
   m_new_interpretation{NULL},
   m_needs_reset{false},
+  m_needs_soft_reset{false},
   m_id{id} {
     m_interpretation->add_connection(id, this);
     ready_to_work();
@@ -59,6 +60,14 @@ void Segment::reset(){
   m_frame_last_actual = -1;
   m_values_abs = cv::Mat(m_mother->get_height(), m_mother->get_width(), m_mother->get_img_type(), cv::Scalar(0,0,0));
   m_values_fac = cv::Mat(m_mother->get_height(), m_mother->get_width(), m_mother->get_img_type(), cv::Scalar(0,0,0));
+  m_uni_fac = 0;
+  m_percent= 0;
+}
+
+void Segment::soft_reset(){
+  //std::cout << "\t > reset segment. \n";
+  m_frame_start_actual = -1;
+  m_frame_last_actual = -1;
   m_uni_fac = 0;
   m_percent= 0;
 }
@@ -198,6 +207,13 @@ bool Segment::work(int& work_size){
     m_needs_reset = false;
   }
 
+  if(m_needs_soft_reset) {
+    // revert_influence(); //dont know?
+    // reset();
+    soft_reset();
+    m_needs_soft_reset = false;
+  }
+
 
   m_mutex_soll.unlock();
 
@@ -269,6 +285,15 @@ void Segment::update_interpretation(){
   //is called, when complete recomput
   m_mutex_soll.lock();
   m_needs_reset = true;
+  m_mutex_soll.unlock();
+
+  ready_to_work();
+}
+
+void Segment::trigger_interpretation(){
+  //is called, when complete recomput
+  m_mutex_soll.lock();
+  m_needs_soft_reset = true;
   m_mutex_soll.unlock();
 
   ready_to_work();

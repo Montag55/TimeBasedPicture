@@ -10,14 +10,20 @@
 #include <../include/utils.hpp>
 
 // addinterpretation 9 0 0 0 0 255 0 10 0 255 0 40 50 255 0 0 80 90 255 255 0 0 100 0 255 255 50 50
-
+//TODO:
+//  -only reset calc after manipulation at necessary pixels
 
 Paint::Paint(std::shared_ptr< Base > mother, int id, std::shared_ptr<std::vector<ColorCoords>> colorTimes , int offset, int stride):
 Interpretation{ mother, id, offset, stride},
-m_time_map{},
+m_time_mat{},
 m_pnt_min{mother->get_min_Point()},
 m_pnt_max{mother->get_max_Point()},
-m_ptr_delta{mother->get_img_delta()}
+m_ptr_delta{mother->get_img_delta()},
+//m_seg_min{},
+//m_seg_max{},
+m_reset{},
+m_reset_mask{},
+m_seg_ist{}
 {
   update_Mask();
 
@@ -55,7 +61,7 @@ void Paint::update_Mask(){
   }
 }
 
-void Paint::create_time_map(int id){
+void Paint::create_time_map(){
   bool error_occured  = false;
   cv::Mat pixel_times = cv::Mat( m_pnt_max.y,  m_pnt_max.x, CV_32FC2, cv::Scalar(0.0f,0.0f));
 
@@ -108,7 +114,7 @@ void Paint::create_time_map(int id){
   }
 
   std::cout<<"created time map\n";
-  m_time_map[id] = pixel_times;
+  m_time_mat = pixel_times;
 }
 
 int Paint::get_time_min(int current){
@@ -145,8 +151,8 @@ void Paint::calc(int id, int start, int length, int sign, cv::Mat& result, float
 
   cv::Mat tmp_frame;
   m_video->set( CV_CAP_PROP_POS_MSEC, start/*frameTime*/);
-  if( start == seg_start )
-    create_time_map(id);
+  // if( start == seg_start )
+  //   create_time_map();
 
   for(int i = 0; i < length; i++){
     if(start + i < m_offset || (start - m_offset + i) % (m_stride + 1) != 0 ){
@@ -190,7 +196,7 @@ void Paint::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& current_fr
 
     for (unsigned int row = m_pnt_min.y; row < m_pnt_max.y; ++row) {
       //ptr:
-      float* ptr_map            =  (float*) m_time_map[seg_id].ptr(row);
+      float* ptr_map            =  (float*) m_seg_ist[seg_id].ptr(row);
       float* ptr_res            =  (float*) result.ptr(row);
       float* ptr_fac            =  (float*) fac_mat.ptr(row);
       const float* ptr_current  =  (float*) current_frame.ptr(row);
@@ -257,7 +263,11 @@ void Paint::manipulate(std::shared_ptr<std::vector<ColorCoords>> colorTimes, int
     update_status = true;
   }
   if(update_status){
+    create_time_map();  //new time_map
+    //should also create/update diff map and status
+    //no reset!
     update_connections();
+
     update_Mask();
   }
 }
