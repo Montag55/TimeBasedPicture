@@ -338,5 +338,29 @@
                 "type": "string"
             }
         ]
+    },
+    {
+        "name": "Paint",
+        "id": 9,
+        "types": [
+            {
+                "name": "offset",
+                "type": "number_slider",
+                "min": 0,
+                "max": 100,
+                "step": 1
+            },
+            {
+                "name": "stride",
+                "type": "number_slider",
+                "min": 0,
+                "max": 100,
+                "step": 1 
+            },
+            {
+                "name": "mask",
+                "type": "mask"
+            }
+        ]
     }
 ]
