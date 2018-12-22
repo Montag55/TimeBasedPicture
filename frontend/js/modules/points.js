@@ -24,14 +24,14 @@ class PointPicker {
             img.addEventListener('click', (function (e) {
                 if (this.picking) {
                     let rect = img.getBoundingClientRect(); // abs. size of element
-                    let scaleX = img.width / rect.width;   // relationship bitmap vs. element for X
-                    let scaleY = img.height / rect.height;  // relationship bitmap vs. element for Y
-              
+                    let scaleX = 1 / rect.width;   // relationship bitmap vs. element for X
+                    let scaleY = 1 / rect.height;  // relationship bitmap vs. element for Y
+
                     let x = (e.clientX - rect.left) * scaleX;   // scale mouse coordinates after they have
                     let y = (e.clientY - rect.top) * scaleY;   // been adjusted to be relative to element
-
-                    x = parseInt(x);
-                    y = parseInt(y);
+                    //
+                    // x = parseInt(x);
+                    // y = parseInt(y);
 
                     let pointData = {x: x, y: y, start: 0, end: 0};
                     this.points.push(pointData);

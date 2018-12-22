@@ -34,6 +34,10 @@ let Segments = (function () {
         mask.height = height;
         maskCtx = mask.getContext('2d');
 
+        let paint = document.querySelector('.paint');
+        paint.width = width;
+        paint.height = height;
+
         enableMask = document.querySelector('.enableMask');
         showMask = document.querySelector('.showMask');
         brushSize = document.querySelector('.brushSize');
@@ -57,6 +61,9 @@ let Segments = (function () {
         });
 
         mask.addEventListener('mousemove', function (e) {
+            if (showMask.checked === false) {
+                return;
+            }
             if (left) {
                 change = true;
                 maskCtx.globalCompositeOperation = 'source-over';
@@ -77,6 +84,9 @@ let Segments = (function () {
 
         window.addEventListener('mouseup', function (e) {
             if (change === true) {
+                if (!segments[Edit.getActive()]) {
+                    return;
+                }
                 segments[Edit.getActive()].imageData = maskCtx.getImageData(0, 0, mask.width, mask.height);
                 let dataUrl = mask.toDataURL('image/png');
                 let base64Data = dataUrl.replace(/^data:image\/png;base64,/, "");
@@ -119,6 +129,8 @@ let Segments = (function () {
     }
 
     function addSegment(id) {
+        showMask.checked = false;
+        enableMask.checked = false;
 
         let aside = `<div class="segment">
             <div class="name">

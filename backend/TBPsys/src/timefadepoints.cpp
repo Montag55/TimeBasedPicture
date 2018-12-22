@@ -62,10 +62,10 @@ void Timefadepoints::create_time_map(int id){
         float pnt_dis = -1;
         //std::cout<<(*m_points)[i][0]<<", "<<(*m_points)[i][1]<<"\n";
         if( m_mode_d == 0 /*abd 1D*/) {
-          pnt_dis = abs(col - (*m_points)[i][0]) + abs(row - (*m_points)[i][1]);
+          pnt_dis = abs(col - (*m_points)[i][0] * m_base->get_width()) + abs(row - (*m_points)[i][1] * m_base->get_height());
         }
         else /*euklid 2D*/ {
-          pnt_dis = sqrt(pow(col - (*m_points)[i][0], 2) + pow(row - (*m_points)[i][1], 2));
+          pnt_dis = sqrt(pow(col - (*m_points)[i][0] * m_base->get_width(), 2) + pow(row - (*m_points)[i][1] * m_base->get_height(), 2));
         }
         //insert according to distance
         if(pnts_sorted.size() == 0){
