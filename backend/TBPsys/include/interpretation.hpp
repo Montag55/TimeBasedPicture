@@ -24,7 +24,7 @@ public:
   virtual int get_calculation_specification() =0 ; //0: standard sum play, 1:forward sum play, 2:full recompute
   virtual void calc( int id, int start, int length, int sign, cv::Mat& result, float& factor, cv::Mat& fac_mat) = 0 ;
 
-  void add_connection(int id, Segment* segment );
+  virtual void add_connection(int id, Segment* segment );
   void delete_connection(int id);
   void update_connections();
   void trigger_connections();

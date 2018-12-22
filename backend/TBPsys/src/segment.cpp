@@ -615,7 +615,8 @@ bool Segment::interpret_one_way( int & work_size){
      if(m_interpretation->getTypenumber() == 9) {
        // std::cout<< "checking shortcut: "<< m_frame_last_actual<<"\n";
        Paint& interpretation = dynamic_cast<Paint&>(*m_interpretation);
-       int new_frame = interpretation.get_time_min(m_frame_last_actual);
+       interpretation.reset_routine(m_values_abs, m_values_fac, m_id);
+       int new_frame = interpretation.get_time_min(m_frame_last_actual,m_id);
 
        if( new_frame == -1){
          m_frame_last_actual = dest_end;

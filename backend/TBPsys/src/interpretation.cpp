@@ -45,6 +45,7 @@ Interpretation::~Interpretation(){
 }
 
 void Interpretation::add_connection( int id, Segment* segment){
+  std::cout<<"add_connection from meta\n";
   m_mutex_connections.lock();
   m_all_connections[id]=segment;
   m_mutex_connections.unlock();

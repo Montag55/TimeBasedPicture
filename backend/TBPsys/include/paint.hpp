@@ -19,8 +19,13 @@ public:
   void compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& current_frame, int frame_num, int seg_id);
   void manipulate(std::shared_ptr<std::vector<ColorCoords>> colorTimes, int offset, int stride);
   void create_time_map();
-  int get_time_min(int current);
-  int get_time_max(int current);
+  int get_time_min(int current, int id);
+  int compute_seg_min(int id);
+  void reset_routine(cv::Mat& result, cv::Mat& fac_mat, int seg_id);
+
+  //int get_time_max(int current);
+  cv::Mat compare_mats(cv::Mat current, cv::Mat old);
+  void add_connection( int id, Segment* segment) override;
 
 private:
   //CLR <-> Time Date:
@@ -40,7 +45,7 @@ private:
   std::map<int,cv::Mat>   m_reset_mask;
 
   //Segment specific
-  //std::map<int,int>       m_seg_min;  //stores the current start frame
+  std::map<int,int>       m_seg_min;  //stores the current start frame
   //std::map<int,int>       m_seg_max;  //stores the current end frame
   std::map<int,cv::Mat>   m_seg_ist;  //two channel start and end: pondo to time_map, saves what is already calced
 
