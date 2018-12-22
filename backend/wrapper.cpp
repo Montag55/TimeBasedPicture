@@ -259,7 +259,7 @@ void manipulate_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
 
     for(int idx = 3; idx < args.Length(); idx += 5){
       ColorCoords tmp;
-      tmp.color = cv::Vec3f(args[idx]->NumberValue(), args[idx+2]->NumberValue(), args[idx+2]->NumberValue());
+      tmp.color = cv::Vec3f(args[idx]->NumberValue(), args[idx+1]->NumberValue(), args[idx+2]->NumberValue());
       tmp.start = args[idx+3]->IntegerValue();
       tmp.end = args[idx+4]->IntegerValue();
       colorTimes->push_back(tmp);
@@ -409,7 +409,7 @@ void add_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
 
     for(int idx = 3; idx < args.Length(); idx += 5){
       ColorCoords tmp;
-      tmp.color = cv::Vec3f(args[idx]->NumberValue(), args[idx+2]->NumberValue(), args[idx+2]->NumberValue());
+      tmp.color = cv::Vec3f(args[idx]->NumberValue(), args[idx+1]->NumberValue(), args[idx+2]->NumberValue());
       tmp.start = args[idx+3]->IntegerValue();
       tmp.end = args[idx+4]->IntegerValue();
       colorTimes->push_back(tmp);
