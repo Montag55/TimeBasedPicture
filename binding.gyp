@@ -5,8 +5,8 @@
        "sources": [
             "backend/wrapper.cpp",
             "backend/TBPsys/src/paint.cpp",
-            "backend/TBPsys/src/base.cpp",
             "backend/TBPsys/src/segment.cpp",
+            "backend/TBPsys/src/base.cpp",
             "backend/TBPsys/src/interpretation.cpp",
             "backend/TBPsys/src/average.cpp",
             "backend/TBPsys/src/transferfunction.cpp",
