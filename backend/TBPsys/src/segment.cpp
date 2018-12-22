@@ -66,13 +66,14 @@ void Segment::reset(){
 
 void Segment::soft_reset(){
   //std::cout << "\t > reset segment. \n";
-  m_frame_start_actual = -1;
-  m_frame_last_actual = -1;
-  m_uni_fac = 0;
+  m_frame_start_actual = 0;
+  m_frame_last_actual = 0;
+  //m_uni_fac = 0;
   m_percent= 0;
 }
 
 void Segment::revert_influence(){
+  std::cout<<"revert\n";
   //should be muted from higher levl
   float intensity = -1;
   bool skip = false;
@@ -119,6 +120,7 @@ void Segment::revert_influence(){
 }
 
 void Segment::upload_influence(){
+  std::cout<<"upload\n";
   // should be muted from above
   // intensity could be uplaoded here
   float intensity = -1;
@@ -614,6 +616,7 @@ bool Segment::interpret_one_way( int & work_size){
 
      if(m_interpretation->getTypenumber() == 9) {
        // std::cout<< "checking shortcut: "<< m_frame_last_actual<<"\n";
+
        Paint& interpretation = dynamic_cast<Paint&>(*m_interpretation);
        interpretation.reset_routine(m_values_abs, m_values_fac, m_id);
        int new_frame = interpretation.get_time_min(m_frame_last_actual,m_id);

@@ -24,7 +24,7 @@ public:
   void reset_routine(cv::Mat& result, cv::Mat& fac_mat, int seg_id);
 
   //int get_time_max(int current);
-  cv::Mat compare_mats(cv::Mat current, cv::Mat old);
+  cv::Mat compare_mats(cv::Mat current, cv::Mat old, bool& changes);
   void add_connection( int id, Segment* segment) override;
 
 private:

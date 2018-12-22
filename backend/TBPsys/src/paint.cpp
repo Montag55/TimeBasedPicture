@@ -55,9 +55,22 @@ void Paint::update_Mask(){
 
   if(m_mask.empty()){
     m_mask = cv::Mat(m_pnt_max.y, m_pnt_max.x, CV_32FC3, cv::Scalar(0, 0, 0));
-    std::cout << "image not loaded. Loading empty Image\n";
+    std::cout << "image not loaded.\n";
+    std::cout<<"second try in a second:\n";
+    m_mask = cv::imread("maskPaintInterpretation" + std::to_string(get_id()) + ".png");
+    std::this_thread::sleep_for(std::chrono::milliseconds(300));
+
+    if(m_mask.empty()){
+      m_mask = cv::Mat(m_pnt_max.y, m_pnt_max.x, CV_32FC3, cv::Scalar(0, 0, 0));
+      std::cout << "image not loaded. Loading empty Image...\n";
+    }
+    m_mask.convertTo(m_mask, CV_32FC3);
+
+
   }
   else {
+    std::cout << "image loaded\n";
+
     m_mask.convertTo(m_mask, CV_32FC3);
   }
 }
@@ -120,10 +133,12 @@ void Paint::create_time_map(){
 
 int Paint::get_time_min(int current, int id){
   int min = m_seg_min[id];
+  std::cout<<"min: "<<std::to_string(min) <<"vs. cur "<<std::to_string(current)<<"\n";
   if(min == -1){// fully computed
     std::cout<<"segment is read painted\n";
     return -1;
-  }else if(min = current){
+  }else if(min == current){
+    std::cout<<"simply continue\n";
     return current;
   }else if(min < current){
     std::cout<<"setting segment calc frame from "<<std::to_string(current)<< " back to: "<< std::to_string(min)<<"\n";
@@ -135,8 +150,9 @@ int Paint::get_time_min(int current, int id){
 }
 
 void Paint::reset_routine(cv::Mat& result, cv::Mat& fac_mat, int seg_id){
-  if(m_reset[seg_id]==true){
 
+  if(m_reset[seg_id]==true){
+    std::cout<<"do reset routine!\n";
     ////////////////
     int min= -1; // always update min
     for (unsigned int row = m_pnt_min.y; row < m_pnt_max.y; ++row) {
@@ -155,7 +171,8 @@ void Paint::reset_routine(cv::Mat& result, cv::Mat& fac_mat, int seg_id){
         float *uc_pixel_fac =ptr_fac;
         float *uc_pixel_source =ptr_source;
         //reset:
-        if(uc_pixel_dif[0] == 1 ){//rest neccessary
+        if(uc_pixel_dif[0] == 0){//rest neccessary
+          //std::cout<<"ressetting pixel\n";
           //reset:seg.result
           uc_pixel_res[0]=0;
           uc_pixel_res[1]=0;
@@ -168,7 +185,7 @@ void Paint::reset_routine(cv::Mat& result, cv::Mat& fac_mat, int seg_id){
           uc_pixel_seg[0]=uc_pixel_source[0];
           uc_pixel_seg[1]=uc_pixel_source[1];
           //reset dif:
-          uc_pixel_dif[0]=0;
+          uc_pixel_dif[0]=1;
         }
 
         //get min:
@@ -179,16 +196,20 @@ void Paint::reset_routine(cv::Mat& result, cv::Mat& fac_mat, int seg_id){
         }
 
         //shift ptr:
-        ptr_seg     += 2;
         ptr_dif     += 1;
         ptr_res     += m_ptr_delta;
         ptr_fac     += m_ptr_delta;
+
+        ptr_seg     += 2;
         ptr_source  += 2;
       }
     }
+    //std::cout<<"new min: "<<std::to_string(min)<<"\n";
     m_seg_min[seg_id]=min;
     ////////////////
     m_reset[seg_id]=false;
+  }else{
+    std::cout<<"no reset routine!\n";
   }
 }
 
@@ -198,9 +219,12 @@ void Paint::add_connection( int id, Segment* segment){
   m_all_connections[id]=segment;
   m_mutex_connections.unlock();
 
+  //get values when work starts!:
   m_reset[id]=false;
-  m_reset_mask[id]= cv::Mat(m_pnt_max.y, m_pnt_max.x, CV_8U, cv::Scalar(0));
+  m_reset_mask[id]= cv::Mat(m_pnt_max.y, m_pnt_max.x, CV_32FC1, cv::Scalar(1));
   m_seg_ist[id]=m_time_mat.clone();
+  m_seg_min[id]=0;
+
 }
 
 // int Paint::get_time_max(int current){
@@ -244,7 +268,7 @@ void Paint::calc(int id, int start, int length, int sign, cv::Mat& result, float
 }
 
 void Paint::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& current_frame, int frame_num,  int seg_id) {
-
+    //std::cout<<"framenum: "<<frame_num<<"\n";
     // cv::Mat mask_start;
     // cv::Mat mask_end;
     //
@@ -279,18 +303,22 @@ void Paint::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& current_fr
         float start_border = uc_pixel_map[0];
         float end_border = uc_pixel_map[1];
 
-        if(frame_num >= (int)start_border && frame_num <= (int)end_border){
+        if(frame_num == (int)start_border ){
+          //std::cout<<"pixel_get vals\n";
           uc_pixel_res[0] += uc_pixel_current[0];
           uc_pixel_res[1] += uc_pixel_current[1];
           uc_pixel_res[2] += uc_pixel_current[2];
           uc_pixel_fac[0] += 1;
           uc_pixel_fac[1] += 1;
           uc_pixel_fac[2] += 1;
-          uc_pixel_map[0] +=1;
+          uc_pixel_map[0] =frame_num +1 ;
+
+          if(start_border == end_border && start_border>=0){
+            //std::cout<<std::to_string(start_border)<<" <-f: pixel done\n";
+            uc_pixel_map[0]= -1; //set as done!
+          }
         }
-        if(start_border=end_border){
-          uc_pixel_map[0]=-1;
-        }
+
         //min:
         if(uc_pixel_map[0]>=0 && min == -1){
           min=uc_pixel_map[0]; //when min is not written yet
@@ -302,9 +330,10 @@ void Paint::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& current_fr
         ptr_res     += m_ptr_delta;
         ptr_current += m_ptr_delta;
         ptr_fac     += m_ptr_delta;
-        ptr_map += 2;
+        ptr_map     += 2;
       }
     }
+    //std::cout<<"new min: "<<std::to_string(min)<<"\n";
     m_seg_min[seg_id]=min;
   }
 
@@ -343,6 +372,7 @@ void Paint::manipulate(std::shared_ptr<std::vector<ColorCoords>> colorTimes, int
   }
 
   if(update_status){
+    std::cout<<"big update\n";
     update_Mask();
     create_time_map();  //new time_map
 
@@ -351,26 +381,33 @@ void Paint::manipulate(std::shared_ptr<std::vector<ColorCoords>> colorTimes, int
     }
 
     for (std::map<int,cv::Mat>::iterator it=m_reset_mask.begin(); it!=m_reset_mask.end(); ++it){
-      cv::Mat new_reset_mask=cv::Mat(m_pnt_max.y, m_pnt_max.x, CV_8U, cv::Scalar(1));
+      cv::Mat new_reset_mask=cv::Mat(m_pnt_max.y, m_pnt_max.x, CV_32FC1, cv::Scalar(0));
       it->second = new_reset_mask;
     }
 
-    trigger_connections();
+    update_connections();
 
-  }else if(update_status_soft){
+  }else /*if(update_status_soft)*/{
+    //get values when work starts!:
+
+    ///////////
+    std::cout<<"soft update\n";
+
     cv::Mat old_time_mat= m_time_mat.clone();
     update_Mask();
     create_time_map();  //new time_map
-    cv::Mat diff_mat = compare_mats(m_time_mat, old_time_mat);
-    double min=-1;
-    double max=-1;
-    cv::minMaxLoc(diff_mat, &min, &max);
-    if(max==1){
+    bool changes=false;
+    cv::Mat diff_mat = compare_mats(m_time_mat, old_time_mat, changes);
+
+    if(changes){
       //chnages available
-      for (std::map<int,cv::Mat>::iterator it=m_seg_ist.begin(); it!=m_seg_ist.end(); ++it){
+      for (std::map<int,cv::Mat>::iterator it=m_reset_mask.begin(); it!=m_reset_mask.end(); ++it){
         std::cout<<"multiplying diffs to Mat of Seg with id: "<<std::to_string(it->first)<<"\n";
         // cv::Mat new_time_map= m_time_mat.clone();
-        it->second.mul(diff_mat);
+        cv::Mat C =it->second.mul(diff_mat);
+        it->second= C;
+        //multiplay_diffs(it->second, diff_mat);
+        //it->second=cv::Mat(m_pnt_max.y, m_pnt_max.x, CV_8UC1, cv::Scalar(0));
       }
 
       for (std::map<int,bool>::iterator it=m_reset.begin(); it!=m_reset.end(); ++it){
@@ -378,15 +415,62 @@ void Paint::manipulate(std::shared_ptr<std::vector<ColorCoords>> colorTimes, int
       }
 
       trigger_connections();
-    }else{
-      std::cout<<"no changes available? why did you call manipulate\n";
     }
   }
+  // }else{
+  //   std::cout<<"alternative soft update\n";
+  //
+  //   cv::Mat old_time_mat= m_time_mat.clone();
+  //   update_Mask();
+  //   create_time_map();  //new time_map
+  //   bool changes=false;
+  //   cv::Mat diff_mat = compare_mats(m_time_mat, old_time_mat, changes);
+  //
+  //   if(changes){
+  //     //chnages available
+  //     for (std::map<int,cv::Mat>::iterator it=m_seg_ist.begin(); it!=m_seg_ist.end(); ++it){
+  //       std::cout<<"multiplying diffs to Mat of Seg with id: "<<std::to_string(it->first)<<"\n";
+  //       // cv::Mat new_time_map= m_time_mat.clone();
+  //       it->second.mul(diff_mat);
+  //     }
+  //
+  //     for (std::map<int,bool>::iterator it=m_reset.begin(); it!=m_reset.end(); ++it){
+  //       it->second = true;
+  //     }
+  //
+  //     trigger_connections();
+  //   }
+  // }
 }
 
-cv::Mat Paint::compare_mats(cv::Mat current, cv::Mat old){
+cv::Mat Paint::compare_mats(cv::Mat current, cv::Mat old, bool& changes){
   //if different: pixel = 1
-  cv::Mat out_mat=cv::Mat(m_pnt_max.y, m_pnt_max.x, CV_8U, cv::Scalar(0));
-  std::cout<<"implement\n";
+  changes=false;
+  cv::Mat out_mat=cv::Mat(m_pnt_max.y, m_pnt_max.x, CV_32FC1, cv::Scalar(1));
+  for (unsigned int row = m_pnt_min.y; row < m_pnt_max.y; ++row) {
+    //ptr:
+    float* ptr_current            =  (float*) current.ptr(row);
+    float* ptr_old            =  (float*) old.ptr(row);
+    float* ptr_out            =  (float*) out_mat.ptr(row);
+
+    for (unsigned int col = m_pnt_min.x; col < m_pnt_max.x; col++) {
+      //ptr:
+      float *uc_pixel_current       = ptr_current;
+      float *uc_pixel_old           = ptr_old;
+      float *uc_pixel_out           = ptr_out;
+
+      if(uc_pixel_current[0] != uc_pixel_old[0] || uc_pixel_current[1] != uc_pixel_old[1]){
+        uc_pixel_out[0]=0;  //needs to be reset!
+        changes=true;
+      }else{
+        uc_pixel_out[0]=1;
+      }
+
+      //shift ptr:
+      ptr_current += 2;
+      ptr_old     += 2;
+      ptr_out     += 1;
+    }
+  }
   return out_mat;
 }
