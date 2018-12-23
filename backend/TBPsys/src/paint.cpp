@@ -52,27 +52,24 @@ int Paint::get_calculation_specification(){
 
 void Paint::update_Mask(){
   m_mask = cv::imread("maskPaintInterpretation" + std::to_string(get_id()) + ".png");
+  int number_of_tries= 10;
+  int i=1;
+  while(m_mask.empty() && i<10)
+  {
+    std::cout<<"trying to load mask another time: "<<i<<"\n";
+    std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    m_mask = cv::imread("maskPaintInterpretation" + std::to_string(get_id()) + ".png");
+    i++;
+  }
 
   if(m_mask.empty()){
     m_mask = cv::Mat(m_pnt_max.y, m_pnt_max.x, CV_32FC3, cv::Scalar(0, 0, 0));
-    std::cout << "image not loaded.\n";
-    std::cout<<"second try in a second:\n";
-    m_mask = cv::imread("maskPaintInterpretation" + std::to_string(get_id()) + ".png");
-    std::this_thread::sleep_for(std::chrono::milliseconds(300));
-
-    if(m_mask.empty()){
-      m_mask = cv::Mat(m_pnt_max.y, m_pnt_max.x, CV_32FC3, cv::Scalar(0, 0, 0));
-      std::cout << "image not loaded. Loading empty Image...\n";
-    }
-    m_mask.convertTo(m_mask, CV_32FC3);
-
-
+    std::cout << "mask not loaded! replacing it with black image!\n";
+  }else{
+    std::cout<<"maks loaded correctly!\n";
   }
-  else {
-    std::cout << "image loaded\n";
 
-    m_mask.convertTo(m_mask, CV_32FC3);
-  }
+  m_mask.convertTo(m_mask, CV_32FC3);
 }
 
 void Paint::create_time_map(){
@@ -100,7 +97,8 @@ void Paint::create_time_map(){
       else /* color */{
         bool color_check = false;
         for(unsigned int idx = 0; idx < m_colors.size(); idx++){
-          if(m_colors[idx] == tmp_px_color){
+          float distance= abs(m_colors[idx][0]-tmp_px_color[0])+abs(m_colors[idx][1]-tmp_px_color[1])+abs(m_colors[idx][2]-tmp_px_color[2]);
+          if(distance==0){  //to have no artifacts in colormap, set: distance<10  .. but this might be not the solution
             start_border = m_start[idx];
             end_border = m_end[idx];
             color_check = true;
@@ -108,7 +106,7 @@ void Paint::create_time_map(){
           }
         }
         if(color_check == false){
-          // std::cout << tmp_px_color << std::endl;
+          //std::cout << tmp_px_color << std::endl;
           error_occured = true;
           start_border = -1;
           end_border = -1;
