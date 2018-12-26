@@ -6,12 +6,13 @@ test lab to generate fast output of different settings
 #include <sstream>
 #include <iostream>
 #include <string.h>
+#include <cctype>
 
 #include "base.hpp"
+#include "segment.hpp"
+#include "interpretation.hpp"
 
 #include <opencv2/opencv.hpp>
-
-
 
 int main (int argc, char **argv){
 
@@ -46,7 +47,7 @@ int main (int argc, char **argv){
 
 
   std::cout<<"here\n";
-  base->add_interpretation(typ_i, offset, stride, ref_id, threshhold);
+//  base->add_interpretation(typ_i, offset, stride, ref_id, threshhold);
   std::this_thread::sleep_for(std::chrono::milliseconds(1000)); //safety reason
   std::cout<<"here\n";
 
@@ -59,7 +60,7 @@ int main (int argc, char **argv){
   for (int i= 0; i<5; i++){
     std::cout<<"cycle: "<<i<<"\n";
 
-    base->manipulate_interpretation(interpret_id, ref_id, threshhold++, offset, stride);
+    //base->manipulate_interpretation(interpret_id, ref_id, threshhold++, offset, stride);
     std::this_thread::sleep_for(std::chrono::milliseconds(3000)); //safety reason
     bool wait=true;
     float progress=0;
@@ -93,17 +94,17 @@ int main (int argc, char **argv){
   offset      = 0;
   stride      = 0;
 
-  base->add_interpretation(typ_i, ref_id, threshhold);
+  //base->add_interpretation(typ_i, ref_id, threshhold);
   std::this_thread::sleep_for(std::chrono::milliseconds(1000)); //safety reason
 
   segment_id    = 0;
   interpret_id  = 1;
-  base->connect(segment_id, interpret_id);
+//  base->connect(segment_id, interpret_id);
   std::this_thread::sleep_for(std::chrono::milliseconds(1000)); //safety reason
 
   for (int i= 1; i<=20; i++){
     std::cout<<"cycle: "<<i<<"\n";
-    base->manipulate_interpretation(interpret_id, ref_id, threshhold*i, offset, stride);
+    //base->manipulate_interpretation(interpret_id, ref_id, threshhold*i, offset, stride);
     std::this_thread::sleep_for(std::chrono::milliseconds(2000)); //safety reason
     bool wait=true;
     float progress=0;
