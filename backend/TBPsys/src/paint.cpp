@@ -98,7 +98,7 @@ void Paint::create_time_map(){
         bool color_check = false;
         for(unsigned int idx = 0; idx < m_colors.size(); idx++){
           float distance= abs(m_colors[idx][0]-tmp_px_color[0])+abs(m_colors[idx][1]-tmp_px_color[1])+abs(m_colors[idx][2]-tmp_px_color[2]);
-          if(distance==0){  //to have no artifacts in colormap, set: distance<10  .. but this might be not the solution
+          if(distance<10){  //to have no artifacts in colormap, set: distance<10  .. but this might be not the solution
             start_border = m_start[idx];
             end_border = m_end[idx];
             color_check = true;
