@@ -84,12 +84,9 @@ let Timeline = (function () {
             show(currentFrame);
         });
 
-
         context = canvas.getContext('2d');
-
-
-        canvas.width = 1920;
-        canvas.height = 1080;
+        canvas.width = width;
+        canvas.height = height;
 
         images = [];
         labels = [];
