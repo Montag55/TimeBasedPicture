@@ -266,11 +266,11 @@ bool Base::manipulate_interpretation(int id, float threshhold, int modi, std::sh
   return true;
 }
 
-bool Base::manipulate_interpretation(int id, int start, int end, int mode, cv::Vec2f mid, float radius, bool fade_direction, float parameter, int offset, int stride){
+bool Base::manipulate_interpretation(int id, int start, int end, int outer_circle_start, int outer_circle_end, int mode, cv::Vec2f mid, float radius, bool fade_direction, float parameter, int offset, int stride){
 
   if(m_interpretations[id]->getTypenumber() == 6){
     Circularfade& interpretation = dynamic_cast<Circularfade&>(*m_interpretations[id]);
-    interpretation.manipulate(start, end, mode, mid, radius, fade_direction, parameter, offset, stride);
+    interpretation.manipulate(start, end, outer_circle_start, outer_circle_end, mode, mid, radius, fade_direction, parameter, offset, stride);
   }
   return true;
 }
@@ -488,7 +488,7 @@ int Base::add_interpretation(int typ_i, int offset, int stride, float threshhold
   return id;
 }
 
-int Base::add_interpretation(int typ_i, int offset, int stride, int start, int end, int mode, cv::Vec2f mid, float radius, bool fade_direction, float parameter){
+int Base::add_interpretation(int typ_i, int offset, int stride, int start, int end, int outer_circle_start, int outer_circle_end, int mode, cv::Vec2f mid, float radius, bool fade_direction, float parameter){
   std::cout<<"\t > interpretation: ";
   int id = m_interpretations.size();
 
@@ -502,7 +502,14 @@ int Base::add_interpretation(int typ_i, int offset, int stride, int start, int e
       start = tmp;
     }
 
-    m_interpretations.push_back(std::make_shared<Circularfade>(shared_from_this(), id, start, end, mode, mid, radius, fade_direction, parameter, offset, stride));
+    if(outer_circle_start > outer_circle_end){
+      std::cout << "\t ! WARNING: outer_circle_start > outer_circle_end; swaping end and start." << std::endl;
+      int tmp = outer_circle_end;
+      outer_circle_end = outer_circle_start;
+      outer_circle_start = tmp;
+    }
+
+    m_interpretations.push_back(std::make_shared<Circularfade>(shared_from_this(), id, start, end, outer_circle_start, outer_circle_end, mode, mid, radius, fade_direction, parameter, offset, stride));
   }
   else{
     id = -1;

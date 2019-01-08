@@ -227,6 +227,20 @@
                 "step": 1
             },
             {
+                "name": "outer_circle_start",
+                "type": "number_edit",
+                "min": 0,
+                "max": 10000,
+                "step": 1
+            },
+            {
+                "name": "outer_circle_end",
+                "type": "number_edit",
+                "min": 0,
+                "max": 10000,
+                "step": 1
+            },
+            {
                 "name": "mode",
                 "type": "number_slider",
                 "min": 0,
@@ -355,7 +369,7 @@
                 "type": "number_slider",
                 "min": 0,
                 "max": 100,
-                "step": 1 
+                "step": 1
             },
             {
                 "name": "mask",

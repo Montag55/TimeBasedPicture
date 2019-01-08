@@ -11,10 +11,12 @@
 #include <../include/utils.hpp>
 
 
-Circularfade::Circularfade(std::shared_ptr<Base> mother, int id, int start, int end, int mode, cv::Vec2f mid, float radius, bool fade_direction, float parameter, int offset, int stride):
+Circularfade::Circularfade(std::shared_ptr<Base> mother, int id, int start, int end, int outer_circle_start, int outer_circle_end, int mode, cv::Vec2f mid, float radius, bool fade_direction, float parameter, int offset, int stride):
 Interpretation{ mother, id, offset, stride},
 m_start{start},
 m_end{end},
+m_outer_circle_start{outer_circle_start},
+m_outer_circle_end{outer_circle_end},
 m_mode{mode},
 m_mid{mid},
 m_radius{radius},
@@ -49,9 +51,15 @@ int Circularfade::get_calculation_specification(){
 
 void Circularfade::create_time_map(int id){
   std::cout<<"calc time map\n";
-  int seg_start = m_base->get_seg_start(id);
-  int seg_end = m_base->get_seg_end(id);
   cv::Mat pixel_times = cv::Mat( m_pnt_max.y,  m_pnt_max.x, CV_32FC2, cv::Vec2f(0.0f,0.0f));
+
+  // int seg_start = m_base->get_seg_start(id);
+  // int seg_end = m_base->get_seg_end(id);
+  // int seg_start = m_base->get_start_frame();
+  // int seg_end = m_base->get_last_frame();
+  int seg_start = m_outer_circle_start;
+  int seg_end = m_outer_circle_end;
+
   for (unsigned int row = m_pnt_min.y; row < m_pnt_max.y; ++row) {
     //ptr:
     float* ptr_map            =  (float*) pixel_times.ptr(row);
@@ -80,7 +88,7 @@ void Circularfade::create_time_map(int id){
       float end_border= -1;
       if(m_fade_direction){
         if(distance < m_radius){
-          start_border=  m_start;
+          start_border =  m_start;
           end_border = m_end;
         }
         else{
@@ -113,7 +121,7 @@ void Circularfade::create_time_map(int id){
       }
       else{
         if(distance > m_radius){
-          start_border= m_start;
+          start_border = m_start;
           end_border = m_end;
         }
         else{
@@ -152,13 +160,16 @@ void Circularfade::create_time_map(int id){
 
 }
 
-
-
 void Circularfade::calc(int id, int start, int length, int sign, cv::Mat& result, float& factor, cv::Mat& fac_mat) {
   auto start_time = std::chrono::high_resolution_clock::now();
 
-  int seg_start = m_base->get_seg_start(id);
-  int seg_end = m_base->get_seg_end(id);
+  // int seg_start = m_base->get_seg_start(id);
+  // int seg_end = m_base->get_seg_end(id);
+  // int seg_start = m_base->get_start_frame();
+  // int seg_end = m_base->get_last_frame();
+  int seg_start = m_outer_circle_start;
+  int seg_end = m_outer_circle_end;
+
 
   cv::Mat tmp_frame;
   m_video->set( CV_CAP_PROP_POS_MSEC, start/*frameTime*/);
@@ -245,7 +256,7 @@ void Circularfade::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& cur
 
 }
 
-void Circularfade::manipulate(int start, int end, int mode, cv::Vec2f mid, float radius, bool fade_direction, float parameter, int offset, int stride){
+void Circularfade::manipulate(int start, int end, int outer_circle_start, int outer_circle_end, int mode, cv::Vec2f mid, float radius, bool fade_direction, float parameter, int offset, int stride){
   bool update_status = false;
 
   std::cout << "mid " << mid << std::endl;
@@ -259,6 +270,14 @@ void Circularfade::manipulate(int start, int end, int mode, cv::Vec2f mid, float
   }
   if(m_end != end){
     m_end = end;
+    update_status = true;
+  }
+  if(m_outer_circle_start != outer_circle_start){
+    m_outer_circle_start = outer_circle_start;
+    update_status = true;
+  }
+  if(m_outer_circle_end != outer_circle_end){
+    m_outer_circle_end = outer_circle_end;
     update_status = true;
   }
   if(m_mode != mode){

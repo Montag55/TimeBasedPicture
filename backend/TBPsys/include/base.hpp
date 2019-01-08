@@ -38,7 +38,7 @@ public:
   int                 add_interpretation(int typ_i, int offset, int stride, std::string ref_file_path, float threshhold, int modi);
   int                 add_interpretation(int typ_i, int offset, int stride, std::shared_ptr<std::vector<ColorCoords>> colorTimes);
   int                 add_interpretation(int typ_i, int offset, int stride, float threshhold, int modi, std::shared_ptr<std::vector<float>> values);
-  int                 add_interpretation(int typ_i, int offset, int stride, int start, int end, int mode, cv::Vec2f mid, float radius, bool fade_direction, float parameter);
+  int                 add_interpretation(int typ_i, int offset, int stride, int start, int end, int outer_circle_start, int outer_circle_end, int mode, cv::Vec2f mid, float radius, bool fade_direction, float parameter);
   int                 add_interpretation(int typ_i, int offset, int stride, int mode_distance, int mode_function, float parameter, std::shared_ptr<std::vector<cv::Vec4f>> points);
   bool                delete_segment(int id);
   bool                manipulate_interpretation(int id, std::string file_path);
@@ -48,7 +48,7 @@ public:
   bool                manipulate_interpretation(int id, int ref_id, float threshhold, int modi, int offset, int stride);
   bool                manipulate_interpretation(int id, std::string ref_file_path, float threshhold, int modi, int offset, int stride);
   bool                manipulate_interpretation(int id, float threshhold, int modi, std::shared_ptr<std::vector<float>> values, int offset, int stride);
-  bool                manipulate_interpretation(int id, int start, int end, int mode, cv::Vec2f mid, float radius, bool fade_direction, float parameter, int offset, int stride);
+  bool                manipulate_interpretation(int id, int start, int end, int outer_circle_start, int outer_circle_end, int mode, cv::Vec2f mid, float radius, bool fade_direction, float parameter, int offset, int stride);
   bool                manipulate_interpretation(int id, int mode_distance, int mode_function, float parameter, std::shared_ptr<std::vector<cv::Vec4f>> points, int offset, int stride);
 
   //WORK::::::::::::::::::::::::::::::::::::::::::::::::

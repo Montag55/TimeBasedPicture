@@ -212,16 +212,18 @@ void manipulate_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
   else if(typ_i == 6){
     int start       = args[3]->IntegerValue();
     int end         = args[4]->IntegerValue();
-    int mode        = args[5]->IntegerValue();
-    float mid_x     = args[6]->NumberValue();
-    float mid_y     = args[7]->NumberValue();
-    float radius    = args[8]->NumberValue();
-    bool fade_dir   = args[9]->IntegerValue();
-    float parameter = args[10]->NumberValue();
+    int outer_circle_start = args[5]->IntegerValue();
+    int outer_circle_end = args[6]->IntegerValue();
+    int mode        = args[7]->IntegerValue();
+    float mid_x     = args[8]->NumberValue();
+    float mid_y     = args[9]->NumberValue();
+    float radius    = args[10]->NumberValue();
+    bool fade_dir   = args[11]->IntegerValue();
+    float parameter = args[12]->NumberValue();
 
     cv::Vec2f mid = cv::Vec2f(mid_x, mid_y);
 
-    if(!base->manipulate_interpretation(id, start, end, mode, mid, radius, fade_dir, parameter, offset, stride)){
+    if(!base->manipulate_interpretation(id, start, end, outer_circle_start, outer_circle_end, mode, mid, radius, fade_dir, parameter, offset, stride)){
       correct = "false";
       std::cout << "manipulate_segment() failed. \n";
     }
@@ -374,16 +376,18 @@ void add_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
   else if(typ_i == 6){
     int start        = args[3]->IntegerValue();
     int end          = args[4]->IntegerValue();
-    int mode         = args[5]->IntegerValue();
-    float mid_x      = args[6]->NumberValue();
-    float mid_y      = args[7]->NumberValue();
-    float radius     = args[8]->NumberValue();
-    bool fade_dir    = args[9]->IntegerValue();
-    float parameter  = args[10]->NumberValue();
+    int outer_circle_start = args[5]->IntegerValue();
+    int outer_circle_end = args[6]->IntegerValue();
+    int mode         = args[7]->IntegerValue();
+    float mid_x      = args[8]->NumberValue();
+    float mid_y      = args[9]->NumberValue();
+    float radius     = args[10]->NumberValue();
+    bool fade_dir    = args[11]->IntegerValue();
+    float parameter  = args[12]->NumberValue();
 
     cv::Vec2f mid = cv::Vec2f(mid_x, mid_y);
 
-    interpret_id = base->add_interpretation(typ_i, offset, stride, start, end, mode, mid, radius, fade_dir, parameter);
+    interpret_id = base->add_interpretation(typ_i, offset, stride, start, end, outer_circle_start, outer_circle_end, mode, mid, radius, fade_dir, parameter);
   }
   else if(typ_i == 7){
     std::shared_ptr<std::vector<cv::Vec4f>> points = std::make_shared<std::vector<cv::Vec4f>>();
