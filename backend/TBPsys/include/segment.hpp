@@ -35,6 +35,7 @@ public:
   bool interpret_free(int& work_size);
   bool interpret_extending(int& work_size);
   bool interpret_one_way( int & work_size);
+  bool interpret_directed( int& work_size);
 
   void update_intensity();
   void updateMask(std::string mask_path);

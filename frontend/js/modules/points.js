@@ -1,5 +1,6 @@
 class PointPicker {
     constructor(imgs) {
+
         this.points = [];
         this.dom = document.createElement('div');
         this.dom.classList.add('pointPicker');
@@ -11,6 +12,7 @@ class PointPicker {
 
         let togglePointView = document.createElement('input');
         togglePointView.type = 'checkbox';
+        togglePointView.checked = true;
         this.dom.appendChild(togglePointView);
         togglePointView.style.width = '50%';
 
@@ -23,16 +25,18 @@ class PointPicker {
         pointCanvas.style.width = '100%';
         pointCanvas.width = 1920;
         pointCanvas.height = 1080;
+        pointCanvas.style.background = 'transparent';
+        pointCanvas.style.display = 'block';
+        pointCanvas.style.pointerEvents = 'none';
+        pointCanvas.style.opacity = 1.0;
+        this.pointCanvas = pointCanvas;
+        this.pointCtx = pointCtx;
+
 
         this.dom.addEventListener('contextmenu', function (e) {e.preventDefault();});
 
         togglePointView.addEventListener('change', function () {
-            if(togglePointView.checked){
-              console.log("heheheh");
-            }
-            else{
-              console.log("nononono")
-            }
+            pointCanvas.style.display = (togglePointView.checked) ? 'block' : 'none';
         });
 
         pick.addEventListener('click', (function () {
@@ -101,8 +105,34 @@ class PointPicker {
         }).bind(this));
     }
 
+    drawPoints() {
+        this.pointCtx.clearRect(0, 0, this.pointCanvas.width, this.pointCanvas.height);
+        this.points.forEach((function (p) {
+            let img = document.getElementById('bla');
+            this.pointCtx.drawImage(img, p.x * this.pointCanvas.width, p.y * this.pointCanvas.height, 100, 100);
+
+            // this.pointCtx.beginPath();
+            // this.pointCtx.fillStyle = 'red';
+            // this.pointCtx.arc(p.x * this.pointCanvas.width, p.y * this.pointCanvas.height, 30, 0, 2 *  Math.PI);
+            // this.pointCtx.fill();
+// 
+            // this.pointCtx.beginPath();
+            // this.pointCtx.fillStyle = 'green';
+            // this.pointCtx.arc(p.x * this.pointCanvas.width, p.y * this.pointCanvas.height, 20, 0, 2 *  Math.PI);
+            // this.pointCtx.fill();
+// 
+            // this.pointCtx.beginPath();
+            // this.pointCtx.fillStyle = 'blue';
+            // this.pointCtx.arc(p.x * this.pointCanvas.width, p.y * this.pointCanvas.height, 10, 0, 2 *  Math.PI);
+            // this.pointCtx.fill();
+        }).bind(this));
+    }
+
     onChange(f) {
-        this.update = f;
+        this.update = function () {
+            this.drawPoints();
+            f();
+        };
     }
 
     getValues() {

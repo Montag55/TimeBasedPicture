@@ -73,7 +73,7 @@ void Segment::soft_reset(){
 }
 
 void Segment::revert_influence(){
-  std::cout<<"revert\n";
+  //std::cout<<"revert\n";
   //should be muted from higher levl
   float intensity = -1;
   bool skip = false;
@@ -120,7 +120,7 @@ void Segment::revert_influence(){
 }
 
 void Segment::upload_influence(){
-  std::cout<<"upload\n";
+//  std::cout<<"upload\n";
   // should be muted from above
   // intensity could be uplaoded here
   float intensity = -1;
@@ -228,6 +228,9 @@ bool Segment::work(int& work_size){
     }
     else if(m_interpretation->get_calculation_specification() == 2){
       state = interpret_one_way( work_size );
+    }
+    else if(m_interpretation->get_calculation_specification() == 3){
+      state = interpret_directed( work_size );
     }
     else{
       std::cout<<"Other interpretation traversal not implemnted yet. \n";
@@ -614,22 +617,6 @@ bool Segment::interpret_one_way( int & work_size){
        m_frame_last_actual = dest_start;
      }
 
-     if(m_interpretation->getTypenumber() == 9) {
-       // std::cout<< "checking shortcut: "<< m_frame_last_actual<<"\n";
-
-       Paint& interpretation = dynamic_cast<Paint&>(*m_interpretation);
-       interpretation.reset_routine(m_values_abs, m_values_fac, m_id);
-       int new_frame = interpretation.get_time_min(m_frame_last_actual,m_id);
-
-       if( new_frame == -1){
-         m_frame_last_actual = dest_end;
-       }
-       else{
-         m_frame_last_actual = new_frame;
-       }
-       // std::cout<< "now: "<< m_frame_last_actual<<"\n";
-     }
-
      if(m_frame_last_actual < dest_end) {
        /*ffmpeg:
        double frameRate = m_video.get(CV_CAP_PROP_FPS);
@@ -652,6 +639,99 @@ bool Segment::interpret_one_way( int & work_size){
        std::cout << "b: should not happen !? \n";
      }
   }
+}
+
+
+  bool Segment::interpret_directed( int & work_size){
+    //allows only enlargment.. shrinking-> reset
+    m_mutex_soll.lock();
+    int dest_start = m_frame_start_destin;
+    int dest_end = m_frame_last_destin;
+    bool exit_status = false;
+    m_mutex_soll.unlock();
+
+    //int delta=m_frame_last_actual-m_frame_start_actual;
+
+    if(m_frame_start_actual > -1) {
+      revert_influence();
+    }
+
+    cv::Mat tmp_frame;
+    cv::Mat tmp_frame_d;
+
+    //reset neccessary?
+    if( m_frame_last_actual > dest_end )
+    {
+      soft_reset();
+    }
+    else if(m_frame_start_actual < dest_start)
+    {
+      soft_reset();
+    }
+    else if(m_frame_start_actual > dest_start)
+    {
+      soft_reset();
+    }
+
+    //startingpoint:
+    if(m_frame_start_actual == -1) {//not yet computed!
+      m_frame_start_actual = dest_start;
+    }
+
+    //endpoint:
+    if( work_size > 0 ){
+
+      if(m_frame_last_actual == -1) {//not yet computed!
+         m_frame_last_actual = dest_start;
+       }
+
+
+       Paint& interpretation = dynamic_cast<Paint&>(*m_interpretation);
+       interpretation.reset_routine(m_values_abs, m_values_fac, m_id);
+       int new_frame = interpretation.get_time_min(m_frame_last_actual,m_id);
+       std::cout<<"m_frame_last_actual "<< m_frame_last_actual<<" \n";
+
+       if( new_frame == -1){
+         //fully calculated
+         m_frame_last_actual = dest_end;
+         m_frame_start_actual = dest_start;
+       }else if(new_frame < dest_start)
+       {
+         std::cout<<"warning: in paint defined exposures don't fit to segment: "<<m_id<<" because: "<<new_frame <<" < " <<dest_start<<"\n";
+         m_frame_last_actual = dest_end;
+         m_frame_start_actual = dest_start;
+       }else if(new_frame > dest_end)
+       {
+         std::cout<<"warning: in paint defined exposures don't fit to segment: "<<m_id<<" because: "<<new_frame <<" > " <<dest_end<<"\n";
+         m_frame_last_actual = dest_end;
+         m_frame_start_actual = dest_start;
+       }
+       else{
+         //jump to frame desired by interpretation
+         m_frame_last_actual = new_frame;
+       }
+
+
+       if(m_frame_last_actual < dest_end) {
+         /*ffmpeg:
+         double frameRate = m_video.get(CV_CAP_PROP_FPS);
+         double frameTime = 1000.0 * m_frame_last_actual / frameRate;
+         */
+         //m_video.set(CV_CAP_PROP_POS_MSEC, m_frame_last_actual/*frameTime*/);
+         int endpoint = m_frame_last_actual + work_size;
+         int length = work_size;
+         if(endpoint > dest_end){
+           endpoint = dest_end;
+           length = dest_end - m_frame_last_actual;
+         }
+
+         int sign = 1;
+         m_interpretation->calc(m_id, m_frame_last_actual, length, sign, m_values_abs, m_uni_fac, m_values_fac);
+         work_size -= length;
+         m_frame_last_actual += length;
+       }
+
+    }
 
   if(m_frame_start_actual > -1) {
 
@@ -744,6 +824,7 @@ void Segment::manipulate(int start, int end, float local_i, float global_i, bool
   m_mutex_soll.lock();
   m_frame_start_destin = start;
   if(m_frame_last_destin != end && m_interpretation->get_calculation_specification() == 2){
+
     m_needs_reset = true;
   }
   m_frame_last_destin = end;
