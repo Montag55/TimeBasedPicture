@@ -73,7 +73,7 @@ void Segment::soft_reset(){
 }
 
 void Segment::revert_influence(){
-  std::cout<<"revert\n";
+  //std::cout<<"revert\n";
   //should be muted from higher levl
   float intensity = -1;
   bool skip = false;
@@ -120,7 +120,7 @@ void Segment::revert_influence(){
 }
 
 void Segment::upload_influence(){
-  std::cout<<"upload\n";
+//  std::cout<<"upload\n";
   // should be muted from above
   // intensity could be uplaoded here
   float intensity = -1;
@@ -617,22 +617,6 @@ bool Segment::interpret_one_way( int & work_size){
        m_frame_last_actual = dest_start;
      }
 
-     if(m_interpretation->getTypenumber() == 9) {
-       // std::cout<< "checking shortcut: "<< m_frame_last_actual<<"\n";
-
-       Paint& interpretation = dynamic_cast<Paint&>(*m_interpretation);
-       interpretation.reset_routine(m_values_abs, m_values_fac, m_id);
-       int new_frame = interpretation.get_time_min(m_frame_last_actual,m_id);
-
-       if( new_frame == -1){
-         m_frame_last_actual = dest_end;
-       }
-       else{
-         m_frame_last_actual = new_frame;
-       }
-       // std::cout<< "now: "<< m_frame_last_actual<<"\n";
-     }
-
      if(m_frame_last_actual < dest_end) {
        /*ffmpeg:
        double frameRate = m_video.get(CV_CAP_PROP_FPS);
@@ -694,13 +678,6 @@ bool Segment::interpret_one_way( int & work_size){
       m_frame_start_actual = dest_start;
     }
 
-    if(m_frame_start_actual < dest_start) {
-      std::cout << "a: should not happen !? \n";
-
-    }
-    else if(m_frame_start_actual > dest_start) {
-          std::cout << "b: should not happen !? \n";
-    }
     //endpoint:
     if( work_size > 0 ){
 
@@ -712,11 +689,25 @@ bool Segment::interpret_one_way( int & work_size){
        Paint& interpretation = dynamic_cast<Paint&>(*m_interpretation);
        interpretation.reset_routine(m_values_abs, m_values_fac, m_id);
        int new_frame = interpretation.get_time_min(m_frame_last_actual,m_id);
+       std::cout<<"m_frame_last_actual "<< m_frame_last_actual<<" \n";
 
        if( new_frame == -1){
+         //fully calculated
          m_frame_last_actual = dest_end;
+         m_frame_start_actual = dest_start;
+       }else if(new_frame < dest_start)
+       {
+         std::cout<<"warning: in paint defined exposures don't fit to segment: "<<m_id<<" because: "<<new_frame <<" < " <<dest_start<<"\n";
+         m_frame_last_actual = dest_end;
+         m_frame_start_actual = dest_start;
+       }else if(new_frame > dest_end)
+       {
+         std::cout<<"warning: in paint defined exposures don't fit to segment: "<<m_id<<" because: "<<new_frame <<" > " <<dest_end<<"\n";
+         m_frame_last_actual = dest_end;
+         m_frame_start_actual = dest_start;
        }
        else{
+         //jump to frame desired by interpretation
          m_frame_last_actual = new_frame;
        }
 
@@ -739,9 +730,7 @@ bool Segment::interpret_one_way( int & work_size){
          work_size -= length;
          m_frame_last_actual += length;
        }
-       else if(m_frame_last_actual > dest_end) {
-         std::cout << "b: should not happen !? \n";
-       }
+
     }
 
   if(m_frame_start_actual > -1) {

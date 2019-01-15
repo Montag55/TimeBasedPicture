@@ -98,7 +98,7 @@ void Paint::create_time_map(){
         bool color_check = false;
         for(unsigned int idx = 0; idx < m_colors.size(); idx++){
           float distance= abs(m_colors[idx][0]-tmp_px_color[0])+abs(m_colors[idx][1]-tmp_px_color[1])+abs(m_colors[idx][2]-tmp_px_color[2]);
-          if(distance<10){  //to have no artifacts in colormap, set: distance<10  .. but this might be not the solution
+          if(distance<=0){  //to have no artifacts in colormap, set: distance<10  .. but this might be not the solution
             start_border = m_start[idx];
             end_border = m_end[idx];
             color_check = true;
@@ -133,16 +133,16 @@ int Paint::get_time_min(int current, int id){
   int min = m_seg_min[id];
   std::cout<<"min: "<<std::to_string(min) <<"vs. cur "<<std::to_string(current)<<"\n";
   if(min == -1){// fully computed
-    std::cout<<"segment is read painted\n";
+    //std::cout<<"segment is read painted\n";
     return -1;
   }else if(min == current){
-    std::cout<<"simply continue\n";
+    //std::cout<<"simply continue\n";
     return current;
   }else if(min < current){
-    std::cout<<"setting segment calc frame from "<<std::to_string(current)<< " back to: "<< std::to_string(min)<<"\n";
+    //std::cout<<"setting segment calc frame from "<<std::to_string(current)<< " back to: "<< std::to_string(min)<<"\n";
     return min;
   }else if(min > current){
-    std::cout<<" shortcutting from "<<std::to_string(current)<<" to: "<< std::to_string(min)<<"\n";
+    //std::cout<<" shortcutting from "<<std::to_string(current)<<" to: "<< std::to_string(min)<<"\n";
     return min;
   }
 }
@@ -150,7 +150,7 @@ int Paint::get_time_min(int current, int id){
 void Paint::reset_routine(cv::Mat& result, cv::Mat& fac_mat, int seg_id){
 
   if(m_reset[seg_id]==true){
-    std::cout<<"do reset routine!\n";
+    //std::cout<<"do reset routine!\n";
     ////////////////
     int min= -1; // always update min
     for (unsigned int row = m_pnt_min.y; row < m_pnt_max.y; ++row) {
@@ -207,12 +207,12 @@ void Paint::reset_routine(cv::Mat& result, cv::Mat& fac_mat, int seg_id){
     ////////////////
     m_reset[seg_id]=false;
   }else{
-    std::cout<<"no reset routine!\n";
+    //std::cout<<"no reset routine!\n";
   }
 }
 
 void Paint::add_connection( int id, Segment* segment){
-  std::cout<<"add_connection from derived\n";
+  //std::cout<<"add_connection from derived\n";
   m_mutex_connections.lock();
   m_all_connections[id]=segment;
   m_mutex_connections.unlock();
@@ -370,7 +370,7 @@ void Paint::manipulate(std::shared_ptr<std::vector<ColorCoords>> colorTimes, int
   }
 
   if(update_status){
-    std::cout<<"big update\n";
+    //std::cout<<"big update\n";
     update_Mask();
     create_time_map();  //new time_map
 
@@ -389,7 +389,7 @@ void Paint::manipulate(std::shared_ptr<std::vector<ColorCoords>> colorTimes, int
     //get values when work starts!:
 
     ///////////
-    std::cout<<"soft update\n";
+  //  std::cout<<"soft update\n";
 
     cv::Mat old_time_mat= m_time_mat.clone();
     update_Mask();
@@ -400,7 +400,7 @@ void Paint::manipulate(std::shared_ptr<std::vector<ColorCoords>> colorTimes, int
     if(changes){
       //chnages available
       for (std::map<int,cv::Mat>::iterator it=m_reset_mask.begin(); it!=m_reset_mask.end(); ++it){
-        std::cout<<"multiplying diffs to Mat of Seg with id: "<<std::to_string(it->first)<<"\n";
+        //std::cout<<"multiplying diffs to Mat of Seg with id: "<<std::to_string(it->first)<<"\n";
         // cv::Mat new_time_map= m_time_mat.clone();
         cv::Mat C =it->second.mul(diff_mat);
         it->second= C;
