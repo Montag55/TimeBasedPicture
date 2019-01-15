@@ -3,12 +3,37 @@ class PointPicker {
         this.points = [];
         this.dom = document.createElement('div');
         this.dom.classList.add('pointPicker');
+
         let pick = document.createElement('button');
         pick.innerText = '+';
         this.dom.appendChild(pick);
         this.picking = false;
 
+        let togglePointView = document.createElement('input');
+        togglePointView.type = 'checkbox';
+        this.dom.appendChild(togglePointView);
+        togglePointView.style.width = '50%';
+
+        let pointCanvas = document.createElement('canvas');
+        let pointCtx = pointCanvas.getContext('2d');
+        document.querySelector('.player .center').appendChild(pointCanvas);
+        pointCanvas.style.position = 'absolute';
+        pointCanvas.style.top = '0';
+        pointCanvas.style.left = '0';
+        pointCanvas.style.width = '100%';
+        pointCanvas.width = 1920;
+        pointCanvas.height = 1080;
+
         this.dom.addEventListener('contextmenu', function (e) {e.preventDefault();});
+
+        togglePointView.addEventListener('change', function () {
+            if(togglePointView.checked){
+              console.log("heheheh");
+            }
+            else{
+              console.log("nononono")
+            }
+        });
 
         pick.addEventListener('click', (function () {
             if (this.picking) {
