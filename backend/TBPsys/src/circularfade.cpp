@@ -34,7 +34,6 @@ m_time_map{}
   m_mid = cv::Vec2f(m_mid[0] * m_base->get_width(), m_mid[1] * m_base->get_height());
   if(m_mode > 1)
     std::cout << "\t ! you fool. Now the mode = linealinear." << std::endl;
-
 }
 
 Circularfade::~Circularfade(){
@@ -59,16 +58,16 @@ void Circularfade::create_time_map(int id){
   // int seg_end = m_base->get_last_frame();
   int seg_start = m_outer_circle_start;
   int seg_end = m_outer_circle_end;
+  // std::cout << "init state \t start: " << m_outer_circle_start << "\t end: " << m_outer_circle_end << std::endl;
 
   for (unsigned int row = m_pnt_min.y; row < m_pnt_max.y; ++row) {
-    //ptr:
-    float* ptr_map            =  (float*) pixel_times.ptr(row);
+
+    float* ptr_map = (float*) pixel_times.ptr(row);
 
     for (unsigned int col = m_pnt_min.x; col < m_pnt_max.x; col++) {
-      float *uc_pixel_map           = ptr_map;
-      //
-      float distance = sqrt(pow((float)col - m_mid[0], 2) + pow((float)row - m_mid[1], 2));
 
+      float *uc_pixel_map = ptr_map;
+      float distance = sqrt(pow((float)col - m_mid[0], 2) + pow((float)row - m_mid[1], 2));
       float null_null = sqrt(pow(m_pnt_min.x - m_mid[0], 2) + pow(m_pnt_min.y - m_mid[1], 2));
       float null_max = sqrt(pow(m_pnt_min.x - m_mid[0], 2) + pow(m_pnt_max.y - m_mid[1], 2));
       float max_null = sqrt(pow(m_pnt_max.x - m_mid[0], 2) + pow(m_pnt_min.y - m_mid[1], 2));
@@ -84,39 +83,42 @@ void Circularfade::create_time_map(int id){
       else if(max_distance < max_max)
         max_distance = max_max;
 
-      float start_border=  -1;
-      float end_border= -1;
+      float start_border = -1;
+      float end_border = -1;
       if(m_fade_direction){
         if(distance < m_radius){
-          start_border =  m_start;
+          start_border = m_start;
           end_border = m_end;
+          // std::cout << "dis < rad \t\t start_b: " << start_border << "\t end_b: " << end_border << std::endl;
         }
         else{
             max_distance -= m_radius;
             distance -= m_radius;
-            if(m_mode==0){
-              //power
+            // std::cout << "before dis > rad \t dis: " << distance << "\t max_dis: " << max_distance << std::endl;
+
+            if(m_mode == 0 /*power*/){
               max_distance = pow(max_distance, m_parameter);
               distance = pow(distance, m_parameter);
             }
-            else if(m_mode==1){
-
-              //sigmoid
-              distance = utils::sigmoid(distance, m_parameter, max_distance/2);
-              float min_clip = utils::sigmoid(0, m_parameter, max_distance/2);
-              max_distance = utils::sigmoid(max_distance, m_parameter, max_distance/2);
+            else if(m_mode == 1 /*sigmoid*/){
+              distance = utils::sigmoid(distance, m_parameter, max_distance / 2);
+              float min_clip = utils::sigmoid(0, m_parameter, max_distance / 2);
+              max_distance = utils::sigmoid(max_distance, m_parameter, max_distance / 2);
               max_distance -= min_clip;
               distance -= min_clip;
             }
-            else{
-              //default: linear
+            else /*linear*/{
               max_distance = pow(max_distance, 1);
               distance = pow(distance, 1);
             }
-            //write
+
+            // std::cout << "after dis > rad \t dis: " << distance << "\t max_dis: " << max_distance << std::endl;
+
+            // std::cout << "b dis > rad \t\t start_b: " << start_border << "\t end_b: " << end_border << std::endl;
             float fade_fac = distance / max_distance;
-            start_border= fade_fac * (seg_start - m_start) + m_start;
+            start_border = fade_fac * (seg_start - m_start) + m_start;
             end_border = fade_fac * (seg_end - m_end) + m_end;
+            std::cout << "a dis > rad \t\t start_b: " << start_border << "\t end_b: " << end_border << std::endl;
           }
       }
       else{
@@ -126,34 +128,34 @@ void Circularfade::create_time_map(int id){
         }
         else{
           max_distance = m_radius;
-          distance      = m_radius - distance;
-          if(m_mode == 0){
-            //power
+          distance = m_radius - distance;
+
+          if(m_mode == 0 /*power*/){
             max_distance = pow(max_distance, m_parameter);
             distance = pow(distance, m_parameter);
           }
-          else if(m_mode == 1){
-            //sigmoid
-            distance = utils::sigmoid(distance, m_parameter, max_distance/2);
-            float min_clip = utils::sigmoid(0, m_parameter, max_distance/2);
-            max_distance = utils::sigmoid(max_distance, m_parameter, max_distance/2);
+          else if(m_mode == 1 /*sigmoid*/){
+            distance = utils::sigmoid(distance, m_parameter, max_distance / 2);
+            float min_clip = utils::sigmoid(0, m_parameter, max_distance / 2);
+            max_distance = utils::sigmoid(max_distance, m_parameter, max_distance / 2);
             max_distance -= min_clip;
             distance -= min_clip;
           }
-          else{
-            //default: linear
+          else /*linear*/{
             max_distance = pow(max_distance, 1);
             distance = pow(distance, 1);
           }
+
+          //wirte
           float fade_fac = distance / max_distance;
-          start_border= fade_fac * (seg_start - m_start) + m_start;
+          start_border = fade_fac * (seg_start - m_start) + m_start;
           end_border = fade_fac * (seg_end - m_end) + m_end;
         }
       }
 
       uc_pixel_map[0] = start_border;
       uc_pixel_map[1] = end_border;
-      ptr_map     += 2;
+      ptr_map += 2;
     }
   }
   m_time_map[id] = pixel_times;
@@ -162,7 +164,7 @@ void Circularfade::create_time_map(int id){
 
 void Circularfade::calc(int id, int start, int length, int sign, cv::Mat& result, float& factor, cv::Mat& fac_mat) {
   auto start_time = std::chrono::high_resolution_clock::now();
-
+  std::cout<<"here0\n";
   // int seg_start = m_base->get_seg_start(id);
   // int seg_end = m_base->get_seg_end(id);
   // int seg_start = m_base->get_start_frame();
@@ -170,12 +172,18 @@ void Circularfade::calc(int id, int start, int length, int sign, cv::Mat& result
   int seg_start = m_outer_circle_start;
   int seg_end = m_outer_circle_end;
 
-
   cv::Mat tmp_frame;
   m_video->set( CV_CAP_PROP_POS_MSEC, start/*frameTime*/);
+  std::cout<<"here1\n";
+
   if( start == seg_start )
     create_time_map(id);
+  std::cout<<"here2\n";
+  std::cout<<"frame: "<< start<<"\n";
+
   for(int i = 0; i < length; i++){
+    std::cout<<"herei "<< i<<"\n";
+
     if(start + i < m_offset || (start - m_offset + i) % (m_stride + 1) != 0 ){
       m_video->grab();
     }
@@ -259,10 +267,7 @@ void Circularfade::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& cur
 void Circularfade::manipulate(int start, int end, int outer_circle_start, int outer_circle_end, int mode, cv::Vec2f mid, float radius, bool fade_direction, float parameter, int offset, int stride){
   bool update_status = false;
 
-  std::cout << "mid " << mid << std::endl;
   mid = cv::Vec2f(mid[0] * m_base->get_width(), mid[1] * m_base->get_height());
-  std::cout << "mid " << mid << std::endl;
-  std::cout << "base " << m_base->get_width() << ", " << m_base->get_height() << std::endl;
 
   if(m_start != start){
     m_start = start;
@@ -292,6 +297,7 @@ void Circularfade::manipulate(int start, int end, int outer_circle_start, int ou
     update_status = true;
   }
   if(m_radius != radius){
+    std::cout << radius << "; ->"<< m_radius << std::endl;
     m_radius = radius;
     update_status = true;
   }
