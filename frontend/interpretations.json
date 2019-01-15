@@ -241,11 +241,9 @@
                 "step": 1
             },
             {
-                "name": "mode",
-                "type": "number_slider",
-                "min": 0,
-                "max": 1,
-                "step": 1
+                "name": "modus",
+                "type": "select",
+                "options": ["power", "sigmoid", "linear"]
             },
             {
                 "name": "pntx",
