@@ -33,7 +33,7 @@ m_seg_ist{}
     m_end.push_back((*colorTimes)[i].end);
   }
   m_type                  = 9; //paint
-  m_calc_specification    = 2; //once
+  m_calc_specification    = 3; //new
   m_upload_specification  = 1; //with fac mat
   create_time_map();
 }
