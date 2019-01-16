@@ -73,7 +73,8 @@ let Masking = (function () {
             context.fillRect(downPos.x, downPos.y, pos.x - downPos.x, pos.y - downPos.y);
         } else if (active === 1) {
             context.beginPath();
-            context.arc(pos.x, pos.y, 20, 0, 2 * Math.PI);
+            //context.arc(pos.x, pos.y, 20, 0, 2 * Math.PI);
+            aliasedCircle(context, pos.x, pos.y, 20);
             context.fill();
         }
         
