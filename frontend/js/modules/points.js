@@ -28,7 +28,7 @@ class PointPicker {
         pointCanvas.style.background = 'transparent';
         pointCanvas.style.display = 'block';
         pointCanvas.style.pointerEvents = 'none';
-        pointCanvas.style.opacity = 1.0;
+        pointCanvas.style.opacity = 0.75;
         this.pointCanvas = pointCanvas;
         this.pointCtx = pointCtx;
 
@@ -109,22 +109,13 @@ class PointPicker {
         this.pointCtx.clearRect(0, 0, this.pointCanvas.width, this.pointCanvas.height);
         this.points.forEach((function (p) {
             let img = document.getElementById('bla');
-            this.pointCtx.drawImage(img, p.x * this.pointCanvas.width, p.y * this.pointCanvas.height, 100, 100);
 
-            // this.pointCtx.beginPath();
-            // this.pointCtx.fillStyle = 'red';
-            // this.pointCtx.arc(p.x * this.pointCanvas.width, p.y * this.pointCanvas.height, 30, 0, 2 *  Math.PI);
-            // this.pointCtx.fill();
-// 
-            // this.pointCtx.beginPath();
-            // this.pointCtx.fillStyle = 'green';
-            // this.pointCtx.arc(p.x * this.pointCanvas.width, p.y * this.pointCanvas.height, 20, 0, 2 *  Math.PI);
-            // this.pointCtx.fill();
-// 
-            // this.pointCtx.beginPath();
-            // this.pointCtx.fillStyle = 'blue';
-            // this.pointCtx.arc(p.x * this.pointCanvas.width, p.y * this.pointCanvas.height, 10, 0, 2 *  Math.PI);
-            // this.pointCtx.fill();
+            this.pointCtx.beginPath();
+            this.pointCtx.fillStyle = 'red';
+            this.pointCtx.font = "bold 90px Arial";
+            this.pointCtx.textBaseline = "middle"; 
+            this.pointCtx.textAlign = "center";
+            this.pointCtx.fillText("+", p.x * this.pointCanvas.width, p.y * this.pointCanvas.height);
         }).bind(this));
     }
 

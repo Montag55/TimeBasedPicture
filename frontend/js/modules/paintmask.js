@@ -46,14 +46,17 @@ class PaintMask {
                 this.context.fillStyle = this.activeColor;
                 this.context.beginPath();
                 let p = this.getScale({x: e.pageX, y: e.pageY});
-                this.context.arc(p.x, p.y, this.brushSize.value, 0, 2 * Math.PI);
+                // this.context.arc(p.x, p.y, this.brushSize.value, 0, 2 * Math.PI);
+                this.aliasedCircle(this.context, p.x, p.y, this.brushSize.value);
                 this.context.fill();
             } else if (this.right) {
                 this.change = true;
                 this.context.globalCompositeOperation = 'destination-out';
                 this.context.beginPath();
                 let p = this.getScale({x: e.pageX, y: e.pageY});
-                this.context.arc(p.x, p.y, this.brushSize.value, 0, Math.PI * 2);
+                // this.context.arc(p.x, p.y, this.brushSize.value, 0, Math.PI * 2);
+                this.aliasedCircle(this.context, p.x, p.y, this.brushSize.value);
+
                 this.context.fill();
             }
         }).bind(this));
@@ -121,6 +124,25 @@ class PaintMask {
             this.update();
         }).bind(this));
     }
+    
+    aliasedCircle(ctx, xc, yc, r) {  // NOTE: for fill only!
+        xc = parseInt(xc);
+        yc = parseInt(yc);
+        r = parseInt(r);
+        var x = r, y = 0, cd = 0;
+      
+        // middle line
+        ctx.rect(xc - x, yc, r<<1, 1);
+      
+        while (x > y) {
+          cd -= (--x) - (++y);
+          if (cd < 0) cd += x++;
+          ctx.rect(xc - y, yc - x, y<<1, 1);    // upper 1/4
+          ctx.rect(xc - x, yc - y, x<<1, 1);    // upper 2/4
+          ctx.rect(xc - x, yc + y, x<<1, 1);    // lower 3/4
+          ctx.rect(xc - y, yc + x, y<<1, 1);    // lower 4/4
+        }
+      }
 
     getScale(pos) {
         let rect = this.canvas.getBoundingClientRect();

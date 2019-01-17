@@ -120,8 +120,6 @@ body {
     z-index: 0;
 }
 
-
-
 .video {
     height: var(--video-height);
     overflow: hidden;

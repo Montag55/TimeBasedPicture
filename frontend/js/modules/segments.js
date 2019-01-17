@@ -70,14 +70,16 @@ let Segments = (function () {
                 maskCtx.fillStyle = 'white';
                 maskCtx.beginPath();
                 let p = getScale({x: e.pageX, y: e.pageY});
-                maskCtx.arc(p.x, p.y, brushSize.value, 0, 2 * Math.PI);
+                //maskCtx.arc(p.x, p.y, brushSize.value, 0, 2 * Math.PI);
+                aliasedCircle(maskCtx, p.x, p.y, brushSize.value);
                 maskCtx.fill();
             } else if (right) {
                 change = true;
                 maskCtx.globalCompositeOperation = 'destination-out';
                 maskCtx.beginPath();
                 let p = getScale({x: e.pageX, y: e.pageY});
-                maskCtx.arc(p.x, p.y, brushSize.value, 0, Math.PI * 2);
+                // maskCtx.arc(p.x, p.y, brushSize.value, 0, Math.PI * 2);
+                aliasedCircle(maskCtx, p.x, p.y, brushSize.value);
                 maskCtx.fill();
             }
         });
@@ -111,6 +113,26 @@ let Segments = (function () {
 
         window.addEventListener('mousemove', mousemove);
     }
+
+    function aliasedCircle(ctx, xc, yc, r) {  // NOTE: for fill only!
+        xc = parseInt(xc);
+        yc = parseInt(yc);
+        r = parseInt(r);
+
+        var x = r, y = 0, cd = 0;
+      
+        // middle line
+        ctx.rect(xc - x, yc, r<<1, 1);
+      
+        while (x > y) {
+          cd -= (--x) - (++y);
+          if (cd < 0) cd += x++;
+          ctx.rect(xc - y, yc - x, y<<1, 1);    // upper 1/4
+          ctx.rect(xc - x, yc - y, x<<1, 1);    // upper 2/4
+          ctx.rect(xc - x, yc + y, x<<1, 1);    // lower 3/4
+          ctx.rect(xc - y, yc + x, y<<1, 1);    // lower 4/4
+        }
+      }
 
     function getScale(pos) {
         let rect = mask.getBoundingClientRect();
