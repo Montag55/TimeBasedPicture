@@ -38,14 +38,14 @@ int Interpretation::get_stride()
 }
 
 Interpretation::~Interpretation(){
-  std::cout << "~Interpretation \n";
+  // std::cout << "~Interpretation \n";
   // m_base = NULL;
   // m_video = NULL;
   // delete m_all_connections;
 }
 
 void Interpretation::add_connection( int id, Segment* segment){
-  std::cout<<"add_connection from meta\n";
+  // std::cout<<"add_connection from meta\n";
   m_mutex_connections.lock();
   m_all_connections[id]=segment;
   m_mutex_connections.unlock();

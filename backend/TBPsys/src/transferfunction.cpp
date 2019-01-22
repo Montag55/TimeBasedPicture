@@ -25,7 +25,7 @@ Transferfunction::~Transferfunction(){
 }
 
 int Transferfunction::getTypenumber(){
-  return 1;
+  return m_type;
 }
 
 int Transferfunction::get_calculation_specification(){
@@ -45,8 +45,11 @@ void Transferfunction::calc(int id, int start, int length, int sign, cv::Mat& re
 
   if(start == seg_start){
     // m_weight_map[id] = utils::pointsToWeights(m_points, seg_end - seg_start);
+    //std::cout<<"creating vec with time\n";
     m_weight_map[id] = utils::pointsToWeightsIntegral(m_points, seg_end - seg_start);
-  }
+    ///std::cout<<(*m_weight_map[id])<<"\n";
+
+    }
 
   for(int i = 0; i<length; i++){
     if(start + i < m_offset || (start - m_offset + i) % (m_stride + 1) != 0 ){
@@ -60,7 +63,7 @@ void Transferfunction::calc(int id, int start, int length, int sign, cv::Mat& re
       tmp_frame.convertTo(tmp_frame_d, m_img_type);   //do this for the whole video right at the start!?
 
       float weight = 0;
-      int weight_index = start - seg_start + i - m_start_pnt;
+      int weight_index = start - seg_start + i;
       if( weight_index >= 0 && weight_index < m_weight_map[id]->size() ){
         weight = (*m_weight_map[id])[weight_index];
       }

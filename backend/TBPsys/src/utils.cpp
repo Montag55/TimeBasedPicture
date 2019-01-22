@@ -222,6 +222,7 @@ namespace utils {
           float kasten  = (pnt_end_x - pnt_start_x) * pnt_start_y;
           float dreieck = 0.5 * (pnt_end_x - pnt_start_x) *(pnt_end_y -pnt_start_y);
           tmp_storage += kasten + dreieck;
+          //std::cout<<"w: "<<tmp_storage<<"\n";
           weights->push_back(tmp_storage);
           tmp_storage = 0;
           frame++;
@@ -236,7 +237,7 @@ namespace utils {
         tmp_storage += kasten + dreieck;
       }
     }
-    
+
     return weights;
   }
 };
