@@ -839,7 +839,6 @@ void Segment::manipulate(int start, int end, float local_i, float global_i, bool
   m_mutex_soll.lock();
   m_frame_start_destin = start;
   if(m_frame_last_destin != end && m_interpretation->get_calculation_specification() == 2){
-
     m_needs_reset = true;
   }
   m_frame_last_destin = end;
@@ -847,6 +846,9 @@ void Segment::manipulate(int start, int end, float local_i, float global_i, bool
   m_intensity_global_destin = global_i;
   m_hasMask_destin = hasMask;
   m_mutex_soll.unlock();
+  m_mutex_state.lock();
+  m_percent = 0;
+  m_mutex_state.unlock();
   ready_to_work();
 }
 
