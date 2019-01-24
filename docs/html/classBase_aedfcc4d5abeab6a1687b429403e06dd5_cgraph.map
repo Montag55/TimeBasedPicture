@@ -1,0 +1,7 @@
+<map id="Base::Base" name="Base::Base">
+<area shape="rect" id="node2" href="$classBase.html#ac75cc776425afcd585f5e9b4e065538c" title="Base::thread_calc_loop" alt="" coords="144,31,303,57"/>
+<area shape="rect" id="node3" href="$classBase.html#a60001aeadc006b611f30dc3435a601ac" title="Base::continue_work" alt="" coords="351,5,495,32"/>
+<area shape="rect" id="node5" href="$classBase.html#aa90394fc2c549f26549937e607295d4b" title="Base::save" alt="" coords="568,56,656,83"/>
+<area shape="rect" id="node4" href="$classBase.html#a8bfa79e619ecf88b57e641ffe3b78222" title="Base::update_result" alt="" coords="543,5,681,32"/>
+<area shape="rect" id="node6" href="$classBase.html#ae9f38bfed38991aaa5b412e94282f00b" title="Base::get_result" alt="" coords="729,56,847,83"/>
+</map>

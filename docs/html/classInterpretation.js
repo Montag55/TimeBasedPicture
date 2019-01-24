@@ -1,0 +1,28 @@
+var classInterpretation =
+[
+    [ "Interpretation", "classInterpretation.html#ab8a11f111ae8d83209332794536e6a37", null ],
+    [ "~Interpretation", "classInterpretation.html#a5247698ac1220c81b3cb334aa66f63cf", null ],
+    [ "get_id", "classInterpretation.html#af0e09385602117a8b0493d78dc0b0b6d", null ],
+    [ "get_offset", "classInterpretation.html#acf191409acf5ae90323221e201d160ca", null ],
+    [ "get_stride", "classInterpretation.html#a228d2f028e59c46635e26c7b46bf3cce", null ],
+    [ "getTypenumber", "classInterpretation.html#ac9b3ec4d3ffd9119ca402a03e0935e09", null ],
+    [ "get_upload_specification", "classInterpretation.html#aa3fccd786f873064204a44a982fd44b2", null ],
+    [ "get_calculation_specification", "classInterpretation.html#acb12cb00d4209e76e9be4808268af7a1", null ],
+    [ "calc", "classInterpretation.html#add1b9f002f40483467ae930a1cf902e9", null ],
+    [ "add_connection", "classInterpretation.html#a3f81d2dd7d90881a7b56266ccb0f6e47", null ],
+    [ "delete_connection", "classInterpretation.html#a0e7994dcd6f7f77b43b4114147943164", null ],
+    [ "update_connections", "classInterpretation.html#a75b3bf5e927b167c89e90194ab227c6c", null ],
+    [ "trigger_connections", "classInterpretation.html#ad56f3aaa49caf43de5be020cdce6a746", null ],
+    [ "m_offset", "classInterpretation.html#a927470f5f5e8c0698c1e0add31085e2f", null ],
+    [ "m_stride", "classInterpretation.html#ac9244f48fe67a1d0f9923bb2c03e4f13", null ],
+    [ "m_video", "classInterpretation.html#a2c96b54f43dc48127f053b1f4f9f52e6", null ],
+    [ "m_img_type", "classInterpretation.html#aff3eb296f5ad845ac744a4a715a5dfa1", null ],
+    [ "m_id", "classInterpretation.html#a8f00a7b18836fe5ed191f5ba884ffe85", null ],
+    [ "m_type", "classInterpretation.html#a1610d9d8e431e67aaf9271147fc77835", null ],
+    [ "m_upload_specification", "classInterpretation.html#aff5e842ea8836309ab6f76835a76d9de", null ],
+    [ "m_calc_specification", "classInterpretation.html#ae7473e8058de90b00b6e1917dc604281", null ],
+    [ "m_recompute", "classInterpretation.html#a956e04497f7c30cd5fa8f74abaef4e25", null ],
+    [ "m_mutex_connections", "classInterpretation.html#ab82a1672ea48b517eb1cb4e5d91cf98f", null ],
+    [ "m_base", "classInterpretation.html#a436603abb164ff2e3acab9159c30c986", null ],
+    [ "m_all_connections", "classInterpretation.html#afb4fb25a749c3a033a0b62b2a5a3220d", null ]
+];

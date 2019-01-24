@@ -1,0 +1,6 @@
+<map id="BoostColor::compute_frame" name="BoostColor::compute_frame">
+<area shape="rect" id="node2" href="$namespaceutils.html#a909f9ecc5d4895e83c0294110b8f1b21" title="utils::CIE76" alt="" coords="203,5,293,32"/>
+<area shape="rect" id="node3" href="$namespaceutils.html#a689d40880b2f8d04224ebaa556ae0f05" title="utils::CIE94" alt="" coords="203,56,293,83"/>
+<area shape="rect" id="node4" href="$namespaceutils.html#a5bc71a83300205797b1c18aeb417cd2c" title="utils::dE2000" alt="" coords="199,107,297,133"/>
+<area shape="rect" id="node5" href="$namespaceutils.html#a23ac3af9da7d51fd9d106917982aaf63" title="utils::rgb2lab" alt="" coords="200,157,296,184"/>
+</map>

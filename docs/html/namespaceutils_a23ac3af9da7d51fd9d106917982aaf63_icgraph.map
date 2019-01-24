@@ -1,0 +1,10 @@
+<map id="utils::rgb2lab" name="utils::rgb2lab">
+<area shape="rect" id="node2" href="$classBoostColor.html#a6942d05ca4dcd44c3c954ce5a9df17a1" title="BoostColor::compute\l_frame" alt="" coords="159,5,305,47"/>
+<area shape="rect" id="node4" href="$classReduce.html#af68a1b75f8f9648c0298837b1f409767" title="Reduce::compute_frame" alt="" coords="149,71,315,98"/>
+<area shape="rect" id="node6" href="$classOverplott.html#a77ef2f7595d92cd1122387d72f5388fe" title="Overplott::compute\l_frame" alt="" coords="165,123,299,164"/>
+<area shape="rect" id="node8" href="$classBoost.html#aa83855f68992d6397db21ec532bce03b" title="Boost::compute_frame" alt="" coords="155,189,309,215"/>
+<area shape="rect" id="node3" href="$classBoostColor.html#ae767d06b7b174cf92bcacdb5bbfc575f" title="BoostColor::calc" alt="" coords="363,13,481,39"/>
+<area shape="rect" id="node5" href="$classReduce.html#aec7d318e4c9336dff91a90df21b0adb9" title="Reduce::calc" alt="" coords="373,71,471,98"/>
+<area shape="rect" id="node7" href="$classOverplott.html#a6614ddc1fd81495e383cec44b8770fcf" title="Overplott::calc" alt="" coords="369,130,475,157"/>
+<area shape="rect" id="node9" href="$classBoost.html#a95ef3062f26423b2a992f70ed67f9fd4" title="Boost::calc" alt="" coords="378,189,466,215"/>
+</map>
