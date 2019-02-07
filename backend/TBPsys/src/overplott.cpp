@@ -135,14 +135,8 @@ void Overplott::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& curren
         const float *uc_pixel_ref     = ptr_ref;
         const float *uc_pixel_current = ptr_current;
 
-        //current frame != ref frame -> result frame/ result fac
-        // float distance_RGB = sqrt(pow(uc_pixel_ref[0] - uc_pixel_current[0], 2) +
-        //                           pow(uc_pixel_ref[1] - uc_pixel_current[1], 2) +
-        //                           pow(uc_pixel_ref[2] - uc_pixel_current[2], 2));
 
         float distance_RGB = -1;
-        cv::Scalar ref = utils::rgb2lab(uc_pixel_ref[0], uc_pixel_ref[1], uc_pixel_ref[2]);
-        cv::Scalar current = utils::rgb2lab(uc_pixel_current[0], uc_pixel_current[1], uc_pixel_current[2]);
 
         if(m_modi == 0){
           distance_RGB = sqrt(pow(uc_pixel_ref[0] - uc_pixel_current[0], 2) +
@@ -152,12 +146,18 @@ void Overplott::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& curren
           distance_RGB = abs(((uc_pixel_ref[0]+uc_pixel_ref[1] + uc_pixel_ref[2])/3)-((uc_pixel_current[0]+uc_pixel_current[1] + uc_pixel_current[2])/3));
 
         }else if(m_modi == 2){
+          cv::Scalar ref = utils::rgb2lab(uc_pixel_ref[0], uc_pixel_ref[1], uc_pixel_ref[2]);
+          cv::Scalar current = utils::rgb2lab(uc_pixel_current[0], uc_pixel_current[1], uc_pixel_current[2]);
           distance_RGB = utils::dE2000(ref, current, 0.1f, 100.0f, 100.0f);
         }
         else if(m_modi == 3){
+          cv::Scalar ref = utils::rgb2lab(uc_pixel_ref[0], uc_pixel_ref[1], uc_pixel_ref[2]);
+          cv::Scalar current = utils::rgb2lab(uc_pixel_current[0], uc_pixel_current[1], uc_pixel_current[2]);
           distance_RGB = utils::CIE76(ref, current, 1.0f, 0.0f, 0.0f);
         }
         else if(m_modi == 4){
+          cv::Scalar ref = utils::rgb2lab(uc_pixel_ref[0], uc_pixel_ref[1], uc_pixel_ref[2]);
+          cv::Scalar current = utils::rgb2lab(uc_pixel_current[0], uc_pixel_current[1], uc_pixel_current[2]);
           distance_RGB = utils::CIE94(ref, current, 5.0f, 100.0f, 100.0f);
         }
 
@@ -166,7 +166,7 @@ void Overplott::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& curren
             uc_pixel_res[0] = uc_pixel_current[0];
             uc_pixel_res[1] = uc_pixel_current[1];
             uc_pixel_res[2] = uc_pixel_current[2];
-            uc_pixel_fac[0] = 1;
+            uc_pixel_fac[0] = 1;//necessary if sign > 0
             uc_pixel_fac[1] = 1;
             uc_pixel_fac[2] = 1;
         }
@@ -182,8 +182,9 @@ void Overplott::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& curren
 }
 
 void Overplott::late_merge(cv::Mat& result, cv::Mat& facs, cv::Mat& tmp_result){
+
   cv::Mat mask;
-  mask = (result == 0);
+  mask = (result == 0); // only update new parts
   mask.convertTo(mask, CV_32FC3);
   result      += tmp_result.mul(mask)/(float)255;
 

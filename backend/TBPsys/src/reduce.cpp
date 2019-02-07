@@ -94,8 +94,6 @@ void Reduce::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& current_f
 
 
       float distance_RGB = -1;
-      cv::Scalar ref = utils::rgb2lab(uc_pixel_ref[0], uc_pixel_ref[1], uc_pixel_ref[2]);
-      cv::Scalar current = utils::rgb2lab(uc_pixel_current[0], uc_pixel_current[1], uc_pixel_current[2]);
 
       if(m_modi == 0){
         distance_RGB = sqrt(pow(uc_pixel_ref[0] - uc_pixel_current[0], 2) +
@@ -106,15 +104,18 @@ void Reduce::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& current_f
         std::cout << "no monochrome yet" << std::endl;
       }
       else if(m_modi == 2){
-        distance_RGB = utils::dE2000(ref, current, 0.1f, 100.0f, 100.0f);
-      }
-      else if(m_modi == 2){
+        cv::Scalar ref = utils::rgb2lab(uc_pixel_ref[0], uc_pixel_ref[1], uc_pixel_ref[2]);
+        cv::Scalar current = utils::rgb2lab(uc_pixel_current[0], uc_pixel_current[1], uc_pixel_current[2]);
         distance_RGB = utils::dE2000(ref, current, 0.1f, 100.0f, 100.0f);
       }
       else if(m_modi == 3){
+        cv::Scalar ref = utils::rgb2lab(uc_pixel_ref[0], uc_pixel_ref[1], uc_pixel_ref[2]);
+        cv::Scalar current = utils::rgb2lab(uc_pixel_current[0], uc_pixel_current[1], uc_pixel_current[2]);
         distance_RGB = utils::CIE76(ref, current, 1.0f, 0.0f, 0.0f);
       }
       else if(m_modi == 4){
+        cv::Scalar ref = utils::rgb2lab(uc_pixel_ref[0], uc_pixel_ref[1], uc_pixel_ref[2]);
+        cv::Scalar current = utils::rgb2lab(uc_pixel_current[0], uc_pixel_current[1], uc_pixel_current[2]);
         distance_RGB = utils::CIE94(ref, current, 5.0f, 100.0f, 100.0f);
       }
 
@@ -124,19 +125,20 @@ void Reduce::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& current_f
           uc_pixel_res[0] += (m_threshhold-distance_RGB)*uc_pixel_current[0];
           uc_pixel_res[1] += (m_threshhold-distance_RGB)*uc_pixel_current[1];
           uc_pixel_res[2] += (m_threshhold-distance_RGB)*uc_pixel_current[2];
-          uc_pixel_fac[0] += (m_threshhold-distance_RGB)*1;
-          uc_pixel_fac[1] += (m_threshhold-distance_RGB)*1;
-          uc_pixel_fac[2] += (m_threshhold-distance_RGB)*1;
+          uc_pixel_fac[0] += (m_threshhold-distance_RGB);
+          uc_pixel_fac[1] += (m_threshhold-distance_RGB);
+          uc_pixel_fac[2] += (m_threshhold-distance_RGB);
         }
         else {
           uc_pixel_res[0] -= (m_threshhold-distance_RGB)*uc_pixel_current[0];
           uc_pixel_res[1] -= (m_threshhold-distance_RGB)*uc_pixel_current[1];
           uc_pixel_res[2] -= (m_threshhold-distance_RGB)*uc_pixel_current[2];
-          uc_pixel_fac[0] -= (m_threshhold-distance_RGB)*1;
-          uc_pixel_fac[1] -= (m_threshhold-distance_RGB)*1;
-          uc_pixel_fac[2] -= (m_threshhold-distance_RGB)*1;
+          uc_pixel_fac[0] -= (m_threshhold-distance_RGB);
+          uc_pixel_fac[1] -= (m_threshhold-distance_RGB);
+          uc_pixel_fac[2] -= (m_threshhold-distance_RGB);
         }
       }
+
 
       //shift ptr:
       ptr_res     += m_ptr_delta;
