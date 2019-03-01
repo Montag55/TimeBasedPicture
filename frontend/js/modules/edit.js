@@ -26,6 +26,8 @@ let Edit = (function () {
                 return;
             }
             Interpretations.connect(active, select.value);
+            segment = Segments.getSegment(active);
+            segment.interpretation = select.value;
         });
     }
 
@@ -38,6 +40,7 @@ let Edit = (function () {
             // local_i = segment.local_i;
             global_i.value = segment.global_i;
             local_i.value  = segment.local_i;
+            select.value = segment.interpretation || -1;
             edit_id = id;
             name.innerText = 'segment_' + id;
             active = id;

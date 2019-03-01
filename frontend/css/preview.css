@@ -284,6 +284,7 @@
 .preview .image img {
     position: relative;
     width: 100%;
+    min-height: 21vw;
     display: block;
     background-color: black;
     z-index: 10;

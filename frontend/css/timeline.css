@@ -467,6 +467,13 @@ body {
     left: 8vh;
 }
 
+.main .segment .block .spinner .percent {
+    position: absolute;
+    left: 10vh;
+    color: #fafafa;
+    line-height: 3vh;
+}
+
 @-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
 @keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
 
