@@ -39,6 +39,7 @@
     --font-defocus-color: var(--gray-300);
     --font-focus-color: var(--gray-50);
     --font-color: var(--gray-50);
+    --font-color: #ffffff;
     --font-color-transparent: rgba(0, 0, 0, 0.6);
 
     --menu-font-size: calc(var(--scroll-x-height) * 0.75);

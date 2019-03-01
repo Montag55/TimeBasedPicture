@@ -167,13 +167,13 @@
 }
 
 .preview .aside h1 {
-    font-weight: lighter !important;
+    font-weight: 200 !important;
     margin: 0.1vh;
     font-size: 1.5vh;
 }
 
 .preview .aside h2 {
-    font-weight: lighter !important;
+    font-weight: 200 !important;
     font-size: 1.5vh;
 }
 

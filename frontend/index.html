@@ -4,15 +4,18 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <title>Document</title>
+        <title>TBP - Time Based Pictures</title>
         <link rel="stylesheet" href="css/vars.css">
         <link rel="stylesheet" href="css/timeline.css">
         <link rel="stylesheet" href="css/preview.css">
+        <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700,900" rel="stylesheet">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
     </head>
     <body ondragstart="return false;" ondrop="return false;">
         <div class="top-bar">
-            <div class="open">Open</div>
+            <!-- <div class="open">Open</div> -->
+            <div>File</div>
+            <div>Edit</div>
             <div>About</div>
             <div>?</div>
         </div>
@@ -20,7 +23,7 @@
             <div class="aside border-out">
                 <div class="tab-buttons">
                     <div class="tab-button">
-                        <i class="fas fa-puzzle-piece"></i>
+                        <i class="fas fa-clone"></i>
                     </div>
                     <div class="tab-button">
                         <i class="fas fa-project-diagram"></i>
@@ -166,8 +169,7 @@
                     </div>
                     <div class="video">
                         <div class="add">
-                            <!-- <i class="fas fa-plus"></i> SEGMENT -->
-                            Add Segment
+                            <b>+</b> Add Segment
                         </div>
                     </div>
 
@@ -217,68 +219,241 @@
                 </div>
             </div>
         </div>
-        <div class="overlay">
-            <div>
-                    <svg aria-hidden="true" data-prefix="fas" data-icon="th" class="svg-inline--fa fa-th fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M149.333 56v80c0 13.255-10.745 24-24 24H24c-13.255 0-24-10.745-24-24V56c0-13.255 10.745-24 24-24h101.333c13.255 0 24 10.745 24 24zm181.334 240v-80c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24h101.333c13.256 0 24.001-10.745 24.001-24zm32-240v80c0 13.255 10.745 24 24 24H488c13.255 0 24-10.745 24-24V56c0-13.255-10.745-24-24-24H386.667c-13.255 0-24 10.745-24 24zm-32 80V56c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24h101.333c13.256 0 24.001-10.745 24.001-24zm-205.334 56H24c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24h101.333c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24zM0 376v80c0 13.255 10.745 24 24 24h101.333c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H24c-13.255 0-24 10.745-24 24zm386.667-56H488c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H386.667c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24zm0 160H488c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H386.667c-13.255 0-24 10.745-24 24v80c0 13.255 10.745 24 24 24zM181.333 376v80c0 13.255 10.745 24 24 24h101.333c13.255 0 24-10.745 24-24v-80c0-13.255-10.745-24-24-24H205.333c-13.255 0-24 10.745-24 24z"></path></svg>                <p>TimeBasePictures</p>
+
+        <div class="splash">
+            <div class="logo">
+                <i class="fas fa-clock c1"></i>
+                <i class="fas fa-circle c2"></i>
+                <i class="fas fa-circle c3"></i>
             </div>
+            <h1>Time Based Pictures</h1>
+            <div class="loader"></div>
         </div>
         <style>
-            .overlay {
-                position: fixed;
+            .splash {
+                position: absolute;
+                top: 0;
+                left: 0;
+                z-index: 99;
                 width: 100%;
                 height: 100%;
-                background-color: #212121;
-                z-index: 999;
-                opacity: 1;
-                transition: opacity 300ms ease-in;
+                /* background: linear-gradient(to bottom right, #8a2387, #e94057, #f27121); */
+
+                background-image: url(splash.png);
+                background-size: cover;
             }
 
-            .overlay div {
+            .splash .loader {
+                width: 0px;
+                height: 10px;
+                background-color: white;
+                position: absolute;
+                bottom: 0;
+                transition: width 2s ease-in-out;
+            }
+
+            .splash h2 {
+                margin: 1%;
+                color: #fafafa;
+                font-weight: 100;
+            }
+
+            .splash .logo {
+                float: left;
+                position: relative;
+                width: 50px;
+                height: 50px;
+                margin: 20px;
+                box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+                border-radius: 15%;
+                /* border-radius: 2px; */
+                background: linear-gradient(to right, #8a2387, #e94057, #f27121);
+                background: linear-gradient(to top left, #64FFDA, #00BFA5);
+
+            }
+
+            .splash .logo i {
+                color: #fafafa;
+                font-size: calc(50px / 5 * 3);
                 position: absolute;
                 top: 50%;
                 left: 50%;
-                color: var(--teal-A700);
                 transform: translate(-50%, -50%);
-                text-align: center;
-
             }
 
-
-            .overlay svg {
-                width: 10vh;
-                height: 10vh;
-
-                margin: 30px auto;
-                -webkit-animation: sk-rotateplane 1.2s infinite ease-in-out;
-                animation: sk-rotateplane 1.2s infinite ease-in-out;
+            .splash .logo .c1 {
+                transform: translate(-35%, -35%);
             }
 
-
-            @keyframes sk-rotateplane {
-                0% {
-                    transform: perspective(120px) rotateX(0deg) rotateY(0deg);
-                } 50% {
-                    transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg);
-                } 100% {
-                    transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
-                }
+            .splash .logo .c2 {
+                transform: translate(-50%, -50%);
+                opacity: 0.25;
             }
 
-            .overlay p {
-                font-size: 2.5vh;
+            .splash .logo .c3 {
+                transform: translate(-65%, -65%);
+                opacity: 0.1;
+            }
+
+            .splash h1 {
+                float: left;
+                line-height: 50px;
+                opacity: 0.9;
+                font-weight: 200;
+                color: #212121;
+                margin: 20px 0;
+            }
+
+            .splash h4 {
+                color: #fafafa;
+                position: absolute;
+                right: 0;
+                bottom: 0;
+                font-weight: 300;
+                opacity: 0.5;
             }
         </style>
-        <script>
-            window.addEventListener('load', function () {
-                    setTimeout(function () {
-                        let overlay = document.querySelector('.overlay');
-                    overlay.style.opacity = 0;
-                    setTimeout(function () {
-                        document.body.removeChild(overlay);
-                    }, 300);
-                }, 500)
-            });
-        </script>
+        <div class="preload">
+            <div class="inner">
+                <div class="logo">
+                    <i class="fas fa-clock c1"></i>
+                    <i class="fas fa-circle c2"></i>
+                    <i class="fas fa-circle c3"></i>
+                </div>
+                <h1>Time Based Pictures</h1>
+                <div class="container">
+                    <div class="left open">
+                        <i class="fas fa-file-video"></i>
+                        <h2>open new video</h2>
+                    </div>
+                    <div class="right">
+                        <i class="fas fa-file-upload"></i>
+                        <h2>open existing project</h2>
+                    </div>
+                </div>
+                <h4>Version 0.1 (alpha)</h4>
+            </div>
+          
+        </div>
+        <style>
+            .preload {
+                position: absolute;
+                top: 0;
+                left: 0;
+                z-index: 99;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(to bottom right, #8a2387, #e94057, #f27121);
+                background: linear-gradient(to top left, #64FFDA, #00BFA5);
+            }
+            
+            .preload .container i {
+                color: #fafafa;
+                font-size: 50px;
+            }
+
+            .preload .container {
+                position: absolute;
+                clear: both;
+                text-align: center;
+                width: 100%;
+                top: 50%;
+                transform: translate(0%, -50%);
+            }
+
+            .preload .left {
+                float: left;
+                width: 50%;
+                opacity: 0.5;
+                cursor: pointer !important;
+            }
+
+            .preload .right {
+                float: left;
+                width: 50%;
+                opacity: 0.5;
+                cursor: pointer !important;
+            }
+
+            .preload .left:hover {
+                opacity: 1;
+            }
+
+            .preload .right:hover {
+                opacity: 1;
+            }
+
+            .preload .inner {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: calc(100% - 0px);
+                height: calc(100% - 0px);
+                background-color: #212121;
+            }
+
+            .preload h2 {
+                margin: 1%;
+                color: #fafafa;
+                font-weight: 100;
+            }
+
+            .preload .logo {
+                float: left;
+                position: relative;
+                width: 50px;
+                height: 50px;
+                margin: 20px;
+                box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+                border-radius: 15%;
+                /* border-radius: 2px; */
+                background: linear-gradient(to right, #8a2387, #e94057, #f27121);
+                background: linear-gradient(to top left, #64FFDA, #00BFA5);
+            }
+
+            .preload .logo i {
+                color: #fafafa;
+                font-size: calc(50px / 5 * 3);
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+
+            .preload .logo .c1 {
+                transform: translate(-35%, -35%);
+            }
+
+            .preload .logo .c2 {
+                transform: translate(-50%, -50%);
+                opacity: 0.5;
+            }
+
+            .preload .logo .c3 {
+                transform: translate(-65%, -65%);
+                opacity: 0.25;
+            }
+
+            .preload h1 {
+                float: left;
+                line-height: 50px;
+                opacity: 0.9;
+                font-weight: 200;
+                color: #fafafa;
+                margin: 20px 0;
+            }
+
+            .preload h4 {
+                color: #fafafa;
+                position: absolute;
+                right: 0;
+                bottom: 0;
+                font-weight: 300;
+                opacity: 0.5;
+            }
+        </style>
+      
         <script src="js/modules/config.js"></script>
         <script src="js/modules/color.js"></script>
         <script src="js/modules/paintmask.js"></script>
@@ -295,7 +470,5 @@
         <script src="js/modules/segments.js"></script>
         <script src="js/modules/timeline.js"></script>
         <script src="js/modules/interpretations.js"></script>
-
-        <img id="bla" src="../bla.jpeg" alt="" style="display: block;">
     </body>
 </html>

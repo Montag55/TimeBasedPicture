@@ -70,6 +70,10 @@ function requestUpdate(segment) {
     ipcRenderer.send('update', '');
 }
 
+function requestFull() {
+    ipcRenderer.send('resizeFull');
+}
+
 function requestInit(path) {
     ipcRenderer.send('init', path);
 }

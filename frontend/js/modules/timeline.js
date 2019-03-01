@@ -20,7 +20,7 @@ let Timeline = (function () {
         fakeinput,
         menu;
 
-    menu = document.querySelector('.top-bar .open');
+    menu = document.querySelector('.preload .open');
     fakeinput = document.querySelector('.fakeinput');
 
 
@@ -31,6 +31,14 @@ let Timeline = (function () {
         document.querySelector('.video-name').innerText = filename;
         requestInit(string.replace(filename, ''));
         menu.removeEventListener('click', openDialog, true);
+
+        document.querySelector('.preload').style.display = 'none';
+        document.querySelector('.splash .loader').style.width = '100%';
+        setTimeout(function () {
+            document.querySelector('.splash').style.display = 'none';
+            requestFull();
+        }, 2000);
+        
     }
     fakeinput.addEventListener('change', changeInput);
 

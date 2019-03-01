@@ -45,10 +45,10 @@ let Edit = (function () {
     }
 
     function update() {
-        segment.start = start.value;
-        segment.end = end.value;
-        segment.global_i = global_i.value;
-        segment.local_i = local_i.value;
+        segment.start = parseInt(start.value);
+        segment.end = parseInt(end.value);
+        segment.global_i = parseInt(global_i.value);
+        segment.local_i = parseInt(local_i.value);
         Segments.setSegment(edit_id,  segment);
     }
 
