@@ -15,6 +15,7 @@ let Edit = (function () {
         end.step = 1;
         end.max = MAX_FRAMES;
         end.min = 1;
+        local_i.step = 0.01;
         active = 0;
 
         start.addEventListener('change', update);
@@ -51,7 +52,7 @@ let Edit = (function () {
         segment.start = parseInt(start.value);
         segment.end = parseInt(end.value);
         segment.global_i = parseInt(global_i.value);
-        segment.local_i = parseInt(local_i.value);
+        segment.local_i = parseFloat(local_i.value);
         Segments.setSegment(edit_id,  segment);
     }
 
