@@ -92,7 +92,7 @@ void Segment::revert_influence(){
     normalize_factor(influence, factors);
     influence = influence * m_intensity_local_actual * m_intensity_global_actual;
     factors = factors * m_intensity_global_actual;
-    intensity = m_uni_fac;
+    intensity = 0;
   }
   else{
     std::cout<< "revert influence is not allowed yet " << m_interpretation->getTypenumber() << "\n";
@@ -140,7 +140,7 @@ void Segment::upload_influence(){
     normalize_factor(influence, factors);
     influence = influence * m_intensity_local_actual * m_intensity_global_actual;
     factors = factors * m_intensity_global_actual;
-    intensity = m_uni_fac;
+    intensity = 0;
   }
   else{
     std::cout<< "upload influence is not allowed yet " << m_interpretation->getTypenumber() << "\n";
