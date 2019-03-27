@@ -30,7 +30,7 @@ let Preview = (function () {
     function loop() {
 
 
-        if (Date.now() - then > 33) {
+        if (Date.now() - then > 200) {
             preview.src = `../state_tmp.png?${Date.now()}`;
             Segments.getProgress();
         }

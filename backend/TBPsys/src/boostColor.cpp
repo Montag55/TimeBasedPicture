@@ -81,12 +81,10 @@ void BoostColor::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& curre
 
 
       float distance_RGB = -1;
-      cv::Scalar current = utils::rgb2lab(uc_pixel_current[0], uc_pixel_current[1], uc_pixel_current[2]);
 
       for(unsigned int i = 0; i < m_colors->size(); i+=3){
 
         float distance_tmp = -1;
-        cv::Scalar color_tmp = utils::rgb2lab((*m_colors)[i], (*m_colors)[i+1], (*m_colors)[i+2]);
 
         if(m_modi == 0){
           distance_tmp  = sqrt(pow((*m_colors)[i] - uc_pixel_current[0], 2) +
@@ -97,13 +95,19 @@ void BoostColor::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& curre
           std::cout << "no monochrom yet" << std::endl;
         }
         else if(m_modi == 2){
-          distance_RGB = utils::dE2000(color_tmp, current, 0.1f, 100.0f, 100.0f);
+          cv::Scalar current = utils::rgb2lab(uc_pixel_current[0], uc_pixel_current[1], uc_pixel_current[2]);
+          cv::Scalar color_tmp = utils::rgb2lab((*m_colors)[i], (*m_colors)[i+1], (*m_colors)[i+2]);
+          distance_tmp = utils::dE2000(color_tmp, current, 0.1f, 100.0f, 100.0f);
         }
         else if(m_modi == 3){
-          distance_RGB = utils::CIE76(color_tmp, current, 1.0f, 0.0f, 0.0f);
+          cv::Scalar current = utils::rgb2lab(uc_pixel_current[0], uc_pixel_current[1], uc_pixel_current[2]);
+          cv::Scalar color_tmp = utils::rgb2lab((*m_colors)[i], (*m_colors)[i+1], (*m_colors)[i+2]);
+          distance_tmp = utils::CIE76(color_tmp, current, 1.0f, 0.0f, 0.0f);
         }
         else if(m_modi == 4){
-          distance_RGB = utils::CIE94(color_tmp, current, 5.0f, 100.0f, 100.0f);
+          cv::Scalar current = utils::rgb2lab(uc_pixel_current[0], uc_pixel_current[1], uc_pixel_current[2]);
+          cv::Scalar color_tmp = utils::rgb2lab((*m_colors)[i], (*m_colors)[i+1], (*m_colors)[i+2]);
+          distance_tmp = utils::CIE94(color_tmp, current, 5.0f, 100.0f, 100.0f);
         }
 
 

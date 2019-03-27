@@ -165,7 +165,7 @@ let Segments = (function () {
                 <i class="fas fa-toggle-on"></i>
             </div>
             <div class="backdrop">
-                <i class="fas fa-puzzle-piece"></i>
+                <i class="fas fa-clone"></i>
             </div>
         </div>`;
         aside = new DOMParser().parseFromString(aside, 'text/html').children[0].children[1].children[0];
@@ -206,8 +206,9 @@ let Segments = (function () {
         let main = `<div class="segment">
             <div class="block">
                 <div class="bar">segment_${id}</div>
+                <span class="spinner"><span class="percent"></span><i class="fas fa-spinner"></i></span>
                 <div class="graph">
-                    <div class="progress"></div>
+                    
                 </div>
                 <div class="scale-left"></div>
                 <div class="scale-right"></div>
@@ -219,7 +220,7 @@ let Segments = (function () {
         let bar = block.querySelector('.bar');
         let left = block.querySelector('.scale-left');
         let right = block.querySelector('.scale-right');
-        let progress = block.querySelector('.progress');
+        let progress = block.querySelector('.spinner');
 
         block.addEventListener('click', function () {
             Edit.show(id);
@@ -403,8 +404,15 @@ let Segments = (function () {
         if (typeof (segments[data.id]) === 'undefined' || segments[data.id] === null) {
             return;
         }
+
+        if (parseInt(data.progress) === 100) {
+            segments[data.id].progress.style.opacity = '0';
+        } else {
+            segments[data.id].progress.style.opacity = '1';
+        }
+        segments[data.id].progress.querySelector('.percent').innerText = parseInt(data.progress.toString()) + '%';
         // segments[data.id].progress.style.width = 100 - parseFloat(data.progress) + "%";
-        segments[data.id].progress.style.left = parseFloat(data.progress) + "%";
+        //segments[data.id].progress.style.left = parseFloat(data.progress) + "%";
     }
 
     return {

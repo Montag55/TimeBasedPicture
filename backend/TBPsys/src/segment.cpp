@@ -55,7 +55,7 @@ void Segment::ready_to_work(){
 }
 
 void Segment::reset(){
-  //std::cout << "\t > reset segment. \n";
+//  std::cout << "\t > reset segment. \n";
   m_frame_start_actual = -1;
   m_frame_last_actual = -1;
   m_values_abs = cv::Mat(m_mother->get_height(), m_mother->get_width(), m_mother->get_img_type(), cv::Scalar(0,0,0));
@@ -273,7 +273,7 @@ void Segment::set_interpretation(std::shared_ptr<Interpretation> interpret){
     m_mutex_soll.lock();
     m_new_interpretation = interpret;
     m_mutex_soll.unlock();
-    std::cout << "   (needs to recalculate segment, because of new interpretation.) \n";
+    std::cout << "\t > recalculating Segment\n";
     ready_to_work();
 
   }
@@ -568,6 +568,7 @@ bool Segment::interpret_extending( int & work_size){
 }
 
 bool Segment::interpret_one_way( int & work_size){
+//  std::cout<<"Interpret one way. or another\n";
   //allows only enlargment.. shrinking-> reset
   m_mutex_soll.lock();
   int dest_start = m_frame_start_destin;
@@ -639,6 +640,20 @@ bool Segment::interpret_one_way( int & work_size){
        std::cout << "b: should not happen !? \n";
      }
   }
+
+  if(m_frame_start_actual > -1) {
+
+    upload_influence();
+  }
+
+
+  if((dest_start == m_frame_start_actual) && (dest_end == m_frame_last_actual)) {
+    exit_status = true;  //ist = soll
+  }
+  else{
+    exit_status = false; //ist != soll
+  }
+  return exit_status;
 }
 
 
@@ -824,7 +839,6 @@ void Segment::manipulate(int start, int end, float local_i, float global_i, bool
   m_mutex_soll.lock();
   m_frame_start_destin = start;
   if(m_frame_last_destin != end && m_interpretation->get_calculation_specification() == 2){
-
     m_needs_reset = true;
   }
   m_frame_last_destin = end;
@@ -832,6 +846,9 @@ void Segment::manipulate(int start, int end, float local_i, float global_i, bool
   m_intensity_global_destin = global_i;
   m_hasMask_destin = hasMask;
   m_mutex_soll.unlock();
+  m_mutex_state.lock();
+  m_percent = 0;
+  m_mutex_state.unlock();
   ready_to_work();
 }
 

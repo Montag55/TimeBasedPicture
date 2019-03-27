@@ -67,7 +67,7 @@ class PointPicker {
 
                     let pointDom = document.createElement('div');
                     pointDom.classList.add('point');
-                    pointDom.innerText = `(${x}, ${y})`;
+                    pointDom.innerText = `(${x.toString().substring(0, 5)}, ${y.toString().substring(0, 5)})`;
                     let start = document.createElement('input');
                     start.type = 'number';
                     start.value = 0;
@@ -112,7 +112,7 @@ class PointPicker {
 
             this.pointCtx.beginPath();
             this.pointCtx.fillStyle = 'red';
-            this.pointCtx.font = "bold 90px Arial";
+            this.pointCtx.font = "lighter 90px Arial";
             this.pointCtx.textBaseline = "middle"; 
             this.pointCtx.textAlign = "center";
             this.pointCtx.fillText("+", p.x * this.pointCanvas.width, p.y * this.pointCanvas.height);

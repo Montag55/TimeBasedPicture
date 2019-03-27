@@ -1,0 +1,16 @@
+<map id="Segment::work" name="Segment::work">
+<area shape="rect" id="node2" href="$classSegment.html#ab9b3233e41e7bef23c841472f7f8c0b7" title="Segment::interpret\l_directed" alt="" coords="195,62,325,104"/>
+<area shape="rect" id="node3" href="$classSegment.html#a514ad7ba7633facce394c026a2a3e968" title="Segment::revert_influence" alt="" coords="406,207,581,234"/>
+<area shape="rect" id="node5" href="$classSegment.html#aa79b866fc796f7156c3acb1630476aca" title="Segment::soft_reset" alt="" coords="423,14,563,40"/>
+<area shape="rect" id="node8" href="$classSegment.html#aa7cc6a8154597819f1f6f262fe283571" title="Segment::upload_influence" alt="" coords="404,262,583,288"/>
+<area shape="rect" id="node10" href="$classSegment.html#abe31a0a5eb6ee90b193ddc7f47b6a74c" title="Segment::interpret\l_extending" alt="" coords="195,281,325,322"/>
+<area shape="rect" id="node11" href="$classSegment.html#a1be8d90d9a00e3f454dbc03d691ff983" title="Segment::reset" alt="" coords="438,376,549,403"/>
+<area shape="rect" id="node12" href="$classSegment.html#a30aa948f231bca2b28b816ddc7f1fe50" title="Segment::interpret_free" alt="" coords="181,347,339,374"/>
+<area shape="rect" id="node13" href="$classSegment.html#aee89e17e178bf2ffb7c09a2fc77c578d" title="Segment::interpret\l_one_way" alt="" coords="195,398,325,440"/>
+<area shape="rect" id="node14" href="$classSegment.html#a48b6bae73cd0c5026f3401a4cb7ad218" title="Segment::save_segment_out" alt="" coords="164,464,356,491"/>
+<area shape="rect" id="node15" href="$classSegment.html#a9dd715a8d49908190369cb8822508b0d" title="Segment::update_intensity" alt="" coords="171,179,349,206"/>
+<area shape="rect" id="node6" href="$classPaint.html#a3e54a80b2d54114ac8b9ab4d6bbf9cc9" title="Paint::reset_routine" alt="" coords="426,68,561,95"/>
+<area shape="rect" id="node7" href="$classPaint.html#a5eca67c3bd02a1f9c737f06e8da2822e" title="Paint::get_time_min" alt="" coords="424,119,563,146"/>
+<area shape="rect" id="node4" href="$classSegment.html#a15d904627e0474509f080eb249069b6b" title="Segment::normalize\l_factor" alt="" coords="638,200,777,241"/>
+<area shape="rect" id="node9" href="$classSegment.html#a7ba570a370521f2b1c8acd436f54eb5b" title="Segment::updateMask" alt="" coords="631,266,784,292"/>
+</map>

@@ -1,0 +1,6 @@
+<map id="utils::sigmoid" name="utils::sigmoid">
+<area shape="rect" id="node2" href="$classCircularfade.html#a642cb483fabba28075d1fa9394321b25" title="Circularfade::create\l_time_map" alt="" coords="161,5,297,47"/>
+<area shape="rect" id="node4" href="$classTimefadepoints.html#acc2790f16b1190faecd0efbde9bc79cb" title="Timefadepoints::create\l_time_map" alt="" coords="152,71,307,112"/>
+<area shape="rect" id="node3" href="$classCircularfade.html#ab722cf6eb1c8255095077c146b1e7c33" title="Circularfade::calc" alt="" coords="364,13,488,39"/>
+<area shape="rect" id="node5" href="$classTimefadepoints.html#a00d15e481a1156da15b545842ccfc05a" title="Timefadepoints::calc" alt="" coords="355,78,497,105"/>
+</map>

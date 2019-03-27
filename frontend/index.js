@@ -19,13 +19,22 @@ let path
 function createWindow () {
   tmpfile = '/tmp/mainfile'
   // Create the browser window.
-  win = new BrowserWindow({width: 1753, height: 916})
-  // win.setMenu(null)
+  win = new BrowserWindow({width: 800, height: 500})
+  //win.setMenu(null)
    // and load the index.html of the app.
   win.loadURL(`file://${__dirname}/index.html`)
 
   ipcs = new IPCStream('any-arbitrary-channel-name', win)
 }
+
+ipcMain.on("resizeFull", (event, arg) => {
+  win.setSize(1920, 1000);
+  win.setPosition(0, 0);
+})
+
+ipcMain.on("resizeSplash", (event, arg) => {
+  win.setSize(800, 500);
+})
 
 ipcMain.on("addInterpretation", (event, arg) => {
   let arr = [];

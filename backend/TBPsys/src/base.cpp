@@ -602,6 +602,8 @@ void Base::continue_work() {
 
   if(!m_seg_in_calc.size()) {
     m_in_calculation=false;
+  }else{
+    //std::cout<<"still in calc\n";
   }
 
   m_mutex_result.unlock();

@@ -1,0 +1,6 @@
+<map id="Base::manipulate_interpretation" name="Base::manipulate_interpretation">
+<area shape="rect" id="node2" href="$classReduce.html#a4bcde1aebc2e351daf89c666224d7a58" title="Reduce::manipulate" alt="" coords="263,5,401,32"/>
+<area shape="rect" id="node4" href="$classOverplott.html#ae3ac8f3507db015c57131ee46e585c74" title="Overplott::manipulate" alt="" coords="259,56,405,83"/>
+<area shape="rect" id="node5" href="$classBoost.html#a87bc55e5cc413d33924984f5e2d0d26a" title="Boost::manipulate" alt="" coords="269,107,395,133"/>
+<area shape="rect" id="node3" href="$classInterpretation.html#a75b3bf5e927b167c89e90194ab227c6c" title="Interpretation::update\l_connections" alt="" coords="453,49,599,90"/>
+</map>
