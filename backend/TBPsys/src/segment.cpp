@@ -77,10 +77,17 @@ void Segment::revert_influence(){
   //should be muted from higher levl
   float intensity = -1;
   bool skip = false;
+
   cv::Mat factors = m_values_fac.clone();
   cv::Mat influence = m_values_abs.clone();
+  //einheitlicher:
+  factors = factors+cv::Scalar(m_uni_fac, m_uni_fac,m_uni_fac);
+  normalize_factor(influence, factors);
+  influence = influence * m_intensity_local_actual * m_intensity_global_actual;
+  factors = factors * m_intensity_global_actual;
+  intensity = 0;
 
-
+  /* faster:?
   if( m_interpretation->getTypenumber() == 0 || m_interpretation->getTypenumber() == 1 || m_interpretation->getTypenumber() == 8){
     if(m_uni_fac != 0)
       influence = (m_values_abs * ((float) 1 / ((float) m_uni_fac))) * m_intensity_local_actual * m_intensity_global_actual;
@@ -92,12 +99,12 @@ void Segment::revert_influence(){
     normalize_factor(influence, factors);
     influence = influence * m_intensity_local_actual * m_intensity_global_actual;
     factors = factors * m_intensity_global_actual;
-    intensity = m_uni_fac;
+    intensity = 0;
   }
   else{
     std::cout<< "revert influence is not allowed yet " << m_interpretation->getTypenumber() << "\n";
   }
-
+  */
 
   if(m_hasMask_actual){
     cv::Mat tmp_mask = cv::Mat(m_mother->get_max_Point().y, m_mother->get_max_Point().x, CV_32FC3, cv::Scalar(0,0,0));
@@ -127,6 +134,12 @@ void Segment::upload_influence(){
   cv::Mat factors = m_values_fac.clone();
   cv::Mat influence = m_values_abs.clone();
 
+  factors = factors+cv::Scalar(m_uni_fac, m_uni_fac,m_uni_fac);
+  normalize_factor(influence, factors);
+  influence = influence * m_intensity_local_actual * m_intensity_global_actual;
+  factors = factors * m_intensity_global_actual;
+  intensity = 0;
+  /*
   if(m_interpretation->get_upload_specification() == 0){
     if(m_uni_fac != 0)
       influence = (m_values_abs * ((float) 1 / ((float) m_uni_fac))) * m_intensity_local_actual * m_intensity_global_actual;
@@ -139,12 +152,12 @@ void Segment::upload_influence(){
     normalize_factor(influence, factors);
     influence = influence * m_intensity_local_actual * m_intensity_global_actual;
     factors = factors * m_intensity_global_actual;
-    intensity = m_uni_fac;
+    intensity = 0;
   }
   else{
     std::cout<< "upload influence is not allowed yet " << m_interpretation->getTypenumber() << "\n";
   }
-
+  */
 
   if(m_hasMask_actual){
 

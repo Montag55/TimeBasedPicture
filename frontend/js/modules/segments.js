@@ -206,7 +206,7 @@ let Segments = (function () {
         let main = `<div class="segment">
             <div class="block">
                 <div class="bar">segment_${id}</div>
-                <span class="spinner"><i class="fas fa-spinner"></i></span>
+                <span class="spinner"><span class="percent"></span><i class="fas fa-spinner"></i></span>
                 <div class="graph">
                     
                 </div>
@@ -410,6 +410,7 @@ let Segments = (function () {
         } else {
             segments[data.id].progress.style.opacity = '1';
         }
+        segments[data.id].progress.querySelector('.percent').innerText = parseInt(data.progress.toString()) + '%';
         // segments[data.id].progress.style.width = 100 - parseFloat(data.progress) + "%";
         //segments[data.id].progress.style.left = parseFloat(data.progress) + "%";
     }

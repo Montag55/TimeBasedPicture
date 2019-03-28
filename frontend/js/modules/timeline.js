@@ -37,7 +37,7 @@ let Timeline = (function () {
         setTimeout(function () {
             document.querySelector('.splash').style.display = 'none';
             requestFull();
-        }, 2000);
+        }, 3000);
         
     }
     fakeinput.addEventListener('change', changeInput);

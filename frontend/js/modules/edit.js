@@ -15,6 +15,8 @@ let Edit = (function () {
         end.step = 1;
         end.max = MAX_FRAMES;
         end.min = 1;
+        local_i.step = 0.01;
+        global_i.step = 0.01;  
         active = 0;
 
         start.addEventListener('change', update);
@@ -26,6 +28,8 @@ let Edit = (function () {
                 return;
             }
             Interpretations.connect(active, select.value);
+            segment = Segments.getSegment(active);
+            segment.interpretation = select.value;
         });
     }
 
@@ -38,6 +42,7 @@ let Edit = (function () {
             // local_i = segment.local_i;
             global_i.value = segment.global_i;
             local_i.value  = segment.local_i;
+            select.value = segment.interpretation || -1;
             edit_id = id;
             name.innerText = 'segment_' + id;
             active = id;
@@ -47,8 +52,8 @@ let Edit = (function () {
     function update() {
         segment.start = parseInt(start.value);
         segment.end = parseInt(end.value);
-        segment.global_i = parseInt(global_i.value);
-        segment.local_i = parseInt(local_i.value);
+        segment.global_i = parseFloat(global_i.value);
+        segment.local_i = parseFloat(local_i.value);
         Segments.setSegment(edit_id,  segment);
     }
 
