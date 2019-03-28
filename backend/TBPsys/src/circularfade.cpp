@@ -118,7 +118,7 @@ void Circularfade::create_time_map(int id){
             float fade_fac = distance / max_distance;
             start_border = fade_fac * (seg_start - m_start) + m_start;
             end_border = fade_fac * (seg_end - m_end) + m_end;
-            std::cout << "a dis > rad \t\t start_b: " << start_border << "\t end_b: " << end_border << std::endl;
+            //std::cout << "a dis > rad \t\t start_b: " << start_border << "\t end_b: " << end_border << std::endl;
           }
       }
       else{
@@ -164,8 +164,7 @@ void Circularfade::create_time_map(int id){
 
 void Circularfade::calc(int id, int start, int length, int sign, cv::Mat& result, float& factor, cv::Mat& fac_mat) {
   auto start_time = std::chrono::high_resolution_clock::now();
-  std::cout<<"here0\n";
-  // int seg_start = m_base->get_seg_start(id);
+  int first = m_base->get_seg_start(id);
   // int seg_end = m_base->get_seg_end(id);
   // int seg_start = m_base->get_start_frame();
   // int seg_end = m_base->get_last_frame();
@@ -174,15 +173,12 @@ void Circularfade::calc(int id, int start, int length, int sign, cv::Mat& result
 
   cv::Mat tmp_frame;
   m_video->set( CV_CAP_PROP_POS_MSEC, start/*frameTime*/);
-  std::cout<<"here1\n";
 
-  if( start == seg_start )
+
+  if( start == first )
     create_time_map(id);
-  std::cout<<"here2\n";
-  std::cout<<"frame: "<< start<<"\n";
 
   for(int i = 0; i < length; i++){
-    std::cout<<"herei "<< i<<"\n";
 
     if(start + i < m_offset || (start - m_offset + i) % (m_stride + 1) != 0 ){
       m_video->grab();
@@ -297,7 +293,7 @@ void Circularfade::manipulate(int start, int end, int outer_circle_start, int ou
     update_status = true;
   }
   if(m_radius != radius){
-    std::cout << radius << "; ->"<< m_radius << std::endl;
+    // std::cout << radius << "; ->"<< m_radius << std::endl;
     m_radius = radius;
     update_status = true;
   }

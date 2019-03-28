@@ -54,8 +54,8 @@ void Segment::ready_to_work(){
   }
 }
 
-void Segment::reset(){
-//  std::cout << "\t > reset segment. \n";
+void Segment::reset() {
+  // std::cout << "\t > reset segment. \n";
   m_frame_start_actual = -1;
   m_frame_last_actual = -1;
   m_values_abs = cv::Mat(m_mother->get_height(), m_mother->get_width(), m_mother->get_img_type(), cv::Scalar(0,0,0));
@@ -100,7 +100,6 @@ void Segment::revert_influence(){
 
 
   if(m_hasMask_actual){
-    std::cout<<"XXXXXXXXXXrevert influence of mask\n";
     cv::Mat tmp_mask = cv::Mat(m_mother->get_max_Point().y, m_mother->get_max_Point().x, CV_32FC3, cv::Scalar(0,0,0));
     int from_to[] = { 0,0, 0,1, 0,2};
     cv::mixChannels(&m_mask, 1, &tmp_mask, 1, from_to, 3);
@@ -120,7 +119,7 @@ void Segment::revert_influence(){
 }
 
 void Segment::upload_influence(){
-//  std::cout<<"upload\n";
+  // std::cout<<"upload\n";
   // should be muted from above
   // intensity could be uplaoded here
   float intensity = -1;
@@ -149,7 +148,6 @@ void Segment::upload_influence(){
 
   if(m_hasMask_actual){
 
-    std::cout<<"XXXXXXXXXXread mask for upload\n";
     updateMask("mask" + std::to_string(m_id) + ".png");
     cv::Mat tmp_mask = cv::Mat(m_mother->get_max_Point().y, m_mother->get_max_Point().x, CV_32FC3, cv::Scalar(0,0,0));
     int from_to[] = { 0,0, 0,1, 0,2};
@@ -332,10 +330,9 @@ void Segment::updateMask(std::string mask_path){
 
     if(new_mask.empty()){
       new_mask = cv::Mat(m_mother->get_max_Point().y, m_mother->get_max_Point().x, CV_32FC1, cv::Scalar(0));
-      std::cout << "reference image not loaded. Loading empty Image\n";
+      std::cout << "ERROR: reference image not loaded. Loading empty Image\n";
     }
     else{
-      std::cout<<"read nes mask right now\n";
       cv::cvtColor(new_mask, new_mask, CV_BGR2GRAY);
       new_mask.convertTo(new_mask, CV_32FC1);
     }
@@ -346,9 +343,7 @@ void Segment::updateMask(std::string mask_path){
     cv::minMaxLoc(tmp_mat_diff_check, &min, &max);
 
     if(max > 0){
-      std::cout<<"prep to read\n";
-      cv::imwrite("oldmask.png", m_mask);
-      cv::imwrite("newmask.png", new_mask);
+      // std::cout<<"prep to read\n";
       m_mask = new_mask;
       //cv::absdiff(m_mask, new_mask, m_mask);
     }
@@ -356,7 +351,7 @@ void Segment::updateMask(std::string mask_path){
     m_mask = m_mask / 255;
     auto end_time = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast< std::chrono::milliseconds >( end_time - start_time ).count();
-        std::cout << "\t\t + Seg update Mask: \t" << duration << std::endl;
+        // std::cout << "\t\t + Seg update Mask: \t" << duration << std::endl;
   }
 }
 
@@ -489,22 +484,20 @@ bool Segment::interpret_extending( int & work_size){
   cv::Mat tmp_frame_d;
 
   //reset neccessary?
-  if( m_frame_last_actual > dest_end )
-  {
+  if( m_frame_last_actual > dest_end ) {
     reset();
-  }else if(m_frame_start_actual < dest_start)
-  {
+  }
+  else if(m_frame_start_actual < dest_start) {
     reset();
   }
 
   //startingpoint:
-  if(m_frame_start_actual == -1) {//not yet computed!
+  if(m_frame_start_actual == -1) { //not yet computed!
     m_frame_start_actual = dest_start;
   }
 
   if(m_frame_start_actual < dest_start) {
     std::cout << "a: should not happen !? \n";
-
   }
   else if(m_frame_start_actual > dest_start) {
     int startpoint = m_frame_start_actual - work_size;
@@ -524,7 +517,7 @@ bool Segment::interpret_extending( int & work_size){
     m_frame_start_actual -= length;
   }
   //endpoint:
-  if( work_size > 0 ){
+  if( work_size > 0 ) {
     if(m_frame_last_actual == -1) {//not yet computed!
        m_frame_last_actual = dest_start;
      }
@@ -553,14 +546,13 @@ bool Segment::interpret_extending( int & work_size){
   }
 
   if(m_frame_start_actual > -1) {
-
     upload_influence();
   }
 
   if((dest_start == m_frame_start_actual) && (dest_end == m_frame_last_actual)) {
     exit_status = true;  //ist = soll
   }
-  else{
+  else {
     exit_status = false; //ist != soll
   }
 
@@ -568,7 +560,7 @@ bool Segment::interpret_extending( int & work_size){
 }
 
 bool Segment::interpret_one_way( int & work_size){
-//  std::cout<<"Interpret one way. or another\n";
+  // std::cout<<"Interpret one way. or another\n";
   //allows only enlargment.. shrinking-> reset
   m_mutex_soll.lock();
   int dest_start = m_frame_start_destin;
@@ -586,16 +578,13 @@ bool Segment::interpret_one_way( int & work_size){
   cv::Mat tmp_frame_d;
 
   //reset neccessary?
-  if( m_frame_last_actual > dest_end )
-  {
+  if( m_frame_last_actual > dest_end ) {
     reset();
   }
-  else if(m_frame_start_actual < dest_start)
-  {
+  else if(m_frame_start_actual < dest_start) {
     reset();
   }
-  else if(m_frame_start_actual > dest_start)
-  {
+  else if(m_frame_start_actual > dest_start) {
     reset();
   }
 
@@ -606,7 +595,6 @@ bool Segment::interpret_one_way( int & work_size){
 
   if(m_frame_start_actual < dest_start) {
     std::cout << "a: should not happen !? \n";
-
   }
   else if(m_frame_start_actual > dest_start) {
         std::cout << "b: should not happen !? \n";
@@ -656,8 +644,7 @@ bool Segment::interpret_one_way( int & work_size){
   return exit_status;
 }
 
-
-  bool Segment::interpret_directed( int & work_size){
+bool Segment::interpret_directed( int & work_size){
     //allows only enlargment.. shrinking-> reset
     m_mutex_soll.lock();
     int dest_start = m_frame_start_destin;
@@ -675,16 +662,13 @@ bool Segment::interpret_one_way( int & work_size){
     cv::Mat tmp_frame_d;
 
     //reset neccessary?
-    if( m_frame_last_actual > dest_end )
-    {
+    if( m_frame_last_actual > dest_end ) {
       soft_reset();
     }
-    else if(m_frame_start_actual < dest_start)
-    {
+    else if(m_frame_start_actual < dest_start) {
       soft_reset();
     }
-    else if(m_frame_start_actual > dest_start)
-    {
+    else if(m_frame_start_actual > dest_start) {
       soft_reset();
     }
 
@@ -839,6 +823,7 @@ void Segment::manipulate(int start, int end, float local_i, float global_i, bool
   m_mutex_soll.lock();
   m_frame_start_destin = start;
   if(m_frame_last_destin != end && m_interpretation->get_calculation_specification() == 2){
+    // any change needs new time map!
     m_needs_reset = true;
   }
   m_frame_last_destin = end;
