@@ -59,6 +59,20 @@ void Circularfade::create_time_map(int id){
   int seg_start = m_outer_circle_start;
   int seg_end = m_outer_circle_end;
   // std::cout << "init state \t start: " << m_outer_circle_start << "\t end: " << m_outer_circle_end << std::endl;
+  float null_null = sqrt(pow(m_pnt_min.x - m_mid[0], 2) + pow(m_pnt_min.y - m_mid[1], 2));
+  float null_max = sqrt(pow(m_pnt_min.x - m_mid[0], 2) + pow(m_pnt_max.y - m_mid[1], 2));
+  float max_null = sqrt(pow(m_pnt_max.x - m_mid[0], 2) + pow(m_pnt_min.y - m_mid[1], 2));
+  float max_max = sqrt(pow(m_pnt_max.x - m_mid[0], 2) + pow(m_pnt_max.y - m_mid[1], 2));
+  float max_distance = 0;
+
+  if(max_distance < null_null)
+    max_distance = null_null;
+  else if(max_distance < null_max)
+    max_distance = null_max;
+  else if(max_distance < max_null)
+    max_distance = max_null;
+  else if(max_distance < max_max)
+    max_distance = max_max;
 
   for (unsigned int row = m_pnt_min.y; row < m_pnt_max.y; ++row) {
 
@@ -68,20 +82,7 @@ void Circularfade::create_time_map(int id){
 
       float *uc_pixel_map = ptr_map;
       float distance = sqrt(pow((float)col - m_mid[0], 2) + pow((float)row - m_mid[1], 2));
-      float null_null = sqrt(pow(m_pnt_min.x - m_mid[0], 2) + pow(m_pnt_min.y - m_mid[1], 2));
-      float null_max = sqrt(pow(m_pnt_min.x - m_mid[0], 2) + pow(m_pnt_max.y - m_mid[1], 2));
-      float max_null = sqrt(pow(m_pnt_max.x - m_mid[0], 2) + pow(m_pnt_min.y - m_mid[1], 2));
-      float max_max = sqrt(pow(m_pnt_max.x - m_mid[0], 2) + pow(m_pnt_max.y - m_mid[1], 2));
-      float max_distance = 0;
-
-      if(max_distance < null_null)
-        max_distance = null_null;
-      else if(max_distance < null_max)
-        max_distance = null_max;
-      else if(max_distance < max_null)
-        max_distance = max_null;
-      else if(max_distance < max_max)
-        max_distance = max_max;
+      float max_tmp=max_distance;
 
       float start_border = -1;
       float end_border = -1;
@@ -92,30 +93,30 @@ void Circularfade::create_time_map(int id){
           // std::cout << "dis < rad \t\t start_b: " << start_border << "\t end_b: " << end_border << std::endl;
         }
         else{
-            max_distance -= m_radius;
+            max_tmp -= m_radius;
             distance -= m_radius;
             // std::cout << "before dis > rad \t dis: " << distance << "\t max_dis: " << max_distance << std::endl;
 
             if(m_mode == 0 /*power*/){
-              max_distance = pow(max_distance, m_parameter);
+              max_tmp = pow(max_tmp, m_parameter);
               distance = pow(distance, m_parameter);
             }
             else if(m_mode == 1 /*sigmoid*/){
               distance = utils::sigmoid(distance, m_parameter, max_distance / 2);
               float min_clip = utils::sigmoid(0, m_parameter, max_distance / 2);
-              max_distance = utils::sigmoid(max_distance, m_parameter, max_distance / 2);
-              max_distance -= min_clip;
+              max_tmp = utils::sigmoid(max_tmp, m_parameter, max_distance / 2);
+              max_tmp -= min_clip;
               distance -= min_clip;
             }
             else /*linear*/{
-              max_distance = pow(max_distance, 1);
+              max_tmp = pow(max_tmp, 1);
               distance = pow(distance, 1);
             }
 
             // std::cout << "after dis > rad \t dis: " << distance << "\t max_dis: " << max_distance << std::endl;
 
             // std::cout << "b dis > rad \t\t start_b: " << start_border << "\t end_b: " << end_border << std::endl;
-            float fade_fac = distance / max_distance;
+            float fade_fac = distance / max_tmp;
             start_border = fade_fac * (seg_start - m_start) + m_start;
             end_border = fade_fac * (seg_end - m_end) + m_end;
             //std::cout << "a dis > rad \t\t start_b: " << start_border << "\t end_b: " << end_border << std::endl;
@@ -127,27 +128,27 @@ void Circularfade::create_time_map(int id){
           end_border = m_end;
         }
         else{
-          max_distance = m_radius;
+          max_tmp = m_radius;
           distance = m_radius - distance;
 
           if(m_mode == 0 /*power*/){
-            max_distance = pow(max_distance, m_parameter);
+            max_tmp = pow(max_tmp, m_parameter);
             distance = pow(distance, m_parameter);
           }
           else if(m_mode == 1 /*sigmoid*/){
-            distance = utils::sigmoid(distance, m_parameter, max_distance / 2);
-            float min_clip = utils::sigmoid(0, m_parameter, max_distance / 2);
-            max_distance = utils::sigmoid(max_distance, m_parameter, max_distance / 2);
-            max_distance -= min_clip;
+            distance = utils::sigmoid(distance, m_parameter, max_tmp / 2);
+            float min_clip = utils::sigmoid(0, m_parameter, max_tmp / 2);
+            max_tmp = utils::sigmoid(max_tmp, m_parameter, max_tmp / 2);
+            max_tmp -= min_clip;
             distance -= min_clip;
           }
           else /*linear*/{
-            max_distance = pow(max_distance, 1);
+            max_tmp = pow(max_tmp, 1);
             distance = pow(distance, 1);
           }
 
           //wirte
-          float fade_fac = distance / max_distance;
+          float fade_fac = distance / max_tmp;
           start_border = fade_fac * (seg_start - m_start) + m_start;
           end_border = fade_fac * (seg_end - m_end) + m_end;
         }
