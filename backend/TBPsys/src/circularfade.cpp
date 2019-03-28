@@ -102,9 +102,9 @@ void Circularfade::create_time_map(int id){
               distance = pow(distance, m_parameter);
             }
             else if(m_mode == 1 /*sigmoid*/){
-              distance = utils::sigmoid(distance, m_parameter, max_distance / 2);
-              float min_clip = utils::sigmoid(0, m_parameter, max_distance / 2);
-              max_tmp = utils::sigmoid(max_tmp, m_parameter, max_distance / 2);
+              distance = utils::sigmoid(distance, m_parameter, max_tmp / 2);
+              float min_clip = utils::sigmoid(0, m_parameter, max_tmp / 2);
+              max_tmp = utils::sigmoid(max_tmp, m_parameter, max_tmp / 2);
               max_tmp -= min_clip;
               distance -= min_clip;
             }
