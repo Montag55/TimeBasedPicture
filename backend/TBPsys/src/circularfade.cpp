@@ -28,7 +28,7 @@ m_pnt_max{mother->get_max_Point()},
 m_time_map{}
 {
   m_type                  = 6; // circfade
-  m_calc_specification    = 2; // once
+  m_calc_specification    = 0; // once
   m_upload_specification  = 1; // with fac mat
 
   m_mid = cv::Vec2f(m_mid[0] * m_base->get_width(), m_mid[1] * m_base->get_height());
@@ -223,30 +223,30 @@ void Circularfade::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& cur
       float end_border = uc_pixel_map[1];
 
       if(frame_num > (int)start_border && frame_num <= (int)end_border){
-        uc_pixel_res[0] += uc_pixel_current[0];
-        uc_pixel_res[1] += uc_pixel_current[1];
-        uc_pixel_res[2] += uc_pixel_current[2];
-        uc_pixel_fac[0] += 1;
-        uc_pixel_fac[1] += 1;
-        uc_pixel_fac[2] += 1;
+        uc_pixel_res[0] += sign*uc_pixel_current[0];
+        uc_pixel_res[1] += sign*uc_pixel_current[1];
+        uc_pixel_res[2] += sign*uc_pixel_current[2];
+        uc_pixel_fac[0] += sign*1;
+        uc_pixel_fac[1] += sign*1;
+        uc_pixel_fac[2] += sign*1;
       }
       else if(frame_num == (int)start_border) {
         float weight = 1 - fabs((float)start_border - (int)start_border);
-        uc_pixel_res[0] += weight * uc_pixel_current[0];
-        uc_pixel_res[1] += weight * uc_pixel_current[1];
-        uc_pixel_res[2] += weight * uc_pixel_current[2];
-        uc_pixel_fac[0] += weight;
-        uc_pixel_fac[1] += weight;
-        uc_pixel_fac[2] += weight;
+        uc_pixel_res[0] += sign*weight * uc_pixel_current[0];
+        uc_pixel_res[1] += sign*weight * uc_pixel_current[1];
+        uc_pixel_res[2] += sign*weight * uc_pixel_current[2];
+        uc_pixel_fac[0] += sign*weight;
+        uc_pixel_fac[1] += sign*weight;
+        uc_pixel_fac[2] += sign*weight;
       }
       else if(frame_num == (int)end_border + 1){
         float weight = fabs((float)end_border - (int)end_border);
-        uc_pixel_res[0] += weight * uc_pixel_current[0];
-        uc_pixel_res[1] += weight * uc_pixel_current[1];
-        uc_pixel_res[2] += weight * uc_pixel_current[2];
-        uc_pixel_fac[0] += weight;
-        uc_pixel_fac[1] += weight;
-        uc_pixel_fac[2] += weight;
+        uc_pixel_res[0] += sign*weight * uc_pixel_current[0];
+        uc_pixel_res[1] += sign*weight * uc_pixel_current[1];
+        uc_pixel_res[2] += sign*weight * uc_pixel_current[2];
+        uc_pixel_fac[0] += sign*weight;
+        uc_pixel_fac[1] += sign*weight;
+        uc_pixel_fac[2] += sign*weight;
       }
 
       //shift ptr:
