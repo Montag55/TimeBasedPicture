@@ -101,7 +101,8 @@ void Timefadepoints::create_time_map(int id){
           fac_sum += utils::sigmoid(ref_dis - (*o)[2], -m_param, ref_dis / 2);
         }
         else /*euklid 2D*/{
-          fac_sum += sqrt(std::pow(abs(ref_dis - (*o)[2]), m_param));
+          //fac_sum += sqrt(std::pow(abs(ref_dis - (*o)[2]), m_param));
+          fac_sum += std::pow(abs(1 -((*o)[2]/ref_dis)), m_param);
         }
         //std::cout<<std::pow(abs(ref_dis-(*o)[2]),m_param)<<"val\n";
       }
@@ -115,7 +116,8 @@ void Timefadepoints::create_time_map(int id){
           influence = utils::sigmoid(ref_dis - (*o)[2], -m_param, ref_dis / 2) / fac_sum;
         }
         else if(m_param > 0){
-          influence = sqrt(std::pow(abs(ref_dis - (*o)[2]), m_param)) / fac_sum;
+          //influence = sqrt(std::pow(abs(ref_dis - (*o)[2]), m_param)) / fac_sum;
+          influence = std::pow(abs(1 -((*o)[2]/ref_dis)), m_param) / fac_sum;
         }
 
         //std::cout<<"influ "<< influence<<"\n";
