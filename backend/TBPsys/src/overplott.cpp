@@ -59,7 +59,7 @@ void Overplott::calc(int id, int start, int length, int sign, cv::Mat& result, f
       auto end_time = std::chrono::high_resolution_clock::now();
       auto duration = std::chrono::duration_cast< std::chrono::milliseconds >( end_time - start_time ).count();
       #ifdef show_time
-          std::cout << "\t\t + Boost ("<<length<<") time: \t" << duration << std::endl;
+          std::cout << "\t\t + Overplot ("<<length<<") time: \t" << duration << std::endl;
       #endif
     }
   }
@@ -85,7 +85,7 @@ void Overplott::calc(int id, int start, int length, int sign, cv::Mat& result, f
   auto end_time = std::chrono::high_resolution_clock::now();
   auto duration = std::chrono::duration_cast< std::chrono::milliseconds >( end_time - start_time ).count();
   #ifdef show_time
-      std::cout << "\t\t + Boost ("<<length<<") time: \t" << duration << std::endl;
+      std::cout << "\t\t + Overplot ("<<length<<") time: \t" << duration << std::endl;
   #endif
 }
 
