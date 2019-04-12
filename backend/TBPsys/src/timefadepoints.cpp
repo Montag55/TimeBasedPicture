@@ -145,12 +145,19 @@ void Timefadepoints::calc(int id, int start, int length, int sign, cv::Mat& resu
   auto start_time = std::chrono::high_resolution_clock::now();
 
   int seg_start = m_base->get_seg_start(id);
-  int seg_end = m_base->get_seg_end(id);
+  //int seg_end = m_base->get_seg_end(id);
 
   cv::Mat tmp_frame;
   m_video->set( CV_CAP_PROP_POS_MSEC, start/*frameTime*/);
   if( start == seg_start )
+  {
     create_time_map(id);
+    #ifdef show_time
+        auto end_time = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration_cast< std::chrono::milliseconds >( end_time - start_time ).count();
+        std::cout << "\t\t + TimeFadePoints (TimeMap) time: \t" << duration << std::endl;
+    #endif
+  }
 
   for(int i = 0; i < length; i++){
     if(start + i < m_offset || (start - m_offset + i) % (m_stride + 1) != 0 ){

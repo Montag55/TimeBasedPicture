@@ -176,8 +176,15 @@ void Circularfade::calc(int id, int start, int length, int sign, cv::Mat& result
   m_video->set( CV_CAP_PROP_POS_MSEC, start/*frameTime*/);
 
 
-  if( start == first )
-    create_time_map(id);
+    if( start == first )
+    {
+      create_time_map(id);
+      #ifdef show_time
+          auto end_time = std::chrono::high_resolution_clock::now();
+          auto duration = std::chrono::duration_cast< std::chrono::milliseconds >( end_time - start_time ).count();
+          std::cout << "\t\t + Circularfade (TimeMap) time: \t" << duration << std::endl;
+      #endif
+    }
 
   for(int i = 0; i < length; i++){
 
@@ -203,11 +210,9 @@ void Circularfade::calc(int id, int start, int length, int sign, cv::Mat& result
 }
 
 void Circularfade::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& current_frame, int sign, int frame_num, int seg_start, int seg_end,  int seg_id) {
-  cv::Mat out = cv::Mat(m_pnt_max.y, m_pnt_max.x, m_img_type, cv::Scalar(0,0,0));
   for (unsigned int row = m_pnt_min.y; row < m_pnt_max.y; ++row) {
     //ptr:
     float* ptr_map            =  (float*) m_time_map[seg_id].ptr(row);
-    float* ptr_out            =  (float*) out.ptr(row);
     float* ptr_res            =  (float*) result.ptr(row);
     float* ptr_fac            =  (float*) fac_mat.ptr(row);
     const float* ptr_current  =  (float*) current_frame.ptr(row);
@@ -215,7 +220,6 @@ void Circularfade::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& cur
     for (unsigned int col = m_pnt_min.x; col < m_pnt_max.x; col++) {
       //ptr:
       float *uc_pixel_map           = ptr_map;
-      float *uc_pixel_out           = ptr_out;
       float *uc_pixel_res           = ptr_res;
       float *uc_pixel_fac           = ptr_fac;
       const float *uc_pixel_current = ptr_current;
@@ -227,38 +231,38 @@ void Circularfade::compute_frame(cv::Mat& result, cv::Mat& fac_mat, cv::Mat& cur
         uc_pixel_res[0] += sign*uc_pixel_current[0];
         uc_pixel_res[1] += sign*uc_pixel_current[1];
         uc_pixel_res[2] += sign*uc_pixel_current[2];
-        uc_pixel_fac[0] += sign*1;
-        uc_pixel_fac[1] += sign*1;
-        uc_pixel_fac[2] += sign*1;
+        uc_pixel_fac[0] += sign;
+        uc_pixel_fac[1] += sign;
+        uc_pixel_fac[2] += sign;
       }
       else if(frame_num == (int)start_border) {
         float weight = 1 - fabs((float)start_border - (int)start_border);
-        uc_pixel_res[0] += sign*weight * uc_pixel_current[0];
-        uc_pixel_res[1] += sign*weight * uc_pixel_current[1];
-        uc_pixel_res[2] += sign*weight * uc_pixel_current[2];
-        uc_pixel_fac[0] += sign*weight;
-        uc_pixel_fac[1] += sign*weight;
-        uc_pixel_fac[2] += sign*weight;
+        weight*=sign;
+        uc_pixel_res[0] += weight * uc_pixel_current[0];
+        uc_pixel_res[1] += weight * uc_pixel_current[1];
+        uc_pixel_res[2] += weight * uc_pixel_current[2];
+        uc_pixel_fac[0] += weight;
+        uc_pixel_fac[1] += weight;
+        uc_pixel_fac[2] += weight;
       }
       else if(frame_num == (int)end_border + 1){
         float weight = fabs((float)end_border - (int)end_border);
-        uc_pixel_res[0] += sign*weight * uc_pixel_current[0];
-        uc_pixel_res[1] += sign*weight * uc_pixel_current[1];
-        uc_pixel_res[2] += sign*weight * uc_pixel_current[2];
-        uc_pixel_fac[0] += sign*weight;
-        uc_pixel_fac[1] += sign*weight;
-        uc_pixel_fac[2] += sign*weight;
+        weight*=sign;
+        uc_pixel_res[0] += weight * uc_pixel_current[0];
+        uc_pixel_res[1] += weight * uc_pixel_current[1];
+        uc_pixel_res[2] += weight * uc_pixel_current[2];
+        uc_pixel_fac[0] += weight;
+        uc_pixel_fac[1] += weight;
+        uc_pixel_fac[2] += weight;
       }
 
       //shift ptr:
-      ptr_out     += m_ptr_delta;
       ptr_res     += m_ptr_delta;
       ptr_current += m_ptr_delta;
       ptr_fac     += m_ptr_delta;
       ptr_map += 2;
     }
   }
-
 }
 
 void Circularfade::manipulate(int start, int end, int outer_circle_start, int outer_circle_end, int mode, cv::Vec2f mid, float radius, bool fade_direction, float parameter, int offset, int stride){
