@@ -3,13 +3,13 @@
 
 #include <vector>
 
-#include <../include/interpretation.hpp>
+#include <../include/transformation.hpp>
 #include <../include/utils.hpp>
 
 #include <opencv2/opencv.hpp>
 
 
-class Transferfunction : public Interpretation{
+class Transferfunction : public Transformation{
 public:
   //KONSTRUTOREN----------------------------------------------------------------
   Transferfunction(std::shared_ptr< Base > mother, int id, int start_pnt, std::shared_ptr< std::vector< float >> points, int offset, int stride);

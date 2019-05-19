@@ -22,18 +22,18 @@ Segment::Segment(int start_frame, int last_frame, double intensity_local, double
   m_values_fac{cv::Mat(mother->get_height(), mother->get_width(), mother->get_img_type(), cv::Scalar(0,0,0))},
   m_mask{cv::Mat(mother->get_height(), mother->get_width(), CV_32FC1, cv::Scalar(0))},
   m_uni_fac{0.0f},
-  m_interpretation{std::make_shared<Average>(mother, -1, 0, 0)},
+  m_transformation{std::make_shared<Average>(mother, -1, 0, 0)},
   m_mutex_soll{},
   m_mutex_state{},
   m_percent{0.0f},
   m_work_done{true},
   m_hasMask_actual{false},
   m_hasMask_destin{false},
-  m_new_interpretation{NULL},
+  m_new_transformation{NULL},
   m_needs_reset{false},
   m_needs_soft_reset{false},
   m_id{id} {
-    m_interpretation->add_connection(id, this);
+    m_transformation->add_connection(id, this);
     ready_to_work();
   }
 
@@ -88,21 +88,21 @@ void Segment::revert_influence(){
   intensity = 0;
 
   /* faster:?
-  if( m_interpretation->getTypenumber() == 0 || m_interpretation->getTypenumber() == 1 || m_interpretation->getTypenumber() == 8){
+  if( m_transformation->getTypenumber() == 0 || m_transformation->getTypenumber() == 1 || m_transformation->getTypenumber() == 8){
     if(m_uni_fac != 0)
       influence = (m_values_abs * ((float) 1 / ((float) m_uni_fac))) * m_intensity_local_actual * m_intensity_global_actual;
     else
       skip = true;
     intensity = m_intensity_global_actual;
   }
-  else if(m_interpretation->getTypenumber() == 2 || m_interpretation->getTypenumber() == 3 || m_interpretation->getTypenumber() == 4 || m_interpretation->getTypenumber() == 5 || m_interpretation->getTypenumber() == 6  || m_interpretation->getTypenumber() == 7 || m_interpretation->getTypenumber() == 9){
+  else if(m_transformation->getTypenumber() == 2 || m_transformation->getTypenumber() == 3 || m_transformation->getTypenumber() == 4 || m_transformation->getTypenumber() == 5 || m_transformation->getTypenumber() == 6  || m_transformation->getTypenumber() == 7 || m_transformation->getTypenumber() == 9){
     normalize_factor(influence, factors);
     influence = influence * m_intensity_local_actual * m_intensity_global_actual;
     factors = factors * m_intensity_global_actual;
     intensity = 0;
   }
   else{
-    std::cout<< "revert influence is not allowed yet " << m_interpretation->getTypenumber() << "\n";
+    std::cout<< "revert influence is not allowed yet " << m_transformation->getTypenumber() << "\n";
   }
   */
 
@@ -112,7 +112,7 @@ void Segment::revert_influence(){
     cv::mixChannels(&m_mask, 1, &tmp_mask, 1, from_to, 3);
     factors = factors.mul(tmp_mask);
     influence = influence.mul(tmp_mask);
-    if( m_interpretation->getTypenumber() == 0 || m_interpretation->getTypenumber() == 1 || m_interpretation->getTypenumber() == 8){
+    if( m_transformation->getTypenumber() == 0 || m_transformation->getTypenumber() == 1 || m_transformation->getTypenumber() == 8){
       intensity = 0;
       factors = tmp_mask * m_intensity_global_actual;
     }
@@ -140,7 +140,7 @@ void Segment::upload_influence(){
   factors = factors * m_intensity_global_actual;
   intensity = 0;
   /*
-  if(m_interpretation->get_upload_specification() == 0){
+  if(m_transformation->get_upload_specification() == 0){
     if(m_uni_fac != 0)
       influence = (m_values_abs * ((float) 1 / ((float) m_uni_fac))) * m_intensity_local_actual * m_intensity_global_actual;
     else
@@ -148,14 +148,14 @@ void Segment::upload_influence(){
 
     intensity = m_intensity_global_actual;
   }
-  else if(m_interpretation->get_upload_specification() == 1){
+  else if(m_transformation->get_upload_specification() == 1){
     normalize_factor(influence, factors);
     influence = influence * m_intensity_local_actual * m_intensity_global_actual;
     factors = factors * m_intensity_global_actual;
     intensity = 0;
   }
   else{
-    std::cout<< "upload influence is not allowed yet " << m_interpretation->getTypenumber() << "\n";
+    std::cout<< "upload influence is not allowed yet " << m_transformation->getTypenumber() << "\n";
   }
   */
 
@@ -167,7 +167,7 @@ void Segment::upload_influence(){
     cv::mixChannels(&m_mask, 1, &tmp_mask, 1, from_to, 3);
     factors = factors.mul(tmp_mask);
     influence = influence.mul(tmp_mask);
-    if( m_interpretation->getTypenumber() == 0 || m_interpretation->getTypenumber() == 1 || m_interpretation->getTypenumber() == 8){
+    if( m_transformation->getTypenumber() == 0 || m_transformation->getTypenumber() == 1 || m_transformation->getTypenumber() == 8){
       intensity = 0;
       factors = tmp_mask * m_intensity_global_actual;
     }
@@ -197,14 +197,14 @@ bool Segment::work(int& work_size){
   m_mutex_soll.lock();
 
   //set new interpetation:
-  if(m_new_interpretation != NULL) {
+  if(m_new_transformation != NULL) {
 
       revert_influence();
       reset();
-      m_interpretation->delete_connection(m_id);
-      m_interpretation = m_new_interpretation;
-      m_interpretation->add_connection(m_id, this);
-      m_new_interpretation = NULL;
+      m_transformation->delete_connection(m_id);
+      m_transformation = m_new_transformation;
+      m_transformation->add_connection(m_id, this);
+      m_new_transformation = NULL;
   }
   //check wether mask is on/off:
   if(m_hasMask_actual!=m_hasMask_destin)
@@ -213,7 +213,7 @@ bool Segment::work(int& work_size){
     m_hasMask_actual=m_hasMask_destin;
     upload_influence();
   }
-  //interpretation need reset:
+  //transformation need reset:
   if(m_needs_reset) {
     revert_influence(); //dont know?
     reset();
@@ -231,20 +231,20 @@ bool Segment::work(int& work_size){
   m_mutex_soll.unlock();
 
   if(work_size > 0) {
-    if(m_interpretation->get_calculation_specification() == 0){
+    if(m_transformation->get_calculation_specification() == 0){
       state = interpret_free( work_size );
     }
-    else if(m_interpretation->get_calculation_specification() == 1){
+    else if(m_transformation->get_calculation_specification() == 1){
       state = interpret_extending( work_size );
     }
-    else if(m_interpretation->get_calculation_specification() == 2){
+    else if(m_transformation->get_calculation_specification() == 2){
       state = interpret_one_way( work_size );
     }
-    else if(m_interpretation->get_calculation_specification() == 3){
+    else if(m_transformation->get_calculation_specification() == 3){
       state = interpret_directed( work_size );
     }
     else{
-      std::cout<<"Other interpretation traversal not implemnted yet. \n";
+      std::cout<<"Other transformation traversal not implemnted yet. \n";
     }
 
     m_mutex_soll.lock();
@@ -275,14 +275,14 @@ bool Segment::work(int& work_size){
   return state;
 }
 
-void Segment::set_interpretation(std::shared_ptr<Interpretation> interpret){
-  if(m_interpretation->get_id() == interpret->get_id()) {
-    std::cout << "the just set interpretation is already set. \n";
+void Segment::set_transformation(std::shared_ptr<Transformation> interpret){
+  if(m_transformation->get_id() == interpret->get_id()) {
+    std::cout << "the just set transformation is already set. \n";
   }
   else {
 
     m_mutex_soll.lock();
-    m_new_interpretation = interpret;
+    m_new_transformation = interpret;
     m_mutex_soll.unlock();
     std::cout << "\t > recalculating Segment\n";
     ready_to_work();
@@ -297,7 +297,7 @@ float Segment::get_progress(){
   return out;
 }
 
-void Segment::update_interpretation(){
+void Segment::update_transformation(){
   //is called, when complete recomput
   m_mutex_soll.lock();
   m_needs_reset = true;
@@ -306,7 +306,7 @@ void Segment::update_interpretation(){
   ready_to_work();
 }
 
-void Segment::trigger_interpretation(){
+void Segment::trigger_transformation(){
   //is called, when complete recomput
   m_mutex_soll.lock();
   m_needs_soft_reset = true;
@@ -405,7 +405,7 @@ bool Segment::interpret_free( int & work_size){
     }
 
     int sign = -1;
-    m_interpretation->calc(m_id, m_frame_start_actual, length, sign, m_values_abs, m_uni_fac, m_values_fac);
+    m_transformation->calc(m_id, m_frame_start_actual, length, sign, m_values_abs, m_uni_fac, m_values_fac);
     work_size -= length;
     m_frame_start_actual += length;
   }
@@ -419,7 +419,7 @@ bool Segment::interpret_free( int & work_size){
     }
 
     int sign = 1;
-    m_interpretation->calc(m_id, startpoint, length, sign, m_values_abs, m_uni_fac, m_values_fac);
+    m_transformation->calc(m_id, startpoint, length, sign, m_values_abs, m_uni_fac, m_values_fac);
     work_size -= length;
     m_frame_start_actual -= length;
   }
@@ -443,7 +443,7 @@ bool Segment::interpret_free( int & work_size){
        }
 
        int sign = 1;
-       m_interpretation->calc(m_id, m_frame_last_actual, length, sign, m_values_abs, m_uni_fac, m_values_fac);
+       m_transformation->calc(m_id, m_frame_last_actual, length, sign, m_values_abs, m_uni_fac, m_values_fac);
        work_size -= length;
        m_frame_last_actual += length;
      }
@@ -457,7 +457,7 @@ bool Segment::interpret_free( int & work_size){
        }
 
        int sign =- 1;
-       m_interpretation->calc(m_id, startpoint, length, sign, m_values_abs, m_uni_fac, m_values_fac);
+       m_transformation->calc(m_id, startpoint, length, sign, m_values_abs, m_uni_fac, m_values_fac);
        work_size -= length;
        m_frame_last_actual -= length;
      }
@@ -525,7 +525,7 @@ bool Segment::interpret_extending( int & work_size){
     // -1 indicates late merge:
     // first calculate overplotting for work length
     // and then insert all pixels to result img & fac, that aren't already used
-    m_interpretation->calc(m_id, startpoint, length, sign, m_values_abs, m_uni_fac, m_values_fac);
+    m_transformation->calc(m_id, startpoint, length, sign, m_values_abs, m_uni_fac, m_values_fac);
     work_size -= length;
     m_frame_start_actual -= length;
   }
@@ -549,7 +549,7 @@ bool Segment::interpret_extending( int & work_size){
        }
 
        int sign = 1;
-       m_interpretation->calc(m_id, m_frame_last_actual, length, sign, m_values_abs, m_uni_fac, m_values_fac);
+       m_transformation->calc(m_id, m_frame_last_actual, length, sign, m_values_abs, m_uni_fac, m_values_fac);
        work_size -= length;
        m_frame_last_actual += length;
      }
@@ -633,7 +633,7 @@ bool Segment::interpret_one_way( int & work_size){
        }
 
        int sign = 1;
-       m_interpretation->calc(m_id, m_frame_last_actual, length, sign, m_values_abs, m_uni_fac, m_values_fac);
+       m_transformation->calc(m_id, m_frame_last_actual, length, sign, m_values_abs, m_uni_fac, m_values_fac);
        work_size -= length;
        m_frame_last_actual += length;
      }
@@ -698,9 +698,9 @@ bool Segment::interpret_directed( int & work_size){
        }
 
 
-       Paint& interpretation = dynamic_cast<Paint&>(*m_interpretation);
-       interpretation.reset_routine(m_values_abs, m_values_fac, m_id);
-       int new_frame = interpretation.get_time_min(m_frame_last_actual,m_id);
+       Paint& transformation = dynamic_cast<Paint&>(*m_transformation);
+       transformation.reset_routine(m_values_abs, m_values_fac, m_id);
+       int new_frame = transformation.get_time_min(m_frame_last_actual,m_id);
        std::cout<<"m_frame_last_actual "<< m_frame_last_actual<<" \n";
 
        if( new_frame == -1){
@@ -719,7 +719,7 @@ bool Segment::interpret_directed( int & work_size){
          m_frame_start_actual = dest_start;
        }
        else{
-         //jump to frame desired by interpretation
+         //jump to frame desired by transformation
          m_frame_last_actual = new_frame;
        }
 
@@ -738,7 +738,7 @@ bool Segment::interpret_directed( int & work_size){
          }
 
          int sign = 1;
-         m_interpretation->calc(m_id, m_frame_last_actual, length, sign, m_values_abs, m_uni_fac, m_values_fac);
+         m_transformation->calc(m_id, m_frame_last_actual, length, sign, m_values_abs, m_uni_fac, m_values_fac);
          work_size -= length;
          m_frame_last_actual += length;
        }
@@ -835,7 +835,7 @@ void Segment::manipulate(int start, int end, float local_i, float global_i, bool
   end += 1;//including the end frame to calculation
   m_mutex_soll.lock();
   m_frame_start_destin = start;
-  if(m_frame_last_destin != end && m_interpretation->get_calculation_specification() == 2){
+  if(m_frame_last_destin != end && m_transformation->get_calculation_specification() == 2){
     // any change needs new time map!
     m_needs_reset = true;
   }

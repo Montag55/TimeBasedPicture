@@ -36,7 +36,7 @@ ipcMain.on("resizeSplash", (event, arg) => {
   win.setSize(800, 500);
 })
 
-ipcMain.on("addInterpretation", (event, arg) => {
+ipcMain.on("addTransformation", (event, arg) => {
   let arr = [];
   Object.keys(arg).forEach(function (key) {
     arr.push(arg[key]);
@@ -44,20 +44,20 @@ ipcMain.on("addInterpretation", (event, arg) => {
 
   console.log(arr);
 
-  let id = wrapper.add_interpretation.apply(null, arr);
+  let id = wrapper.add_transformation.apply(null, arr);
 
-  event.sender.send('addedInterpretation', id)
+  event.sender.send('addedTransformation', id)
   //console.log(id);
 })
 
-ipcMain.on("manipulateInterpretation", (event, arg) => {
+ipcMain.on("manipulateTransformation", (event, arg) => {
   let arr = [];
   Object.keys(arg).forEach(function (key) {
     arr.push(arg[key]);
   });
   console.log(arr);
 
-  wrapper.manipulate_interpretation.apply(null, arr);
+  wrapper.manipulate_transformation.apply(null, arr);
 
 })
 

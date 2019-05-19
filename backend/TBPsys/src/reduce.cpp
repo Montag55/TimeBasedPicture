@@ -4,13 +4,13 @@
 #include <string.h>
 #include <vector>
 
-#include <../include/interpretation.hpp>
+#include <../include/transformation.hpp>
 #include <../include/reduce.hpp>
 #include <../include/base.hpp>
 
 
 Reduce::Reduce( std::shared_ptr<Base> mother, int id, cv::Mat ref, float threshhold, int modi, int offset, int stride):
-Interpretation{ mother, id,  offset, stride},
+Transformation{ mother, id,  offset, stride},
 m_reference{ref},
 m_threshhold{threshhold},
 m_modi{modi},
@@ -24,7 +24,7 @@ m_pnt_max{mother->get_max_Point()}
 }
 
 Reduce::~Reduce(){
-  //std::cout<<"deleting interpretation-boost\n";
+  //std::cout<<"deleting transformation-boost\n";
 }
 
 int Reduce::getTypenumber(){

@@ -39,7 +39,7 @@ class PaintMask {
         this.canvas.addEventListener('mousemove', (function (e) {
             if (this.showMask.checked === false) {
                 return;
-            }           
+            }
             if (this.left) {
                 this.change = true;
                 this.context.globalCompositeOperation = 'source-over';
@@ -65,15 +65,15 @@ class PaintMask {
             this.left = false;
             this.right = false;
             if (this.change === true) {
-                if (typeof (Interpretations.getActive()) !== 'number') {
+                if (typeof (Transformations.getActive()) !== 'number') {
                     return;
                 }
                 let dataUrl = this.canvas.toDataURL('image/png');
                 let base64Data = dataUrl.replace(/^data:image\/png;base64,/, "");
-                fs.writeFile(`maskPaintInterpretation${Interpretations.getActive()}.png`, base64Data, 'base64', function (err) {
+                fs.writeFile(`maskPaintTransformation${Transformations.getActive()}.png`, base64Data, 'base64', function (err) {
                     console.log(err);
                 });
-                Interpretations.update();
+                Transformations.update();
             }
             this.change = false;
         }).bind(this));
@@ -124,16 +124,16 @@ class PaintMask {
             this.update();
         }).bind(this));
     }
-    
+
     aliasedCircle(ctx, xc, yc, r) {  // NOTE: for fill only!
         xc = parseInt(xc);
         yc = parseInt(yc);
         r = parseInt(r);
         var x = r, y = 0, cd = 0;
-      
+
         // middle line
         ctx.rect(xc - x, yc, r<<1, 1);
-      
+
         while (x > y) {
           cd -= (--x) - (++y);
           if (cd < 0) cd += x++;
@@ -175,7 +175,7 @@ class PaintMask {
         this.context.putImageData(data, 0, 0);
         let dataUrl = this.canvas.toDataURL('image/png');
         let base64Data = dataUrl.replace(/^data:image\/png;base64,/, "");
-        fs.writeFile(`maskPaintInterpretation${Interpretations.getActive()}.png`, base64Data, 'base64', function (err) {
+        fs.writeFile(`maskPaintTransformation${Transformations.getActive()}.png`, base64Data, 'base64', function (err) {
             console.log(err);
         });
     }

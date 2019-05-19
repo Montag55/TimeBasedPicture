@@ -4,14 +4,14 @@
 #include <string.h>
 #include <vector>
 
-#include <../include/interpretation.hpp>
+#include <../include/transformation.hpp>
 #include <../include/boostColor.hpp>
 #include <../include/base.hpp>
 #include <../include/utils.hpp>
 
 
 BoostColor::BoostColor( std::shared_ptr<Base> mother, int id, float threshhold, int modi, std::shared_ptr<std::vector<float>> colors, int offset, int stride):
-Interpretation{ mother, id, offset, stride},
+Transformation{ mother, id, offset, stride},
 m_colors{colors},
 m_threshhold{threshhold},
 m_modi{modi},
@@ -26,7 +26,7 @@ m_pnt_max{mother->get_max_Point()}
 }
 
 BoostColor::~BoostColor(){
-  //std::cout<<"deleting interpretation-boost\n";
+  //std::cout<<"deleting transformation-boost\n";
 }
 
 int BoostColor::getTypenumber(){

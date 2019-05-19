@@ -1,14 +1,14 @@
 #ifndef CIRCULARFADE_HPP
 #define CIRCULARFADE_HPP
 #include <math.h>
-#include <../include/interpretation.hpp>
+#include <../include/transformation.hpp>
 #include <../include/base.hpp>
 
 #include <opencv2/opencv.hpp>
 #include <opencv2/core/mat.hpp>
 //we could detect black pixels and print a warning, at th end of calc..?
 
-class Circularfade : public Interpretation{
+class Circularfade : public Transformation{
 public:
   Circularfade(std::shared_ptr<Base> mother, int id, int start, int end, int outer_circle_start, int outer_circle_end, int mode, cv::Vec2f mid, float radius, bool fade_direction, float parameter,int offset, int stride);
   ~Circularfade()                     override;

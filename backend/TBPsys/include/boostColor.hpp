@@ -1,13 +1,13 @@
 #ifndef BOOSTCOLOR_HPP
 #define BOOSTCOLOR_HPP
 #include <math.h>
-#include <../include/interpretation.hpp>
+#include <../include/transformation.hpp>
 #include <../include/base.hpp>
 
 #include <opencv2/opencv.hpp>
 #include <opencv2/core/mat.hpp>
 
-class BoostColor : public Interpretation{
+class BoostColor : public Transformation{
 public:
   BoostColor(std::shared_ptr< Base > mother, int id, float threshhold, int modi, std::shared_ptr<std::vector<float>> color, int offset, int stride);
   ~BoostColor()                       override;

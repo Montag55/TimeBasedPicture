@@ -1,5 +1,5 @@
 let Edit = (function () {
-    let anchor, name, start, end, segment, edit_id, interpretations, global_i, local_i, active;
+    let anchor, name, start, end, segment, edit_id, transformations, global_i, local_i, active;
 
     function init() {
         anchor = document.querySelector('.edit');
@@ -16,7 +16,7 @@ let Edit = (function () {
         end.max = MAX_FRAMES;
         end.min = 1;
         local_i.step = 0.01;
-        global_i.step = 0.01;  
+        global_i.step = 0.01;
         active = 0;
 
         start.addEventListener('change', update);
@@ -27,9 +27,9 @@ let Edit = (function () {
             if (select.value == -1) {
                 return;
             }
-            Interpretations.connect(active, select.value);
+            Transformations.connect(active, select.value);
             segment = Segments.getSegment(active);
-            segment.interpretation = select.value;
+            segment.transformation = select.value;
         });
     }
 
@@ -42,7 +42,7 @@ let Edit = (function () {
             // local_i = segment.local_i;
             global_i.value = segment.global_i;
             local_i.value  = segment.local_i;
-            select.value = segment.interpretation || -1;
+            select.value = segment.transformation || -1;
             edit_id = id;
             name.innerText = 'segment_' + id;
             active = id;
@@ -57,14 +57,14 @@ let Edit = (function () {
         Segments.setSegment(edit_id,  segment);
     }
 
-    function addInterpretation(name, id) {
+    function addTransformation(name, id) {
         let option = document.createElement('option');
         option.innerText = name;
         option.value = id;
         select.appendChild(option);
     }
 
-    function updateInterpretation(name, id) {
+    function updateTransformation(name, id) {
         select.querySelectorAll('option').forEach(function (entry) {
             if (entry.value == id) {
                 entry.innerText = name;
@@ -79,8 +79,8 @@ let Edit = (function () {
     return {
         init: init,
         show: show,
-        addInterpretation: addInterpretation,
-        updateInterpretation: updateInterpretation,
+        addTransformation: addTransformation,
+        updateTransformation: updateTransformation,
         getActive: getActive
     };
 }());

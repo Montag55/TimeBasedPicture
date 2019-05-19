@@ -4,12 +4,12 @@
 #include <string.h>
 #include <vector>
 
-#include <../include/interpretation.hpp>
+#include <../include/transformation.hpp>
 #include <../include/average.hpp>
 #include <../include/base.hpp>
 
 Average::Average(std::shared_ptr<Base> mother, int id, int offset, int stride):
-Interpretation{mother, id,  offset, stride}
+Transformation{mother, id,  offset, stride}
 {
   m_type                  = 0;  //avg
   m_calc_specification    = 0;  //free

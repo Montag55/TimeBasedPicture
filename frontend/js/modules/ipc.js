@@ -16,7 +16,7 @@ ipcRenderer.on('newSegment', (event, arg) => {
 
 ipcRenderer.on('update', (event, arg) => {
 
-    
+
 });
 
 ipcRenderer.on('init', (event, arg) => {
@@ -29,20 +29,20 @@ ipcRenderer.on('init', (event, arg) => {
     Timeline.init(path, start, end, width, height);
 });
 
-ipcRenderer.on('addedInterpretation', (event, arg) => {
-    Interpretations.addId(arg);
+ipcRenderer.on('addedTransformation', (event, arg) => {
+    Transformations.addId(arg);
 });
 
-function requestConnect(segmentId, interpretationId) {
-    ipcRenderer.send('connect', JSON.stringify([segmentId, interpretationId]));
+function requestConnect(segmentId, transformationId) {
+    ipcRenderer.send('connect', JSON.stringify([segmentId, transformationId]));
 }
 
-function requestManipulateInterpretation() {
-    ipcRenderer.send('manipulateInterpretation', arguments)
+function requestManipulateTransformation() {
+    ipcRenderer.send('manipulateTransformation', arguments)
 }
 
-function requestAddInterpretation() {
-    ipcRenderer.send('addInterpretation', arguments)
+function requestAddTransformation() {
+    ipcRenderer.send('addTransformation', arguments)
 }
 
 function requestAdd() {

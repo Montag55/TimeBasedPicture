@@ -1,0 +1,378 @@
+[
+    {
+        "name": "Average",
+        "id": 0,
+        "types": [
+            {
+                "name": "offset",
+                "type": "number_edit",
+                "min": 0,
+                "max": 100,
+                "step": 1
+            },
+            {
+                "name": "stride",
+                "type": "number_edit",
+                "min": 0,
+                "max": 100,
+                "step": 1
+            }
+        ]
+    },
+    {
+        "name": "Transfer Function",
+        "id": 1,
+        "types": [
+            {
+                "name": "offset",
+                "type": "number_edit",
+                "min": 0,
+                "max": 100,
+                "step": 1
+            },
+            {
+                "name": "stride",
+                "type": "number_edit",
+                "min": 0,
+                "max": 100,
+                "step": 1
+            },
+            {
+                "name": "start",
+                "type": "number_edit",
+                "min": 0,
+                "max": 0,
+                "step": 1
+            },
+            {
+                "name": "transfer",
+                "type": "transfer"
+            }
+        ]
+    },
+    {
+        "name": "Overplotting",
+        "id": 2,
+        "types": [
+            {
+                "name": "offset",
+                "type": "number_edit",
+                "min": 0,
+                "max": 100,
+                "step": 1
+            },
+            {
+                "name": "stride",
+                "type": "number_edit",
+                "min": 0,
+                "max": 100,
+                "step": 1
+            },
+            {
+                "name": "ref",
+                "type": "string"
+            },
+            {
+                "name": "threshold",
+                "type": "number_edit",
+                "min": 0,
+                "max": 255,
+                "step": 1
+            },
+            {
+                "name": "modi",
+                "type": "select",
+                "options": ["RGB", "Monochrom", "C2000", "C94", "C76"]
+            }
+        ]
+    },
+    {
+        "name": "Boost",
+        "id": 3,
+        "types": [
+            {
+                "name": "offset",
+                "type": "number_edit",
+                "min": 0,
+                "max": 100,
+                "step": 1
+            },
+            {
+                "name": "stride",
+                "type": "number_edit",
+                "min": 0,
+                "max": 100,
+                "step": 1
+            },
+            {
+                "name": "ref",
+                "type": "string"
+            },
+            {
+                "name": "threshhold",
+                "type": "number_edit",
+                "min": 0,
+                "max": 255,
+                "step": 1
+            },
+            {
+                "name": "modi",
+                "type": "select",
+                "options": ["RGB", "Monochrom", "C2000", "C94", "C76"]
+            }
+        ]
+    },
+    {
+        "name": "Boost Color",
+        "id": 4,
+        "types": [
+            {
+                "name": "offset",
+                "type": "number_edit",
+                "min": 0,
+                "max": 100,
+                "step": 1
+            },
+            {
+                "name": "stride",
+                "type": "number_edit",
+                "min": 0,
+                "max": 100,
+                "step": 1
+            },
+            {
+                "name": "threshold",
+                "type": "number_edit",
+                "min": 0,
+                "max": 255,
+                "step": 1
+            },
+            {
+                "name": "modi",
+                "type": "select",
+                "options": ["RGB", "Monochrom", "C2000", "C94", "C76"]
+            },
+            {
+                "name": "colors",
+                "type": "color"
+            }
+        ]
+    },
+    {
+        "name": "Reduce",
+        "id": 5,
+        "types": [
+            {
+                "name": "offset",
+                "type": "number_edit",
+                "min": 0,
+                "max": 100,
+                "step": 1
+            },
+            {
+                "name": "stride",
+                "type": "number_edit",
+                "min": 0,
+                "max": 100,
+                "step": 1
+            },
+            {
+                "name": "ref",
+                "type": "string"
+            },
+            {
+                "name": "threshold",
+                "type": "number_edit",
+                "min": 0,
+                "max": 255,
+                "step": 1
+            },
+            {
+                "name": "modi",
+                "type": "select",
+                "options": ["RGB", "Monochrom", "C2000", "C94", "C76"]
+            }
+        ]
+    },
+    {
+        "name": "CircularFade",
+        "id": 6,
+        "types": [
+            {
+                "name": "offset",
+                "type": "number_edit",
+                "min": 0,
+                "max": 100,
+                "step": 1
+            },
+            {
+                "name": "stride",
+                "type": "number_edit",
+                "min": 0,
+                "max": 100,
+                "step": 1
+            },
+            {
+                "name": "start",
+                "type": "number_edit",
+                "min": 0,
+                "max": 50,
+                "step": 1
+            },
+            {
+                "name": "end",
+                "type": "number_edit",
+                "min": 0,
+                "max": 50,
+                "step": 1
+            },
+            {
+                "name": "outer_circle_start",
+                "type": "number_edit",
+                "min": 0,
+                "max": 10000,
+                "step": 1
+            },
+            {
+                "name": "outer_circle_end",
+                "type": "number_edit",
+                "min": 0,
+                "max": 10000,
+                "step": 1
+            },
+            {
+                "name": "modus",
+                "type": "select",
+                "options": ["power", "sigmoid", "linear"]
+            },
+            {
+                "name": "pntx",
+                "type": "number_slider",
+                "min": 0,
+                "max": 1,
+                "step": 0.0001
+            },
+            {
+                "name": "pnty",
+                "type": "number_slider",
+                "min": 0,
+                "max": 1,
+                "step": 0.0001
+            },
+            {
+                "name": "radius",
+                "type": "number_slider",
+                "min": 0,
+                "max": 540,
+                "step": 1
+            },
+            {
+                "name": "fade_dir",
+                "type": "number_slider",
+                "min": 0,
+                "max": 1,
+                "step": 1
+            },
+            {
+                "name": "param",
+                "type": "number_edit",
+                "min": 0,
+                "max": 10,
+                "step": 0.01
+            }
+        ]
+    },
+    {
+        "name": "Time Fade Points",
+        "id": 7,
+        "types": [
+            {
+                "name": "offset",
+                "type": "number_edit",
+                "min": 0,
+                "max": 100,
+                "step": 1
+            },
+            {
+                "name": "stride",
+                "type": "number_edit",
+                "min": 0,
+                "max": 100,
+                "step": 1
+            },
+            {
+                "name": "mode_d",
+                "type": "number_edit",
+                "min": 0,
+                "max": 1,
+                "step": 1
+            },
+            {
+                "name": "num_points",
+                "type": "number_edit",
+                "min": 0,
+                "max": 100,
+                "step": 1
+            },
+            {
+                "name": "parameter",
+                "type": "number_edit",
+                "min": -2,
+                "max": 100,
+                "step": 0.001
+            },
+            {
+                "name": "points",
+                "type": "points"
+            }
+        ]
+    },
+    {
+        "name": "SingleImage",
+        "id": 8,
+        "types": [
+          {
+              "name": "offset",
+              "type": "number_slider",
+              "min": 0,
+              "max": 0,
+              "step": 1
+          },
+          {
+              "name": "stride",
+              "type": "number_slider",
+              "min": 0,
+              "max": 0,
+              "step": 1
+          },
+            {
+                "name": "ref",
+                "type": "string"
+            }
+        ]
+    },
+    {
+        "name": "Paint",
+        "id": 9,
+        "types": [
+            {
+                "name": "offset",
+                "type": "number_edit",
+                "min": 0,
+                "max": 100,
+                "step": 1
+            },
+            {
+                "name": "stride",
+                "type": "number_edit",
+                "min": 0,
+                "max": 100,
+                "step": 1
+            },
+            {
+                "name": "mask",
+                "type": "mask"
+            }
+        ]
+    }
+]

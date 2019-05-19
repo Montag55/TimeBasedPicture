@@ -10,7 +10,7 @@
 
 #include "base.hpp"
 #include "segment.hpp"
-#include "interpretation.hpp"
+#include "transformation.hpp"
 
 #include <opencv2/opencv.hpp>
 #include <opencv2/cvconfig.h>
@@ -142,7 +142,7 @@ void manipulate_segment(const v8::FunctionCallbackInfo<v8::Value>& args){
  * Type 6: in  (int id, offset, stride, int start, int end, int mode, float mid, float radius, int fadeDirection, float parameter)
  * Type 7: in  (int id, offset, stride, int mode_d, int mode_f, float parameter, float x, float y, float start, float end, ... )
  */
-void manipulate_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
+void manipulate_transformation(const v8::FunctionCallbackInfo<v8::Value>& args){
   v8::Isolate* isolate = args.GetIsolate();
   int id = args[0]->IntegerValue();
   int offset = args[1]->IntegerValue();
@@ -151,7 +151,7 @@ void manipulate_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
   std::string correct = "true";
 
   if(typ_i == 0){
-    if(!base->manipulate_interpretation(id, offset, stride)){
+    if(!base->manipulate_transformation(id, offset, stride)){
       correct = "false";
       std::cout << "manipulate_segment() failed. \n";
     }
@@ -165,7 +165,7 @@ void manipulate_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
       weights->push_back(args[idx]->NumberValue());
     }
 
-    if(!base->manipulate_interpretation(id, start, modi, weights, offset, stride)){
+    if(!base->manipulate_transformation(id, start, modi, weights, offset, stride)){
       correct = "false";
       std::cout << "manipulate_segment() failed. \n";
     }
@@ -179,7 +179,7 @@ void manipulate_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
       float threshhold = args[4]->NumberValue();
       int modi = args[5]->IntegerValue();
 
-      if(!base->manipulate_interpretation(id, ref_id, threshhold, modi, offset, stride)){
+      if(!base->manipulate_transformation(id, ref_id, threshhold, modi, offset, stride)){
         correct = "false";
         std::cout << "manipulate_segment() failed. \n";
       }
@@ -188,7 +188,7 @@ void manipulate_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
       float threshhold = args[4]->NumberValue();
       int modi = args[5]->IntegerValue();
 
-      if(!base->manipulate_interpretation(id, ref_file_path, threshhold, modi, offset, stride)){
+      if(!base->manipulate_transformation(id, ref_file_path, threshhold, modi, offset, stride)){
         correct = "false";
         std::cout << "manipulate_segment() failed. \n";
       }
@@ -204,7 +204,7 @@ void manipulate_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
       colors->push_back(args[idx]->NumberValue());
     }
 
-    if(!base->manipulate_interpretation(id, threshhold, modi, colors, offset, stride)){
+    if(!base->manipulate_transformation(id, threshhold, modi, colors, offset, stride)){
       correct = "false";
       std::cout << "manipulate_segment() failed. \n";
     }
@@ -223,7 +223,7 @@ void manipulate_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
 
     cv::Vec2f mid = cv::Vec2f(mid_x, mid_y);
 
-    if(!base->manipulate_interpretation(id, start, end, outer_circle_start, outer_circle_end, mode, mid, radius, fade_dir, parameter, offset, stride)){
+    if(!base->manipulate_transformation(id, start, end, outer_circle_start, outer_circle_end, mode, mid, radius, fade_dir, parameter, offset, stride)){
       correct = "false";
       std::cout << "manipulate_segment() failed. \n";
     }
@@ -243,7 +243,7 @@ void manipulate_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
 
 
 
-    if(!base->manipulate_interpretation(id, mode_distance, mode_function, parameter, points, offset, stride)){
+    if(!base->manipulate_transformation(id, mode_distance, mode_function, parameter, points, offset, stride)){
       correct = "false";
       std::cout << "manipulate_segment() failed. \n";
     }
@@ -251,7 +251,7 @@ void manipulate_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
   else if(typ_i == 8){
     v8::String::Utf8Value param1( args[3]->ToString() );
     std::string file_path = std::string( *param1 );
-    if(!base->manipulate_interpretation(id, file_path)){
+    if(!base->manipulate_transformation(id, file_path)){
       correct = "false";
       std::cout << "manipulate_segment() failed. \n";
     }
@@ -267,7 +267,7 @@ void manipulate_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
       colorTimes->push_back(tmp);
     }
 
-    if(!base->manipulate_interpretation(id, colorTimes, offset, stride)){
+    if(!base->manipulate_transformation(id, colorTimes, offset, stride)){
       correct = "false";
       std::cout << "manipulate_segment() failed. \n";
     }
@@ -302,8 +302,8 @@ void get_segment_progress(const v8::FunctionCallbackInfo<v8::Value>& args){
 }
 
 /**
-* add_interpretation: expects a full interpretation definition(type dependet)
-* returns: interpretation id
+* add_transformation: expects a full transformation definition(type dependet)
+* returns: transformation id
 * Type 0: in  (int type, offset, stride)
 * Type 1: in  (int type, offset, stride, int start, float weight1, float weight2, ...)
 * Type 2: in  (int type, offset, stride, int ref_id, float threshhold)
@@ -316,7 +316,7 @@ void get_segment_progress(const v8::FunctionCallbackInfo<v8::Value>& args){
 * Type 6: in  (int type, offset, stride, int start, int end, int mode, float mid, float radius, int fadeDirection, float parameter)
 * Type 7: in  (int type, offset, stride, int mode_d, int mode_f, float parameter, float x, float y, float start, float end, ... )
 */
-void add_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
+void add_transformation(const v8::FunctionCallbackInfo<v8::Value>& args){
 
   v8::Isolate* isolate = args.GetIsolate();
 
@@ -331,7 +331,7 @@ void add_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
   std::cout << typ_i;
 
   if(typ_i == 0){
-    interpret_id = base->add_interpretation(typ_i, offset, stride);
+    interpret_id = base->add_transformation(typ_i, offset, stride);
   }
   else if(typ_i == 1){
     std::shared_ptr<std::vector<float>> weights = std::make_shared<std::vector<float>>();
@@ -342,21 +342,21 @@ void add_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
       weights->push_back(args[idx]->NumberValue());
     }
 
-    interpret_id = base->add_interpretation(typ_i, offset, stride, start, modi, weights);
+    interpret_id = base->add_transformation(typ_i, offset, stride, start, modi, weights);
   }
   else if(typ_i == 2 || typ_i == 3 || typ_i == 5){
     if(args[3]->IsNumber()){
       int ref_id        = args[3]->IntegerValue();
       float threshhold  = args[4]->NumberValue();
       int modi        = args[5]->IntegerValue();
-      interpret_id = base->add_interpretation(typ_i, offset, stride, ref_id, threshhold, modi);
+      interpret_id = base->add_transformation(typ_i, offset, stride, ref_id, threshhold, modi);
     }
     else{
       v8::String::Utf8Value param1( args[3]->ToString() );
       std::string ref_file_path = std::string( *param1 );
       float threshhold = args[4]->NumberValue();
       int modi        = args[5]->IntegerValue();
-      interpret_id = base->add_interpretation(typ_i, offset, stride, ref_file_path, threshhold, modi);
+      interpret_id = base->add_transformation(typ_i, offset, stride, ref_file_path, threshhold, modi);
     }
   }
   else if(typ_i == 4){
@@ -369,7 +369,7 @@ void add_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
     }
 
     if(colors->size()%3 == 0)
-      interpret_id = base->add_interpretation(typ_i, offset, stride, threshhold, modi, colors);
+      interpret_id = base->add_transformation(typ_i, offset, stride, threshhold, modi, colors);
     else
       std::cout << "\t too few arguments (tpye, float, [r, g, b]*n) \n";
   }
@@ -387,7 +387,7 @@ void add_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
 
     cv::Vec2f mid = cv::Vec2f(mid_x, mid_y);
 
-    interpret_id = base->add_interpretation(typ_i, offset, stride, start, end, outer_circle_start, outer_circle_end, mode, mid, radius, fade_dir, parameter);
+    interpret_id = base->add_transformation(typ_i, offset, stride, start, end, outer_circle_start, outer_circle_end, mode, mid, radius, fade_dir, parameter);
   }
   else if(typ_i == 7){
     std::shared_ptr<std::vector<cv::Vec4f>> points = std::make_shared<std::vector<cv::Vec4f>>();
@@ -401,12 +401,12 @@ void add_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
       points->push_back(tmp);
     }
 
-    interpret_id = base->add_interpretation(typ_i, offset, stride, mode_distance, mode_function, parameter, points);
+    interpret_id = base->add_transformation(typ_i, offset, stride, mode_distance, mode_function, parameter, points);
   }
   else if(typ_i == 8){
     v8::String::Utf8Value param1( args[3]->ToString() );
     std::string file_path = std::string( *param1 );
-    interpret_id = base->add_interpretation(typ_i, file_path);
+    interpret_id = base->add_transformation(typ_i, file_path);
   }
   else if(typ_i == 9){
     std::shared_ptr<std::vector<ColorCoords>> colorTimes = std::make_shared<std::vector<ColorCoords>>();
@@ -419,14 +419,14 @@ void add_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
       colorTimes->push_back(tmp);
     }
 
-    interpret_id = base->add_interpretation(typ_i, offset, stride, colorTimes);
+    interpret_id = base->add_transformation(typ_i, offset, stride, colorTimes);
   }
 
   if(interpret_id >= 0 ) {
     std::cout<<"\n\t > intpretation id: "<< interpret_id << "\n";
   }
   else {
-    std::cout << "add_interpretation() failed. \n";
+    std::cout << "add_transformation() failed. \n";
   }
 
   auto msg = v8::Number::New(isolate, interpret_id);
@@ -437,8 +437,8 @@ void add_interpretation(const v8::FunctionCallbackInfo<v8::Value>& args){
 /**
 * conect: expects a segment's id first and an interpretaton's id second
 * connects the two for computation
-* one segment can have only one interpretations
-* one interpretation can have mutliple segments
+* one segment can have only one transformations
+* one transformation can have mutliple segments
 * returns: true or false
 */
 void connect(const v8::FunctionCallbackInfo<v8::Value>& args){
@@ -446,8 +446,8 @@ void connect(const v8::FunctionCallbackInfo<v8::Value>& args){
 
   //check if values fit!?
   int id_segment        = args[0]->IntegerValue();
-  int id_interpretation = args[1]->IntegerValue();
-  bool correct = base->connect(id_segment, id_interpretation);
+  int id_transformation = args[1]->IntegerValue();
+  bool correct = base->connect(id_segment, id_transformation);
 
   if(!correct){
     std::cout << "connect() failed. \n";
@@ -462,11 +462,11 @@ void Initialize(v8::Local<v8::Object> exports) {
   NODE_SET_METHOD(exports, "add_segment", add_segment);
   NODE_SET_METHOD(exports, "delete_segment", delete_segment);
   NODE_SET_METHOD(exports, "manipulate_segment", manipulate_segment);
-  NODE_SET_METHOD(exports, "manipulate_interpretation", manipulate_interpretation);
+  NODE_SET_METHOD(exports, "manipulate_transformation", manipulate_transformation);
   NODE_SET_METHOD(exports, "get_segment_progress", get_segment_progress);
-  NODE_SET_METHOD(exports, "add_interpretation", add_interpretation);
+  NODE_SET_METHOD(exports, "add_transformation", add_transformation);
   NODE_SET_METHOD(exports, "connect", connect);
-  //Todo: NODE_SET_METHOD(exports, "manipulate_interpretation", manipulate_interpretation);
+  //Todo: NODE_SET_METHOD(exports, "manipulate_transformation", manipulate_transformation);
 }
 
 NODE_MODULE(wrapper, Initialize)

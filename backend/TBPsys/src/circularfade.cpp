@@ -5,14 +5,14 @@
 #include <vector>
 #include <algorithm>
 
-#include <../include/interpretation.hpp>
+#include <../include/transformation.hpp>
 #include <../include/circularfade.hpp>
 #include <../include/base.hpp>
 #include <../include/utils.hpp>
 
 
 Circularfade::Circularfade(std::shared_ptr<Base> mother, int id, int start, int end, int outer_circle_start, int outer_circle_end, int mode, cv::Vec2f mid, float radius, bool fade_direction, float parameter, int offset, int stride):
-Interpretation{ mother, id, offset, stride},
+Transformation{ mother, id, offset, stride},
 m_start{start},
 m_end{end},
 m_outer_circle_start{outer_circle_start},
@@ -37,7 +37,7 @@ m_time_map{}
 }
 
 Circularfade::~Circularfade(){
-  //std::cout<<"deleting interpretation-boost\n";
+  //std::cout<<"deleting transformation-boost\n";
 }
 
 int Circularfade::getTypenumber(){

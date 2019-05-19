@@ -1,15 +1,15 @@
 #include <chrono>
 #include <thread>
-#include <../include/interpretation.hpp>
+#include <../include/transformation.hpp>
 #include <../include/timefadepoints.hpp>
 #include <../include/segment.hpp>
 
 #include <string.h>
 #include <vector>
-//            addinterpretation 7 0 0 1 4 2 0 0 0 0 0 1079 0.5 0.5 1919 0 0.7 0.7 1919 1079 0.8 1
+//            addtransformation 7 0 0 1 4 2 0 0 0 0 0 1079 0.5 0.5 1919 0 0.7 0.7 1919 1079 0.8 1
 
 Timefadepoints::Timefadepoints(std::shared_ptr< Base > mother, int id, int mode_d, int num_pnts, float param, std::shared_ptr< std::vector<cv::Vec4f>> points,  int offset, int stride):
-Interpretation{mother, id, offset, stride},
+Transformation{mother, id, offset, stride},
 m_mode_d{mode_d},
 m_num_pnts{num_pnts},
 m_param{param},
@@ -30,7 +30,7 @@ m_time_map{}
 
 
 Timefadepoints::~Timefadepoints(){
-  std::cout<<"\t > deleting interpretation-avg\n";
+  std::cout<<"\t > deleting transformation-avg\n";
 }
 
 int Timefadepoints::getTypenumber(){

@@ -1,13 +1,13 @@
 #ifndef REDUCE_HPP
 #define REDUCE_HPP
 #include <math.h>
-#include <../include/interpretation.hpp>
+#include <../include/transformation.hpp>
 #include <../include/base.hpp>
 
 #include <opencv2/opencv.hpp>
 #include <opencv2/core/mat.hpp>
 
-class Reduce : public Interpretation{
+class Reduce : public Transformation{
 public:
   Reduce(std::shared_ptr< Base > mother, int id, cv::Mat ref, float threshhold, int modi, int offset, int stride);
   ~Reduce()                           override;

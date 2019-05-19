@@ -12,9 +12,9 @@ endif()
 
 
 
-set(SOURCES1 src/terminal-time.cpp src/base.cpp src/segment.cpp src/interpretation.cpp src/average.cpp src/transferfunction.cpp src/timefadepoints.cpp src/boost.cpp src/reduce.cpp src/boostColor.cpp src/utils.cpp src/overplott.cpp src/circularfade.cpp src/singleimage.cpp src/paint.cpp)
-set(SOURCES2 src/testlab.cpp       src/base.cpp src/segment.cpp src/interpretation.cpp src/average.cpp src/transferfunction.cpp src/timefadepoints.cpp src/boost.cpp src/reduce.cpp src/boostColor.cpp src/utils.cpp src/overplott.cpp src/circularfade.cpp src/singleimage.cpp src/paint.cpp)
-set(SOURCES3 src/videolab.cpp       src/base.cpp src/segment.cpp src/interpretation.cpp src/average.cpp src/transferfunction.cpp src/timefadepoints.cpp src/boost.cpp src/reduce.cpp src/boostColor.cpp src/utils.cpp src/overplott.cpp src/circularfade.cpp src/singleimage.cpp src/paint.cpp)
+set(SOURCES1 src/terminal-time.cpp src/base.cpp src/segment.cpp src/transformation.cpp src/average.cpp src/transferfunction.cpp src/timefadepoints.cpp src/boost.cpp src/reduce.cpp src/boostColor.cpp src/utils.cpp src/overplott.cpp src/circularfade.cpp src/singleimage.cpp src/paint.cpp)
+set(SOURCES2 src/testlab.cpp       src/base.cpp src/segment.cpp src/transformation.cpp src/average.cpp src/transferfunction.cpp src/timefadepoints.cpp src/boost.cpp src/reduce.cpp src/boostColor.cpp src/utils.cpp src/overplott.cpp src/circularfade.cpp src/singleimage.cpp src/paint.cpp)
+set(SOURCES3 src/videolab.cpp       src/base.cpp src/segment.cpp src/transformation.cpp src/average.cpp src/transferfunction.cpp src/timefadepoints.cpp src/boost.cpp src/reduce.cpp src/boostColor.cpp src/utils.cpp src/overplott.cpp src/circularfade.cpp src/singleimage.cpp src/paint.cpp)
 
 ################################################################################
 # search

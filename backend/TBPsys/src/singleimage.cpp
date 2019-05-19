@@ -4,12 +4,12 @@
 #include <string.h>
 #include <vector>
 
-#include <../include/interpretation.hpp>
+#include <../include/transformation.hpp>
 #include <../include/singleimage.hpp>
 #include <../include/base.hpp>
 
 Singleimage::Singleimage(std::shared_ptr<Base> mother, int id, cv::Mat image):
-Interpretation{mother, id, 0, 0},
+Transformation{mother, id, 0, 0},
 m_image{image}
 {
   m_type                  = 8;  //singel image

@@ -1,6 +1,6 @@
 #include <chrono>
 #include <thread>
-#include <../include/interpretation.hpp>
+#include <../include/transformation.hpp>
 #include <../include/transferfunction.hpp>
 #include <../include/segment.hpp>
 
@@ -9,7 +9,7 @@
 //Transferfunction(VideoCapture& vid, int img_type, int id, int start_pnt,  std::shared_ptr<std::vector<float>> weights);
 
 Transferfunction::Transferfunction(std::shared_ptr<Base> mother, int id,  int start_pnt,  std::shared_ptr< std::vector< float > > points, int offset, int stride):
-Interpretation{mother, id, offset, stride},
+Transformation{mother, id, offset, stride},
 m_points{points},
 m_start_pnt{start_pnt},
 m_weight_map{}
@@ -21,7 +21,7 @@ m_weight_map{}
 
 
 Transferfunction::~Transferfunction(){
-  std::cout<<"\t > deleting interpretation-avg\n";
+  std::cout<<"\t > deleting transformation-avg\n";
 }
 
 int Transferfunction::getTypenumber(){

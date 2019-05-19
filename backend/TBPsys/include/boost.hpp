@@ -1,14 +1,14 @@
 #ifndef BOOST_HPP
 #define BOOST_HPP
 #include <math.h>
-#include <../include/interpretation.hpp>
+#include <../include/transformation.hpp>
 #include <../include/base.hpp>
 
 #include <opencv2/opencv.hpp>
 #include <opencv2/core/mat.hpp>
 //we could detect black pixels and print a warning, at th end of calc..?
 
-class Boost : public Interpretation{
+class Boost : public Transformation{
 public:
   Boost(std::shared_ptr< Base > mother, int id,  cv::Mat ref, float threshhold, int modi, int offset, int stride);
   ~Boost()                        override;

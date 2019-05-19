@@ -60,37 +60,37 @@
     display: block;
 }
 
-.preview .interpretations {
+.preview .transformations {
     width: 95%;
     height: 100%;
     margin: auto;
     margin-top: 10%;
 }
 
-.preview .aside .interpretations select {
+.preview .aside .transformations select {
     margin-left: 0%;
 }
 
-.preview .interpretations .container {
+.preview .transformations .container {
     max-height: 60%;
     height: 40%;
     overflow-y: scroll;
     background-color: var(--gray-900);
 }
 
-.preview .interpretations .container .instance {
+.preview .transformations .container .instance {
     width: 100%;
     height: 20%;
     background: linear-gradient(to bottom, var(--teal-A700), #28C5AF);
 }
 
-.preview .interpretations .container .interpretation {
+.preview .transformations .container .transformation {
     width: 100%;
     height: 20%;
     background-color: var(--teal-A700);
 }
 
-.preview .interpretations .container .interpretation h1 {
+.preview .transformations .container .transformation h1 {
     color: white;
 }
 
@@ -125,7 +125,7 @@
 
 .paintMask .color.active{
     border: 0px solid red;
-    outline: 1px solid white;   
+    outline: 1px solid white;
 }
 
 .preview .editor canvas {
@@ -191,7 +191,7 @@
 }
 
 .preview .aside select {
-    width: 90%; 
+    width: 90%;
     height: 2vh;
     margin-left: 4%;
 }

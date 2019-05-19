@@ -4,17 +4,17 @@
 #include <string.h>
 #include <vector>
 
-#include <../include/interpretation.hpp>
+#include <../include/transformation.hpp>
 #include <../include/paint.hpp>
 #include <../include/base.hpp>
 #include <../include/utils.hpp>
 
-// addinterpretation 9 0 0 0 0 255 0 10 0 255 0 40 50 255 0 0 80 90 255 255 0 0 100 0 255 255 50 50
+// addtransformation 9 0 0 0 0 255 0 10 0 255 0 40 50 255 0 0 80 90 255 255 0 0 100 0 255 255 50 50
 //TODO:
 //  -only reset calc after manipulation at necessary pixels
 
 Paint::Paint(std::shared_ptr< Base > mother, int id, std::shared_ptr<std::vector<ColorCoords>> colorTimes , int offset, int stride):
-Interpretation{ mother, id, offset, stride},
+Transformation{ mother, id, offset, stride},
 m_time_mat{},
 m_pnt_min{mother->get_min_Point()},
 m_pnt_max{mother->get_max_Point()},
@@ -39,7 +39,7 @@ m_seg_ist{}
 }
 
 Paint::~Paint(){
-  //std::cout<<"deleting interpretation-boost\n";
+  //std::cout<<"deleting transformation-boost\n";
 }
 
 int Paint::getTypenumber(){
@@ -51,14 +51,14 @@ int Paint::get_calculation_specification(){
 }
 
 void Paint::update_Mask(){
-  m_mask = cv::imread("maskPaintInterpretation" + std::to_string(get_id()) + ".png");
+  m_mask = cv::imread("maskPaintTransformation" + std::to_string(get_id()) + ".png");
   int number_of_tries= 10;
   int i=1;
   while(m_mask.empty() && i<10)
   {
     std::cout<<"trying to load mask another time: "<<i<<"\n";
     std::this_thread::sleep_for(std::chrono::milliseconds(50));
-    m_mask = cv::imread("maskPaintInterpretation" + std::to_string(get_id()) + ".png");
+    m_mask = cv::imread("maskPaintTransformation" + std::to_string(get_id()) + ".png");
     i++;
   }
 

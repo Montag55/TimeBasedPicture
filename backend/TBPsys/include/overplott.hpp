@@ -1,14 +1,14 @@
 #ifndef OVERPLOTT_HPP
 #define OVERPLOTT_HPP
 #include <math.h>
-#include <../include/interpretation.hpp>
+#include <../include/transformation.hpp>
 #include <../include/base.hpp>
 
 #include <opencv2/opencv.hpp>
 #include <opencv2/core/mat.hpp>
 //we could detect black pixels and print a warning, at th end of calc..?
 
-class Overplott : public Interpretation{
+class Overplott : public Transformation{
 public:
   Overplott(std::shared_ptr< Base > mother, int id, cv::Mat ref, float threshhold, int modi, int offset, int stride);
   ~Overplott()                        override;

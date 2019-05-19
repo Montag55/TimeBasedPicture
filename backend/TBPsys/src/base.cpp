@@ -24,7 +24,7 @@ Base::Base(std::string const& video_name) :
   m_mutex_update{},
   m_mutex_result{},
   m_segments{std::vector<std::shared_ptr<Segment>>()},
-  m_interpretations{std::vector<std::shared_ptr<Interpretation>>()}
+  m_transformations{std::vector<std::shared_ptr<Transformation>>()}
   {
     m_pnt_min = cv::Point(0, 0);
     m_pnt_max = cv::Point(m_video->get(CV_CAP_PROP_FRAME_WIDTH), m_video->get(CV_CAP_PROP_FRAME_HEIGHT));
@@ -44,7 +44,7 @@ Base::Base(std::string const& video_name) :
 
 Base::~Base(){
   std::cout << "Base-Destruction: \n";
-  m_interpretations.clear();
+  m_transformations.clear();
   m_segments.clear();
 }
 
@@ -153,7 +153,7 @@ bool Base::manipulate_segment(int id, int start, int end, float local_i, float g
   return true;
 }
 
-bool Base::manipulate_interpretation(int id, std::string file_path){
+bool Base::manipulate_transformation(int id, std::string file_path){
   cv::Mat image = cv::imread(file_path);
 
   if(image.empty()){
@@ -164,31 +164,31 @@ bool Base::manipulate_interpretation(int id, std::string file_path){
     image.convertTo(image, m_img_type );   //do this for the whole video right at the start!?
   }
 
-  if(m_interpretations[id]->getTypenumber() == 8 /*SingleImage*/){
-    Singleimage& interpretation = dynamic_cast<Singleimage&>(*m_interpretations[id]);
-    interpretation.manipulate(image);
+  if(m_transformations[id]->getTypenumber() == 8 /*SingleImage*/){
+    Singleimage& transformation = dynamic_cast<Singleimage&>(*m_transformations[id]);
+    transformation.manipulate(image);
   }
 
   return true;
 }
 
-bool Base::manipulate_interpretation(int id, int offset, int stride){
-  if(m_interpretations[id]->getTypenumber() == 0){
-    Average& interpretation = dynamic_cast<Average&>(*m_interpretations[id]);
-    interpretation.manipulate(offset, stride);
+bool Base::manipulate_transformation(int id, int offset, int stride){
+  if(m_transformations[id]->getTypenumber() == 0){
+    Average& transformation = dynamic_cast<Average&>(*m_transformations[id]);
+    transformation.manipulate(offset, stride);
   }
   return true;
 }
 
-bool Base::manipulate_interpretation(int id, std::shared_ptr<std::vector<ColorCoords>> colorTimes, int offset, int stride){
-  if(m_interpretations[id]->getTypenumber() == 9){
-    Paint& interpretation = dynamic_cast<Paint&>(*m_interpretations[id]);
-    interpretation.manipulate(colorTimes, offset, stride);
+bool Base::manipulate_transformation(int id, std::shared_ptr<std::vector<ColorCoords>> colorTimes, int offset, int stride){
+  if(m_transformations[id]->getTypenumber() == 9){
+    Paint& transformation = dynamic_cast<Paint&>(*m_transformations[id]);
+    transformation.manipulate(colorTimes, offset, stride);
   }
   return true;
 }
 
-bool Base::manipulate_interpretation(int id, int ref_id, float threshhold, int modi, int offset, int stride){
+bool Base::manipulate_transformation(int id, int ref_id, float threshhold, int modi, int offset, int stride){
 
   std::string path = " ";
 
@@ -209,23 +209,23 @@ bool Base::manipulate_interpretation(int id, int ref_id, float threshhold, int m
     ref_img.convertTo( ref_img, m_img_type );   //do this for the whole video right at the start!?
   }
 
-  if(m_interpretations[id]->getTypenumber() == 2 /*Overplott*/){
-    Overplott& interpretation = dynamic_cast<Overplott&>(*m_interpretations[id]);
-    interpretation.manipulate(ref_img, threshhold, modi, offset, stride);
+  if(m_transformations[id]->getTypenumber() == 2 /*Overplott*/){
+    Overplott& transformation = dynamic_cast<Overplott&>(*m_transformations[id]);
+    transformation.manipulate(ref_img, threshhold, modi, offset, stride);
   }
-  else if(m_interpretations[id]->getTypenumber() == 3 /*Boost*/){
-    Boost& interpretation = dynamic_cast<Boost&>(*m_interpretations[id]);
-    interpretation.manipulate(ref_img, threshhold, modi, offset, stride);
+  else if(m_transformations[id]->getTypenumber() == 3 /*Boost*/){
+    Boost& transformation = dynamic_cast<Boost&>(*m_transformations[id]);
+    transformation.manipulate(ref_img, threshhold, modi, offset, stride);
   }
-  else if(m_interpretations[id]->getTypenumber() == 5 /*Reduce*/){
-    Reduce& interpretation = dynamic_cast<Reduce&>(*m_interpretations[id]);
-    interpretation.manipulate(ref_img, threshhold, modi, offset, stride);
+  else if(m_transformations[id]->getTypenumber() == 5 /*Reduce*/){
+    Reduce& transformation = dynamic_cast<Reduce&>(*m_transformations[id]);
+    transformation.manipulate(ref_img, threshhold, modi, offset, stride);
   }
 
   return true;
 }
 
-bool Base::manipulate_interpretation(int id, std::string ref_file_path, float threshhold, int modi, int offset, int stride){
+bool Base::manipulate_transformation(int id, std::string ref_file_path, float threshhold, int modi, int offset, int stride){
 
   cv::Mat ref_img = cv::imread(ref_file_path);
 
@@ -237,55 +237,55 @@ bool Base::manipulate_interpretation(int id, std::string ref_file_path, float th
     ref_img.convertTo( ref_img, m_img_type );   //do this for the whole video right at the start!?
   }
 
-  if(m_interpretations[id]->getTypenumber() == 2 /*Overplott*/){
-    Overplott& interpretation = dynamic_cast<Overplott&>(*m_interpretations[id]);
-    interpretation.manipulate(ref_img, threshhold, modi, offset, stride);
+  if(m_transformations[id]->getTypenumber() == 2 /*Overplott*/){
+    Overplott& transformation = dynamic_cast<Overplott&>(*m_transformations[id]);
+    transformation.manipulate(ref_img, threshhold, modi, offset, stride);
   }
-  else if(m_interpretations[id]->getTypenumber() == 3 /*Boost*/){
-    Boost& interpretation = dynamic_cast<Boost&>(*m_interpretations[id]);
-    interpretation.manipulate(ref_img, threshhold, modi, offset, stride);
+  else if(m_transformations[id]->getTypenumber() == 3 /*Boost*/){
+    Boost& transformation = dynamic_cast<Boost&>(*m_transformations[id]);
+    transformation.manipulate(ref_img, threshhold, modi, offset, stride);
   }
-  else if(m_interpretations[id]->getTypenumber() == 5 /*Reduce*/){
-    Reduce& interpretation = dynamic_cast<Reduce&>(*m_interpretations[id]);
-    interpretation.manipulate(ref_img, threshhold, modi, offset, stride);
+  else if(m_transformations[id]->getTypenumber() == 5 /*Reduce*/){
+    Reduce& transformation = dynamic_cast<Reduce&>(*m_transformations[id]);
+    transformation.manipulate(ref_img, threshhold, modi, offset, stride);
   }
 
   return true;
 }
 
-bool Base::manipulate_interpretation(int id, float threshhold, int modi, std::shared_ptr<std::vector<float>> values, int offset, int stride){
+bool Base::manipulate_transformation(int id, float threshhold, int modi, std::shared_ptr<std::vector<float>> values, int offset, int stride){
 
-  if(m_interpretations[id]->getTypenumber() == 1){
-    Transferfunction& interpretation = dynamic_cast<Transferfunction&>(*m_interpretations[id]);
-    interpretation.manipulate(threshhold, values, offset, stride);
+  if(m_transformations[id]->getTypenumber() == 1){
+    Transferfunction& transformation = dynamic_cast<Transferfunction&>(*m_transformations[id]);
+    transformation.manipulate(threshhold, values, offset, stride);
   }
-  else if(m_interpretations[id]->getTypenumber() == 4){
-    BoostColor& interpretation = dynamic_cast<BoostColor&>(*m_interpretations[id]);
-    interpretation.manipulate(threshhold, modi, values, offset, stride);
-  }
-  return true;
-}
-
-bool Base::manipulate_interpretation(int id, int start, int end, int outer_circle_start, int outer_circle_end, int mode, cv::Vec2f mid, float radius, bool fade_direction, float parameter, int offset, int stride){
-
-  if(m_interpretations[id]->getTypenumber() == 6){
-    Circularfade& interpretation = dynamic_cast<Circularfade&>(*m_interpretations[id]);
-    interpretation.manipulate(start, end, outer_circle_start, outer_circle_end, mode, mid, radius, fade_direction, parameter, offset, stride);
+  else if(m_transformations[id]->getTypenumber() == 4){
+    BoostColor& transformation = dynamic_cast<BoostColor&>(*m_transformations[id]);
+    transformation.manipulate(threshhold, modi, values, offset, stride);
   }
   return true;
 }
 
-bool Base::manipulate_interpretation(int id, int mode_distance, int mode_function, float parameter, std::shared_ptr<std::vector<cv::Vec4f>> points, int offset, int stride){
+bool Base::manipulate_transformation(int id, int start, int end, int outer_circle_start, int outer_circle_end, int mode, cv::Vec2f mid, float radius, bool fade_direction, float parameter, int offset, int stride){
 
-  if(m_interpretations[id]->getTypenumber() == 7){
-    Timefadepoints& interpretation = dynamic_cast<Timefadepoints&>(*m_interpretations[id]);
-    interpretation.manipulate(mode_distance, mode_function, parameter, points, offset, stride);
+  if(m_transformations[id]->getTypenumber() == 6){
+    Circularfade& transformation = dynamic_cast<Circularfade&>(*m_transformations[id]);
+    transformation.manipulate(start, end, outer_circle_start, outer_circle_end, mode, mid, radius, fade_direction, parameter, offset, stride);
   }
   return true;
 }
 
-int Base::add_interpretation(int typ_i, std::string file_path){
-  int id = m_interpretations.size();
+bool Base::manipulate_transformation(int id, int mode_distance, int mode_function, float parameter, std::shared_ptr<std::vector<cv::Vec4f>> points, int offset, int stride){
+
+  if(m_transformations[id]->getTypenumber() == 7){
+    Timefadepoints& transformation = dynamic_cast<Timefadepoints&>(*m_transformations[id]);
+    transformation.manipulate(mode_distance, mode_function, parameter, points, offset, stride);
+  }
+  return true;
+}
+
+int Base::add_transformation(int typ_i, std::string file_path){
+  int id = m_transformations.size();
   if(typ_i == 8 /*Singleimage*/){
     cv::Mat image = cv::imread(file_path);
 
@@ -297,35 +297,35 @@ int Base::add_interpretation(int typ_i, std::string file_path){
       image.convertTo(image, m_img_type );   //do this for the whole video right at the start!?
     }
 
-    m_interpretations.push_back(std::make_shared<Singleimage>(shared_from_this(), id, image));
+    m_transformations.push_back(std::make_shared<Singleimage>(shared_from_this(), id, image));
   }
   else{
     id = -1;
-    std::cout<< "Wrong interpretation. \n";
+    std::cout<< "Wrong transformation. \n";
   }
 
   return id;
 }
 
-int Base::add_interpretation(int typ_i, int offset, int stride){
-  std::cout<<"\t > interpretation: ";
-  int id = m_interpretations.size();
+int Base::add_transformation(int typ_i, int offset, int stride){
+  std::cout<<"\t > transformation: ";
+  int id = m_transformations.size();
 
   if(typ_i == 0 /*Average*/){
     std::cout<<"Average\n";
-    m_interpretations.push_back(std::make_shared<Average>(shared_from_this(), id, offset, stride));
+    m_transformations.push_back(std::make_shared<Average>(shared_from_this(), id, offset, stride));
   }
   else{
     id = -1;
-    std::cout<< "Wrong interpretation. \n";
+    std::cout<< "Wrong transformation. \n";
   }
 
   return id;
 }
 
-int Base::add_interpretation(int typ_i, int offset, int stride, std::string ref_file_path, float threshhold, int modi){
-  std::cout<<"\t > interpretation: ";
-  int id = m_interpretations.size();
+int Base::add_transformation(int typ_i, int offset, int stride, std::string ref_file_path, float threshhold, int modi){
+  std::cout<<"\t > transformation: ";
+  int id = m_transformations.size();
 
   if(typ_i == 2 /*Overplott*/){
     std::cout<< "Overplott \n";
@@ -339,7 +339,7 @@ int Base::add_interpretation(int typ_i, int offset, int stride, std::string ref_
       ref_img.convertTo( ref_img, m_img_type );   //do this for the whole video right at the start!?
     }
 
-    m_interpretations.push_back(std::make_shared<Overplott>(shared_from_this(), id, ref_img, threshhold, modi, offset, stride));
+    m_transformations.push_back(std::make_shared<Overplott>(shared_from_this(), id, ref_img, threshhold, modi, offset, stride));
   }
   else if(typ_i == 3 /*Boost*/){
     std::cout<< "Boost \n";
@@ -354,7 +354,7 @@ int Base::add_interpretation(int typ_i, int offset, int stride, std::string ref_
       ref_img.convertTo( ref_img, m_img_type );   //do this for the whole video right at the start!?
     }
 
-    m_interpretations.push_back(std::make_shared<Boost>(shared_from_this(), id, ref_img, threshhold, modi, offset, stride));
+    m_transformations.push_back(std::make_shared<Boost>(shared_from_this(), id, ref_img, threshhold, modi, offset, stride));
   }
   else if(typ_i == 5 /*Reduce*/){
     std::cout<< "Reduce \n";
@@ -369,15 +369,15 @@ int Base::add_interpretation(int typ_i, int offset, int stride, std::string ref_
       ref_img.convertTo( ref_img, m_img_type );   //do this for the whole video right at the start!?
     }
 
-    m_interpretations.push_back(std::make_shared<Reduce>(shared_from_this(), id, ref_img, threshhold, modi, offset, stride));
+    m_transformations.push_back(std::make_shared<Reduce>(shared_from_this(), id, ref_img, threshhold, modi, offset, stride));
   }
 
   return id;
 }
 
-int Base::add_interpretation(int typ_i, int offset, int stride, int ref_id, float threshhold, int modi){
-  std::cout<<"\t > interpretation: ";
-  int id = m_interpretations.size();
+int Base::add_transformation(int typ_i, int offset, int stride, int ref_id, float threshhold, int modi){
+  std::cout<<"\t > transformation: ";
+  int id = m_transformations.size();
 
   if(typ_i == 2 /*Overplott*/){
     std::cout<< "Overplott \n";
@@ -398,7 +398,7 @@ int Base::add_interpretation(int typ_i, int offset, int stride, int ref_id, floa
       ref_img.convertTo( ref_img, m_img_type );   //do this for the whole video right at the start!?
     }
 
-    m_interpretations.push_back(std::make_shared<Overplott>(shared_from_this(), id, ref_img, threshhold, modi, offset, stride));
+    m_transformations.push_back(std::make_shared<Overplott>(shared_from_this(), id, ref_img, threshhold, modi, offset, stride));
   }
   else if(typ_i == 3 /*Boost*/){
     std::cout<< "Boost \n";
@@ -420,7 +420,7 @@ int Base::add_interpretation(int typ_i, int offset, int stride, int ref_id, floa
       ref_img.convertTo( ref_img, m_img_type );   //do this for the whole video right at the start!?
     }
 
-    m_interpretations.push_back(std::make_shared<Boost>(shared_from_this(), id, ref_img, threshhold, modi, offset, stride));
+    m_transformations.push_back(std::make_shared<Boost>(shared_from_this(), id, ref_img, threshhold, modi, offset, stride));
   }
   else if(typ_i == 5 /*Reduce*/){
     std::cout<< "Reduce \n";
@@ -442,55 +442,55 @@ int Base::add_interpretation(int typ_i, int offset, int stride, int ref_id, floa
       ref_img.convertTo( ref_img, m_img_type );   //do this for the whole video right at the start!?
     }
 
-    m_interpretations.push_back(std::make_shared<Reduce>(shared_from_this(), id, ref_img, threshhold, modi, offset, stride));
+    m_transformations.push_back(std::make_shared<Reduce>(shared_from_this(), id, ref_img, threshhold, modi, offset, stride));
   }
   else{
     id = -1;
-    std::cout<< "Wrong interpretation. \n";
+    std::cout<< "Wrong transformation. \n";
   }
 
   return id;
 }
 
-int Base::add_interpretation(int typ_i, int offset, int stride, std::shared_ptr<std::vector<ColorCoords>> colorTimes){
-  std::cout<<"\t > interpretation: ";
-  int id = m_interpretations.size();
+int Base::add_transformation(int typ_i, int offset, int stride, std::shared_ptr<std::vector<ColorCoords>> colorTimes){
+  std::cout<<"\t > transformation: ";
+  int id = m_transformations.size();
 
   if(typ_i == 9 /*Paint*/){
     std::cout<< "Paint \n";
-    m_interpretations.push_back(std::make_shared<Paint>(shared_from_this(), id, colorTimes, offset, stride));
+    m_transformations.push_back(std::make_shared<Paint>(shared_from_this(), id, colorTimes, offset, stride));
   }
   else{
     id = -1;
-    std::cout<< "Wrong interpretation. \n";
+    std::cout<< "Wrong transformation. \n";
   }
 
   return id;
 }
 
-int Base::add_interpretation(int typ_i, int offset, int stride, float threshhold, int modi, std::shared_ptr<std::vector<float>> values){
-  std::cout<<"\t > interpretation: ";
-  int id = m_interpretations.size();
+int Base::add_transformation(int typ_i, int offset, int stride, float threshhold, int modi, std::shared_ptr<std::vector<float>> values){
+  std::cout<<"\t > transformation: ";
+  int id = m_transformations.size();
 
   if (typ_i == 1 ){
     std::cout<<"Transferfunction \n";
-    m_interpretations.push_back(std::make_shared<Transferfunction>(shared_from_this(), id, threshhold, values, offset, stride));
+    m_transformations.push_back(std::make_shared<Transferfunction>(shared_from_this(), id, threshhold, values, offset, stride));
   }
   else if(typ_i == 4 && values->size()%3 == 0){
     std::cout << "BoostColor \n";
-    m_interpretations.push_back(std::make_shared<BoostColor>(shared_from_this(), id, threshhold, modi, values, offset, stride));
+    m_transformations.push_back(std::make_shared<BoostColor>(shared_from_this(), id, threshhold, modi, values, offset, stride));
   }
   else{
     id = -1;
-    std::cout<< "Wrong interpretation. \n";
+    std::cout<< "Wrong transformation. \n";
   }
 
   return id;
 }
 
-int Base::add_interpretation(int typ_i, int offset, int stride, int start, int end, int outer_circle_start, int outer_circle_end, int mode, cv::Vec2f mid, float radius, bool fade_direction, float parameter){
-  std::cout<<"\t > interpretation: ";
-  int id = m_interpretations.size();
+int Base::add_transformation(int typ_i, int offset, int stride, int start, int end, int outer_circle_start, int outer_circle_end, int mode, cv::Vec2f mid, float radius, bool fade_direction, float parameter){
+  std::cout<<"\t > transformation: ";
+  int id = m_transformations.size();
 
   if (typ_i == 6 ){
     std::cout<<"CircularFade \n";
@@ -509,38 +509,38 @@ int Base::add_interpretation(int typ_i, int offset, int stride, int start, int e
       outer_circle_start = tmp;
     }
 
-    m_interpretations.push_back(std::make_shared<Circularfade>(shared_from_this(), id, start, end, outer_circle_start, outer_circle_end, mode, mid, radius, fade_direction, parameter, offset, stride));
+    m_transformations.push_back(std::make_shared<Circularfade>(shared_from_this(), id, start, end, outer_circle_start, outer_circle_end, mode, mid, radius, fade_direction, parameter, offset, stride));
   }
   else{
     id = -1;
-    std::cout<< "Wrong interpretation. \n";
+    std::cout<< "Wrong transformation. \n";
   }
 
   return id;
 }
 
-int Base::add_interpretation(int typ_i, int offset, int stride, int mode_distance, int mode_function, float param, std::shared_ptr<std::vector<cv::Vec4f>> points){
-  std::cout<<"\t > interpretation: ";
-  int id = m_interpretations.size();
+int Base::add_transformation(int typ_i, int offset, int stride, int mode_distance, int mode_function, float param, std::shared_ptr<std::vector<cv::Vec4f>> points){
+  std::cout<<"\t > transformation: ";
+  int id = m_transformations.size();
 
   if (typ_i == 7){
     std::cout<<"TimeFadePoints \n";
-    m_interpretations.push_back(std::make_shared<Timefadepoints>(shared_from_this(), id, mode_distance, mode_function, param, points, offset, stride));
+    m_transformations.push_back(std::make_shared<Timefadepoints>(shared_from_this(), id, mode_distance, mode_function, param, points, offset, stride));
   }
   else{
     id = -1;
-    std::cout<< "Wrong interpretation. \n";
+    std::cout<< "Wrong transformation. \n";
   }
 
   return id;
 }
 
-bool Base::connect(int id_segment, int id_interpretation){
+bool Base::connect(int id_segment, int id_transformation){
   bool correct = false;
   if((id_segment <= m_segments.size() - 1) &&
-     (id_interpretation <= m_interpretations.size() - 1)) {
+     (id_transformation <= m_transformations.size() - 1)) {
 
-    m_segments[id_segment]->set_interpretation(m_interpretations[id_interpretation]);
+    m_segments[id_segment]->set_transformation(m_transformations[id_transformation]);
     correct = true;
   }
 
@@ -668,11 +668,11 @@ void Base::update_result(){
 
   int Base::get_typ_i(int id){
     int i_id = -1;
-    if(m_interpretations.size() < id || id < 0) {
-      std::cout << "\t > interpretation id doesn't exist. \n";
+    if(m_transformations.size() < id || id < 0) {
+      std::cout << "\t > transformation id doesn't exist. \n";
     }
     else{
-      i_id = m_interpretations[id]->getTypenumber();
+      i_id = m_transformations[id]->getTypenumber();
     }
     return i_id;
   }

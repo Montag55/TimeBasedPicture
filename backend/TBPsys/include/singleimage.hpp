@@ -1,12 +1,12 @@
 #ifndef SINGLEIMAGE_HPP
 #define SINGLEIMAGE_HPP
 
-#include <../include/interpretation.hpp>
+#include <../include/transformation.hpp>
 #include <../include/base.hpp>
 
 #include <opencv2/opencv.hpp>
 
-class Singleimage : public Interpretation{
+class Singleimage : public Transformation{
 public:
   Singleimage(std::shared_ptr< Base > mother, int id, cv::Mat image);
   ~Singleimage()                          override;

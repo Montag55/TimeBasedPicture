@@ -4,7 +4,7 @@
 /*
 a SEGMENT is a piece in space and time. it is a kind of volume. it always belongs
 to a base/mother. we can interpret such a segment in different ways. maybe we seperate
-segment and interpretation later...
+segment and transformation later...
 */
 #include <opencv2/opencv.hpp>
 #include <string.h>
@@ -13,7 +13,7 @@ segment and interpretation later...
 class Base;
 #include "struct.hpp"
 #include "base.hpp"
-#include "interpretation.hpp"
+#include "transformation.hpp"
 #include "average.hpp"
 #include "boost.hpp"
 #include "reduce.hpp"
@@ -56,9 +56,9 @@ public:
   void set_local_intensity(float i);
   void set_global_intensity(float i);
   void manipulate(int start, int end, float local_i, float global_i, bool hasMask);
-  void set_interpretation(std::shared_ptr<Interpretation> interpret);
-  void update_interpretation();
-  void trigger_interpretation();
+  void set_transformation(std::shared_ptr<Transformation> interpret);
+  void update_transformation();
+  void trigger_transformation();
   void delete_seg();
   void reset();
   void soft_reset();
@@ -90,8 +90,8 @@ private:
   float         m_intensity_local_actual;
   float         m_intensity_global_actual;
 
-  std::shared_ptr<Interpretation> m_interpretation;
-  std::shared_ptr<Interpretation> m_new_interpretation;
+  std::shared_ptr<Transformation> m_transformation;
+  std::shared_ptr<Transformation> m_new_transformation;
 
   //local values
   cv::Mat       m_values_abs;

@@ -1,12 +1,12 @@
 #ifndef AVG_HPP
 #define AVG_HPP
 
-#include <../include/interpretation.hpp>
+#include <../include/transformation.hpp>
 #include <../include/base.hpp>
 
 #include <opencv2/opencv.hpp>
 
-class Average : public Interpretation{
+class Average : public Transformation{
 public:
   Average(std::shared_ptr< Base > mother, int id, int offset, int stride);
   ~Average()                          override;

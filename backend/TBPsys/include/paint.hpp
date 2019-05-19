@@ -1,14 +1,14 @@
 #ifndef PAINT_HPP
 #define PAINT_HPP
 #include <math.h>
-#include <../include/interpretation.hpp>
+#include <../include/transformation.hpp>
 #include <../include/base.hpp>
 #include <../include/struct.hpp>
 
 #include <opencv2/opencv.hpp>
 #include <opencv2/core/mat.hpp>
 
-class Paint : public Interpretation{
+class Paint : public Transformation{
 public:
   Paint(std::shared_ptr< Base > mother, int id, std::shared_ptr<std::vector<ColorCoords>> colorTimes , int offset, int stride);
   ~Paint()                            override;

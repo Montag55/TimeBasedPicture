@@ -12,7 +12,7 @@
 
 #include "base.hpp"
 #include "segment.hpp"
-#include "interpretation.hpp"
+#include "transformation.hpp"
 #include <opencv2/opencv.hpp>
 
 int main (int argc, char **argv){
@@ -52,7 +52,7 @@ int main (int argc, char **argv){
     int   ref_id      = -1;
     float threshhold  = 0;
 
-    interpret_id  = base->add_interpretation(typ_i, offset, stride);
+    interpret_id  = base->add_transformation(typ_i, offset, stride);
     std::this_thread::sleep_for(std::chrono::milliseconds(100)); //safety reason
 
     base->connect(segment_id, interpret_id);
@@ -114,7 +114,7 @@ int main (int argc, char **argv){
       }
     }
 
-    interpret_id = base->add_interpretation(typ_i, offset, stride, start, -1, points);
+    interpret_id = base->add_transformation(typ_i, offset, stride, start, -1, points);
     std::this_thread::sleep_for(std::chrono::milliseconds(1000)); //safety reason
 
     base->connect(segment_id, interpret_id);
@@ -123,7 +123,7 @@ int main (int argc, char **argv){
     auto start_time = std::chrono::high_resolution_clock::now();
     for (int i = 0; i < number_of_frames; i++){
 
-      // base->manipulate_interpretation(interpret_id, start, -1, (*points3)[i%2], offset, stride);
+      // base->manipulate_transformation(interpret_id, start, -1, (*points3)[i%2], offset, stride);
       // std::this_thread::sleep_for(std::chrono::milliseconds(100)); //safety reason
       base->manipulate_segment(segment_id, startframe + i, endframe + i, local_i, global_i, false);
       std::this_thread::sleep_for(std::chrono::milliseconds(100)); //safety reason
@@ -157,7 +157,7 @@ int main (int argc, char **argv){
     int ref_id_b        = -1;
     std::string file = "/home/lucas/Documents/git/TimeBasedPicture/backend/TBPsys/build/ref.png";
 
-    interpret_id    = base->add_interpretation(typ_i, offset, stride, file, threshhold_b, modi_b);
+    interpret_id    = base->add_transformation(typ_i, offset, stride, file, threshhold_b, modi_b);
     std::this_thread::sleep_for(std::chrono::milliseconds(1000)); //safety reason
 
     base->connect(segment_id, interpret_id);
@@ -166,7 +166,7 @@ int main (int argc, char **argv){
     auto start_time = std::chrono::high_resolution_clock::now();
     for (int i = 0; i < number_of_frames; i++){
 
-      base->manipulate_interpretation(interpret_id, file, threshhold_b + i%2, modi_b, offset, stride);
+      base->manipulate_transformation(interpret_id, file, threshhold_b + i%2, modi_b, offset, stride);
       std::this_thread::sleep_for(std::chrono::milliseconds(100)); //safety reason
 
       bool wait = true;
@@ -198,7 +198,7 @@ int main (int argc, char **argv){
     int ref_id_b        = -1;
     std::string file = "/home/lucas/Documents/git/TimeBasedPicture/backend/TBPsys/build/ref.png";
 
-    interpret_id   = base->add_interpretation(typ_i, offset, stride, file, threshhold_b, modi_b);
+    interpret_id   = base->add_transformation(typ_i, offset, stride, file, threshhold_b, modi_b);
     std::this_thread::sleep_for(std::chrono::milliseconds(1000)); //safety reason
 
     base->connect(segment_id, interpret_id);
@@ -207,7 +207,7 @@ int main (int argc, char **argv){
     auto start_time = std::chrono::high_resolution_clock::now();
     for (int i = 0; i < number_of_frames; i++){
 
-      base->manipulate_interpretation(interpret_id, file, threshhold_b + i%2, modi_b, offset, stride);
+      base->manipulate_transformation(interpret_id, file, threshhold_b + i%2, modi_b, offset, stride);
       std::this_thread::sleep_for(std::chrono::milliseconds(100)); //safety reason
 
       // base->manipulate_segment(segment_id, startframe + i, endframe + i, local_i, global_i_extreme, false);
@@ -245,14 +245,14 @@ int main (int argc, char **argv){
     colors->push_back(1);
     colors->push_back(1);
 
-    interpret_id    = base->add_interpretation(typ_i, offset, stride, threshhold_o, modi_o, colors);
+    interpret_id    = base->add_transformation(typ_i, offset, stride, threshhold_o, modi_o, colors);
     base->connect(segment_id, interpret_id);
     std::this_thread::sleep_for(std::chrono::milliseconds(1000)); //safety reason
 
     auto start_time = std::chrono::high_resolution_clock::now();
     for (int i = 0; i < number_of_frames; i++){
 
-      base->manipulate_interpretation(interpret_id, threshhold_o + i%2, modi_o, colors, offset, stride);
+      base->manipulate_transformation(interpret_id, threshhold_o + i%2, modi_o, colors, offset, stride);
       std::this_thread::sleep_for(std::chrono::milliseconds(100)); //safety reason
 
       // base->manipulate_segment(segment_id, startframe + i, endframe + i, local_i, global_i_extreme, false);
@@ -286,14 +286,14 @@ int main (int argc, char **argv){
     int modi_o          = 0;
     std::string file = "/home/lucas/Documents/git/TimeBasedPicture/backend/TBPsys/build/ref.png";
 
-    interpret_id    = base->add_interpretation(typ_i, offset, stride, file, threshhold_o, modi_o);
+    interpret_id    = base->add_transformation(typ_i, offset, stride, file, threshhold_o, modi_o);
     base->connect(segment_id, interpret_id);
     std::this_thread::sleep_for(std::chrono::milliseconds(1000)); //safety reason
 
     auto start_time = std::chrono::high_resolution_clock::now();
     for (int i = 0; i < number_of_frames; i++){
 
-      // base->manipulate_interpretation(interpret_id, file, threshhold_o + i%2, modi_o, offset, stride);
+      // base->manipulate_transformation(interpret_id, file, threshhold_o + i%2, modi_o, offset, stride);
       // std::this_thread::sleep_for(std::chrono::milliseconds(100)); //safety reason
 
       base->manipulate_segment(segment_id, startframe + i, endframe + i, local_i, global_i_extreme, false);
@@ -336,8 +336,8 @@ int main (int argc, char **argv){
 
     cv::Vec2f mid_c = cv::Vec2f(mid_x, mid_y);
 
-    interpret_id  = base->add_interpretation(typ_i, offset, stride, start_c, end_c, outer_circle_start, outer_circle_end, mode_c, mid_c, radius_c, fade_dir_c, parameter_c);
-    // std::cout << "adding interpretation [ID: " << interpret_id << "] \n" ;
+    interpret_id  = base->add_transformation(typ_i, offset, stride, start_c, end_c, outer_circle_start, outer_circle_end, mode_c, mid_c, radius_c, fade_dir_c, parameter_c);
+    // std::cout << "adding transformation [ID: " << interpret_id << "] \n" ;
     std::this_thread::sleep_for(std::chrono::milliseconds(100)); //safety reason
 
     base->connect(segment_id, interpret_id);
@@ -350,7 +350,7 @@ int main (int argc, char **argv){
       float tmp_rad = 100 / 2 - abs(((int)radius_c + i*3) % 100 - 100 / 2);
       std::cout << "radius: " << tmp_rad << "\n";
 
-      base->manipulate_interpretation(interpret_id, start_c + i, end_c + i, outer_circle_start + i, outer_circle_end + i, mode_c, mid_c, tmp_rad, fade_dir_c, parameter_c, offset, stride);
+      base->manipulate_transformation(interpret_id, start_c + i, end_c + i, outer_circle_start + i, outer_circle_end + i, mode_c, mid_c, tmp_rad, fade_dir_c, parameter_c, offset, stride);
       std::this_thread::sleep_for(std::chrono::milliseconds(200)); //safety reason
 
       base->manipulate_segment(segment_id, startframe + i, endframe + i, local_i, global_i, false);
@@ -427,7 +427,7 @@ int main (int argc, char **argv){
     points->push_back(tmp16);
     points->push_back(tmp17);
 
-    interpret_id = base->add_interpretation(typ_i, offset, stride, mode_distance, num_point, parameter, points);
+    interpret_id = base->add_transformation(typ_i, offset, stride, mode_distance, num_point, parameter, points);
     std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
     base->connect(segment_id, interpret_id);
@@ -447,7 +447,7 @@ int main (int argc, char **argv){
       base->manipulate_segment(segment_id, start_seg + i, end_seg + i, local_i, global_i, false);
       std::this_thread::sleep_for(std::chrono::milliseconds(100)); //safety reason
 
-      base->manipulate_interpretation(interpret_id,  mode_distance, num_point, parameter, points, offset, stride);
+      base->manipulate_transformation(interpret_id,  mode_distance, num_point, parameter, points, offset, stride);
       std::this_thread::sleep_for(std::chrono::milliseconds(100)); //safety reason
 
 

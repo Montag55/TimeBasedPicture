@@ -3,13 +3,13 @@
 
 #include <vector>
 
-#include <../include/interpretation.hpp>
+#include <../include/transformation.hpp>
 #include <../include/utils.hpp>
 
 #include <opencv2/opencv.hpp>
 
 
-class Timefadepoints : public Interpretation{
+class Timefadepoints : public Transformation{
 public:
   //KONSTRUTOREN----------------------------------------------------------------
   Timefadepoints(std::shared_ptr< Base > mother, int id, int mode_distance, int num_pnts, float param, std::shared_ptr< std::vector<cv::Vec4f>> points, int offset, int stride);

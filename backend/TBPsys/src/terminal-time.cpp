@@ -23,7 +23,7 @@ exposure_delta  [int]id   [int]delta
 
 #include "base.hpp"
 #include "segment.hpp"
-#include "interpretation.hpp"
+#include "transformation.hpp"
 
 #include <opencv2/opencv.hpp>
 
@@ -89,14 +89,14 @@ int main (int argc, char **argv){
             std::cout << "add_segment() failed. \n";
           }
         }
-        else if(v[0] == "addinterpretation") {
+        else if(v[0] == "addtransformation") {
           int interpret_id  = -1;
           int typ_i         = std::stoi (v[1]);
           int offset        = std::stoi (v[2]);
           int stride        = std::stoi (v[3]);
 
           if(typ_i == 0 /*Average*/){
-            interpret_id  = base->add_interpretation(typ_i, offset, stride);
+            interpret_id  = base->add_transformation(typ_i, offset, stride);
           }
           else if(typ_i == 1 /*Transferfunction*/){
             std::shared_ptr<std::vector<float>> weights = std::make_shared<std::vector<float>>();
@@ -113,20 +113,20 @@ int main (int argc, char **argv){
               std::cout << (*weights)[i] << ", ";
             }
             std::cout << "]\n";
-            interpret_id  = base->add_interpretation(typ_i, offset, stride, start, modi, weights);
+            interpret_id  = base->add_transformation(typ_i, offset, stride, start, modi, weights);
           }
           else if(typ_i == 2 /*Overplott*/){
             if(std::any_of(v[4].begin(), v[4].begin() + 2, ::isdigit)){
               int ref_id        = std::stoi (v[4]);
               float threshhold  = std::stof (v[5]);
               int modi          = std::stoi (v[6]);
-              interpret_id  = base->add_interpretation(typ_i, offset, stride, ref_id, threshhold, modi);
+              interpret_id  = base->add_transformation(typ_i, offset, stride, ref_id, threshhold, modi);
             }
             else{
               std::string ref_file_path = v[4];
               float threshhold = std::stof(v[5]);
               int modi          = std::stoi (v[6]);
-              interpret_id = base->add_interpretation(typ_i, offset, stride, ref_file_path, threshhold, modi);
+              interpret_id = base->add_transformation(typ_i, offset, stride, ref_file_path, threshhold, modi);
             }
           }
           else if(typ_i == 3 /*Boost*/){
@@ -134,13 +134,13 @@ int main (int argc, char **argv){
               int ref_id        = std::stoi (v[4]);
               float threshhold  = std::stof (v[5]);
               int modi          = std::stoi (v[6]);
-              interpret_id  = base->add_interpretation(typ_i, offset, stride, ref_id, threshhold, modi);
+              interpret_id  = base->add_transformation(typ_i, offset, stride, ref_id, threshhold, modi);
             }
             else{
               std::string ref_file_path = v[4];
               float threshhold = std::stof(v[5]);
               int modi         = std::stoi (v[6]);
-              interpret_id = base->add_interpretation(typ_i, offset, stride, ref_file_path, threshhold, modi);
+              interpret_id = base->add_transformation(typ_i, offset, stride, ref_file_path, threshhold, modi);
             }
           }
           else if(typ_i == 4 /*BoostColor*/){
@@ -153,7 +153,7 @@ int main (int argc, char **argv){
             }
 
             if(colors->size()%3 == 0){
-              interpret_id = base->add_interpretation(typ_i, offset, stride, threshhold, modi, colors);
+              interpret_id = base->add_transformation(typ_i, offset, stride, threshhold, modi, colors);
               std::cout << "\t > threshhold: " << threshhold << "\n";
               std::cout << "\t > colors: ";
               for(unsigned int i = 0; i < colors->size(); i+=3){
@@ -170,13 +170,13 @@ int main (int argc, char **argv){
               int ref_id        = std::stoi (v[4]);
               float threshhold  = std::stof (v[5]);
               int modi          = std::stoi (v[6]);
-              interpret_id  = base->add_interpretation(typ_i, offset, stride, ref_id, threshhold, modi);
+              interpret_id  = base->add_transformation(typ_i, offset, stride, ref_id, threshhold, modi);
             }
             else{
               std::string ref_file_path = v[4];
               float threshhold = std::stof(v[5]);
               int modi          = std::stoi (v[6]);
-              interpret_id = base->add_interpretation(typ_i, offset, stride, ref_file_path, threshhold, modi);
+              interpret_id = base->add_transformation(typ_i, offset, stride, ref_file_path, threshhold, modi);
             }
           }
           else if(typ_i == 6 /*CircularFade*/){
@@ -203,7 +203,7 @@ int main (int argc, char **argv){
             std::cout << "\t > fade direction: " << fade_dir << "\n";
             std::cout << "\t > parameter: " << parameter << "\n";
 
-            interpret_id  = base->add_interpretation(typ_i, offset, stride, start, end, outer_circle_start, outer_circle_end, mode, mid, radius, fade_dir, parameter);
+            interpret_id  = base->add_transformation(typ_i, offset, stride, start, end, outer_circle_start, outer_circle_end, mode, mid, radius, fade_dir, parameter);
           }
           else if(typ_i == 7 /*Timefadepoints*/){
             std::shared_ptr<std::vector<cv::Vec4f>> points = std::make_shared<std::vector<cv::Vec4f>>();
@@ -225,11 +225,11 @@ int main (int argc, char **argv){
               std::cout << (*points)[i] << ", ";
             }
             std::cout << "]\n";
-            interpret_id  = base->add_interpretation(typ_i, offset, stride, mode_distance, mode_function, parameter, points);
+            interpret_id  = base->add_transformation(typ_i, offset, stride, mode_distance, mode_function, parameter, points);
           }
           else if(typ_i == 8 /*Singleimage*/){
             std::string file_path = v[4];
-            interpret_id = base->add_interpretation(typ_i, file_path);
+            interpret_id = base->add_transformation(typ_i, file_path);
           }
           else if(typ_i == 9 /*Paint*/){
             std::shared_ptr<std::vector<ColorCoords>> colorTimes = std::make_shared<std::vector<ColorCoords>>();
@@ -242,7 +242,7 @@ int main (int argc, char **argv){
               colorTimes->push_back(tmp);
             }
 
-            interpret_id = base->add_interpretation(typ_i, offset, stride, colorTimes);
+            interpret_id = base->add_transformation(typ_i, offset, stride, colorTimes);
             std::cout << "\t > ColorTimes: [";
             for(unsigned int i = 0; i < colorTimes->size(); i++){
               std::cout << (*colorTimes)[i].color << ", " << (*colorTimes)[i].start << ", " << (*colorTimes)[i].end << "; ";
@@ -256,7 +256,7 @@ int main (int argc, char **argv){
             std::cout << "\t > typ: " << typ_i << "\n\n";
           }
           else {
-            std::cout << "\t add_interpretation() failed. \n\n";
+            std::cout << "\t add_transformation() failed. \n\n";
           }
 
         }
@@ -276,7 +276,7 @@ int main (int argc, char **argv){
               std::cout << "\t manipulate_segment() failed. \n";
             }
           }
-          else if(v[1] == "interpretation") {
+          else if(v[1] == "transformation") {
             //all segments need to recalculate!
             int id = std::stoi(v[2]);
             int offset = std::stoi(v[3]);
@@ -284,16 +284,16 @@ int main (int argc, char **argv){
 
             int typ_i = base->get_typ_i(id);
             if(typ_i == 0 /*average*/ ) {
-              if(base->manipulate_interpretation(id, offset, stride)){
-                std::cout << "\t > you fool. The Average-interpretation needs no manipulation. \n";
+              if(base->manipulate_transformation(id, offset, stride)){
+                std::cout << "\t > you fool. The Average-transformation needs no manipulation. \n";
                 std::cout << "\t > ... maybe it actually does ... \n";
-                std::cout << "\t > interpretation id: " << id << "\n";
+                std::cout << "\t > transformation id: " << id << "\n";
                 std::cout << "\t > typ: " << typ_i << "\n";
                 std::cout << "\t > offset: " << offset << "\n";
                 std::cout << "\t > stride: " << stride << "\n";
               }
               else{
-                std::cout << "\t > manipulate interpretation id: " << id << " failed. \n";
+                std::cout << "\t > manipulate transformation id: " << id << " failed. \n";
               }
             }
             else if(typ_i == 1 /*Transferfrunction*/ ) {
@@ -305,8 +305,8 @@ int main (int argc, char **argv){
                 weights->push_back(std::stof(v[idx]));
               }
 
-              if(base->manipulate_interpretation(id, start, modi, weights, offset, stride)){
-                std::cout << "\t > interpretation id: " << id << "\n";
+              if(base->manipulate_transformation(id, start, modi, weights, offset, stride)){
+                std::cout << "\t > transformation id: " << id << "\n";
                 std::cout << "\t > typ: " << typ_i << "\n";
                 std::cout << "\t > start_frame: " << start << "\n";
                 std::cout << "\t > offset: " << offset << "\n";
@@ -318,7 +318,7 @@ int main (int argc, char **argv){
                 std::cout << "]\n\n";
               }
               else{
-                std::cout << "\t > manipulate interpretation id: " << id << " failed. \n";
+                std::cout << "\t > manipulate transformation id: " << id << " failed. \n";
               }
             }
             else if(typ_i == 2 || typ_i == 3 || typ_i == 5 /*Overplott, Boost, Reduce*/){
@@ -328,8 +328,8 @@ int main (int argc, char **argv){
                 float threshhold  = std::stof (v[6]);
                 int modi          = std::stoi (v[7]);
 
-                if(base->manipulate_interpretation(id, ref_id, threshhold, modi, offset, stride)){
-                  std::cout << "\t > interpretation id: " << id << "\n";
+                if(base->manipulate_transformation(id, ref_id, threshhold, modi, offset, stride)){
+                  std::cout << "\t > transformation id: " << id << "\n";
                   std::cout << "\t > typ: " << typ_i << "\n";
                   std::cout << "\t > reference id: " << ref_id << "\n";
                   std::cout << "\t > threshhold: " << threshhold << "\n";
@@ -338,7 +338,7 @@ int main (int argc, char **argv){
                   std::cout << "\t > stride: " << stride << "\n";
                 }
                 else{
-                  std::cout << "\t > manipulate interpretation id: " << id << " failed. \n";
+                  std::cout << "\t > manipulate transformation id: " << id << " failed. \n";
                 }
               }
               else{
@@ -346,8 +346,8 @@ int main (int argc, char **argv){
                 float threshhold = std::stof(v[6]);
                 int modi         = std::stoi (v[7]);
 
-                if(base->manipulate_interpretation(id, ref_file_path, threshhold, modi, offset, stride)){
-                  std::cout << "\t > interpretation id: " << id << "\n";
+                if(base->manipulate_transformation(id, ref_file_path, threshhold, modi, offset, stride)){
+                  std::cout << "\t > transformation id: " << id << "\n";
                   std::cout << "\t > typ: " << typ_i << "\n";
                   std::cout << "\t > reference path: " << ref_file_path << "\n";
                   std::cout << "\t > threshhold: " << threshhold << "\n";
@@ -356,7 +356,7 @@ int main (int argc, char **argv){
                   std::cout << "\t > stride: " << stride << "\n";
                 }
                 else{
-                  std::cout << "\t > manipulate interpretation id: " << id << " failed. \n";
+                  std::cout << "\t > manipulate transformation id: " << id << " failed. \n";
                 }
               }
             }
@@ -372,8 +372,8 @@ int main (int argc, char **argv){
               if(colors->size()%3 != 0)
                 std::cout << "\t too few arguments (tpye, float, [r, g, b]*n) \n";
 
-              if(base->manipulate_interpretation(id, threshhold, modi, colors, offset, stride)){
-                std::cout << "\t > interpretation id: " << id << "\n";
+              if(base->manipulate_transformation(id, threshhold, modi, colors, offset, stride)){
+                std::cout << "\t > transformation id: " << id << "\n";
                 std::cout << "\t > typ: " << typ_i << "\n";
                 std::cout << "\t > threshhold: " << threshhold << "\n";
                 std::cout << "\t > modi: " << modi << "\n";
@@ -386,7 +386,7 @@ int main (int argc, char **argv){
                 std::cout << "\n\n";
               }
               else{
-                std::cout << "\t > manipulate interpretation id: " << id << " failed. \n";
+                std::cout << "\t > manipulate transformation id: " << id << " failed. \n";
               }
 
             }
@@ -404,8 +404,8 @@ int main (int argc, char **argv){
 
               cv::Vec2f mid = cv::Vec2f(mid_x, mid_y);
 
-              if(base->manipulate_interpretation(id, start, end, outer_circle_start, outer_circle_end, mode, mid, radius, fade_dir, parameter ,offset, stride)){
-                std::cout << "\t > interpretation id: " << id << "\n";
+              if(base->manipulate_transformation(id, start, end, outer_circle_start, outer_circle_end, mode, mid, radius, fade_dir, parameter ,offset, stride)){
+                std::cout << "\t > transformation id: " << id << "\n";
                 std::cout << "\t > typ: " << typ_i << "\n";
                 std::cout << "\t > start: " << start << "\n";
                 std::cout << "\t > end: " << end << "\n";
@@ -420,7 +420,7 @@ int main (int argc, char **argv){
                 std::cout << "\t > stride: " << stride << "\n\n";
               }
               else{
-                std::cout << "\t > manipulate interpretation id: " << id << " failed. \n";
+                std::cout << "\t > manipulate transformation id: " << id << " failed. \n";
               }
 
             }
@@ -435,7 +435,7 @@ int main (int argc, char **argv){
                                std::stof(v[idx+2]), std::stof(v[idx+3])};
                 points->push_back(tmp);
               }
-              if(base->manipulate_interpretation(id, mode_distance, mode_function, parameter, points, offset, stride)){
+              if(base->manipulate_transformation(id, mode_distance, mode_function, parameter, points, offset, stride)){
                 std::cout << "\t > mode_distance: " << mode_distance << "\n";
                 std::cout << "\t > mode_function: " << mode_function << "\n";
                 std::cout << "\t > parameter: " << parameter << "\n";
@@ -446,19 +446,19 @@ int main (int argc, char **argv){
                 std::cout << "]\n";
               }
               else{
-                std::cout << "\t > manipulate interpretation id: " << id << " failed. \n";
+                std::cout << "\t > manipulate transformation id: " << id << " failed. \n";
               }
             }
             else if(typ_i == 8 /*Singleimage*/){
               std::string file_path = v[5];
-              if(base->manipulate_interpretation(id, file_path)){
-                std::cout << "\t > interpretation id: " << id << "\n";
+              if(base->manipulate_transformation(id, file_path)){
+                std::cout << "\t > transformation id: " << id << "\n";
                 std::cout << "\t > typ: " << typ_i << "\n";
                 std::cout << "\t > file path: " << file_path << "\n";
 
               }
               else{
-                std::cout << "\t > manipulate interpretation id: " << id << " failed. \n";
+                std::cout << "\t > manipulate transformation id: " << id << " failed. \n";
               }
             }
             else if(typ_i == 9 /*Paint*/){
@@ -472,8 +472,8 @@ int main (int argc, char **argv){
                 colorTimes->push_back(tmp);
               }
 
-              if(base->manipulate_interpretation(id, colorTimes, offset, stride)){
-                std::cout << "\t > interpretation id: " << id << "\n";
+              if(base->manipulate_transformation(id, colorTimes, offset, stride)){
+                std::cout << "\t > transformation id: " << id << "\n";
                 std::cout << "\t > typ: " << typ_i << "\n";
                 std::cout << "\t > ColorTimes: [";
                 for(unsigned int i = 0; i < colorTimes->size(); i++){
@@ -481,7 +481,7 @@ int main (int argc, char **argv){
                 }
                 std::cout << "]\n";              }
               else{
-                std::cout << "\t > manipulate interpretation id: " << id << " failed. \n";
+                std::cout << "\t > manipulate transformation id: " << id << " failed. \n";
               }
 
             }
@@ -490,15 +490,15 @@ int main (int argc, char **argv){
             }
           }
           else{
-            std::cout << "manipulate either segment or interpretation. \n";
+            std::cout << "manipulate either segment or transformation. \n";
           }
         }
         else if(v[0] == "connect") {
           int id_segment        = std::stoi (v[1]);
-          int id_interpretation = std::stoi (v[2]);
+          int id_transformation = std::stoi (v[2]);
 
-          if(base->connect(id_segment, id_interpretation)) {
-            std::cout << "\t > Segment id: " << id_segment << " now connected with interpretation id: "<< id_interpretation << "\n\n";
+          if(base->connect(id_segment, id_transformation)) {
+            std::cout << "\t > Segment id: " << id_segment << " now connected with transformation id: "<< id_transformation << "\n\n";
           }
           else {
             std::cout<<" \t connect() failed. (Wrong id's) \n";

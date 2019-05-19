@@ -120,10 +120,10 @@ let Segments = (function () {
         r = parseInt(r);
 
         var x = r, y = 0, cd = 0;
-      
+
         // middle line
         ctx.rect(xc - x, yc, r<<1, 1);
-      
+
         while (x > y) {
           cd -= (--x) - (++y);
           if (cd < 0) cd += x++;
@@ -208,7 +208,7 @@ let Segments = (function () {
                 <div class="bar">segment_${id}</div>
                 <span class="spinner"><span class="percent"></span><i class="fas fa-spinner"></i></span>
                 <div class="graph">
-                    
+
                 </div>
                 <div class="scale-left"></div>
                 <div class="scale-right"></div>
@@ -289,7 +289,7 @@ let Segments = (function () {
         });
 
         let start = 0;
-        let end = 5;
+        let end = 4;
 
         let segment = {
             id: id,
