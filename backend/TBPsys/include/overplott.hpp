@@ -1,3 +1,7 @@
+/*
+Author:     Lucas Hübner
+Date:       27.05.2019
+*/
 #ifndef OVERPLOTT_HPP
 #define OVERPLOTT_HPP
 #include <math.h>

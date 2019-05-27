@@ -1,3 +1,7 @@
+/*
+Author:     Phil Jungschlaeger, Lucas Hübner
+Date:       27.05.2019
+*/
 #ifndef SEGMENT_HPP
 #define SEGMENT_HPP
 

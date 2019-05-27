@@ -1,3 +1,8 @@
+/*
+Author:     Phil Jungschlaeger
+Date:       27.05.2019
+*/
+
 #include <chrono>
 #include <thread>
 #include <memory>

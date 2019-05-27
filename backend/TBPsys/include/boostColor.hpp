@@ -1,3 +1,7 @@
+/*
+Author:     Lucas Hübner
+Date:       27.05.2019
+*/
 #ifndef BOOSTCOLOR_HPP
 #define BOOSTCOLOR_HPP
 #include <math.h>

@@ -1,4 +1,8 @@
 /*
+Author:     Lucas Hübner
+Date:       27.05.2019
+*/
+/*
  * test lab to generate fast output of different settings
  * console: ffmpeg -framerate 30 -i ./video/boost_cyc_%01d.png -c:v libx264 -pix_fmt yuv420p video.avi
 */

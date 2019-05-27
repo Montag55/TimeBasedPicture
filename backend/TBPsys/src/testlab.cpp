@@ -1,7 +1,11 @@
 /*
-test lab to generate fast output of different settings
+Author:     Phil Jungschlaeger
+Date:       27.05.2019
 */
 
+/*
+test lab to generate fast output of different settings
+*/
 #include <string>
 #include <sstream>
 #include <iostream>

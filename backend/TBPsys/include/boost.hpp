@@ -1,3 +1,7 @@
+/*
+Author:     Lucas Hübner
+Date:       27.05.2019
+*/
 #ifndef BOOST_HPP
 #define BOOST_HPP
 #include <math.h>

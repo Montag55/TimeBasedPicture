@@ -1,3 +1,7 @@
+/*
+Author:     Phil Jungschlaeger, Lucas Hübner
+Date:       27.05.2019
+*/
 #ifndef BASE_HPP
 #define BASE_HPP
 

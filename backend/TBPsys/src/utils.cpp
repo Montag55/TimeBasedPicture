@@ -1,3 +1,7 @@
+/*
+Author:     Lucas Hübner
+Date:       27.05.2019
+*/
 #include "../include/utils.hpp"
 
 namespace utils {

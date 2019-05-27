@@ -1,3 +1,8 @@
+/*
+Author:     Phil Jungschlaeger, Lucas Hübner
+Date:       27.05.2019
+*/
+
 #include <node.h>
 #include <time.h>
 #include <algorithm>

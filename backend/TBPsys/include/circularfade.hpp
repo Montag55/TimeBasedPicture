@@ -1,3 +1,7 @@
+/*
+Author:     Phil Jungschlaeger
+Date:       27.05.2019
+*/
 #ifndef CIRCULARFADE_HPP
 #define CIRCULARFADE_HPP
 #include <math.h>

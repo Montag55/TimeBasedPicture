@@ -1,3 +1,7 @@
+/*
+Author:     Phil Jungschlaeger, Lucas Hübner
+Date:       27.05.2019
+*/
 #ifndef TRANSFORMATION_HPP
 #define TRANSFORMATION_HPP
 

@@ -1,3 +1,7 @@
+/*
+Author:     Phil Jungschlaeger
+Date:       27.05.2019
+*/
 #ifndef AVG_HPP
 #define AVG_HPP
 

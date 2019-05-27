@@ -1,3 +1,7 @@
+/*
+Author:     Phil Jungschlaeger
+Date:       27.05.2019
+*/
 #ifndef PAINT_HPP
 #define PAINT_HPP
 #include <math.h>

@@ -1,3 +1,7 @@
+/*
+Author:     Lucas Hübner
+Date:       27.05.2019
+*/
 #ifndef TRANSFER_HPP
 #define TRANSFER_HPP
 
