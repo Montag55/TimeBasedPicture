@@ -1,15 +1,15 @@
 <map id="Segment::ready_to_work" name="Segment::ready_to_work">
-<area shape="rect" id="node2" href="$classSegment.html#a3585047ea9a85d67a3a52c8919fc0a9a" title="Segment::delete_seg" alt="" coords="249,5,394,32"/>
-<area shape="rect" id="node3" href="$classSegment.html#a25211b569b1ed32cd8e7a8e70982ae2b" title="Segment::manipulate" alt="" coords="249,56,394,83"/>
-<area shape="rect" id="node4" href="$classSegment.html#a0efbd8eecdc50c37bba603c48a310395" title="Segment::move_in_time" alt="" coords="240,107,403,133"/>
-<area shape="rect" id="node5" href="$classSegment.html#a30a9a7c09baa6d8e291db423897e427c" title="Segment::Segment" alt="" coords="254,157,389,184"/>
-<area shape="rect" id="node6" href="$classSegment.html#af3e8ae66600cdfe5716240a5be90523c" title="Segment::set_endframe" alt="" coords="241,208,402,235"/>
-<area shape="rect" id="node7" href="$classSegment.html#a44356c908d7182a87614261fc27f462d" title="Segment::set_exposure" alt="" coords="241,259,401,285"/>
-<area shape="rect" id="node8" href="$classSegment.html#aee556839bc461264e7e8bf1c1a2f36bf" title="Segment::set_exposure\l_delta" alt="" coords="241,310,401,351"/>
-<area shape="rect" id="node9" href="$classSegment.html#ac35f5dfb41aeba37ba9bf0f9ae5ba196" title="Segment::set_global\l_intensity" alt="" coords="251,375,392,417"/>
-<area shape="rect" id="node10" href="$classSegment.html#abb8eb92ffa87466ac17929673a6a4cd9" title="Segment::set_interpretation" alt="" coords="230,441,413,468"/>
-<area shape="rect" id="node11" href="$classSegment.html#a72332c7cec897a0ed24a156a7eb89827" title="Segment::set_local\l_intensity" alt="" coords="254,493,389,534"/>
-<area shape="rect" id="node12" href="$classSegment.html#ade0cbee27947d720384e4d53e333ad9f" title="Segment::set_startframe" alt="" coords="238,559,405,585"/>
-<area shape="rect" id="node13" href="$classSegment.html#a45919e73e6b7e276951d3cc637283be8" title="Segment::trigger_interpretation" alt="" coords="221,609,421,636"/>
-<area shape="rect" id="node14" href="$classSegment.html#aa6fccbea454268f92ef2159d2b1fa80c" title="Segment::update_interpretation" alt="" coords="220,660,423,687"/>
+<area shape="rect" id="node2" href="$classSegment.html#a3585047ea9a85d67a3a52c8919fc0a9a" title="Segment::delete_seg" alt="" coords="253,5,398,32"/>
+<area shape="rect" id="node3" href="$classSegment.html#a25211b569b1ed32cd8e7a8e70982ae2b" title="Segment::manipulate" alt="" coords="253,56,398,83"/>
+<area shape="rect" id="node4" href="$classSegment.html#a0efbd8eecdc50c37bba603c48a310395" title="Segment::move_in_time" alt="" coords="244,107,407,133"/>
+<area shape="rect" id="node5" href="$classSegment.html#a30a9a7c09baa6d8e291db423897e427c" title="Segment::Segment" alt="" coords="258,157,393,184"/>
+<area shape="rect" id="node6" href="$classSegment.html#af3e8ae66600cdfe5716240a5be90523c" title="Segment::set_endframe" alt="" coords="245,208,406,235"/>
+<area shape="rect" id="node7" href="$classSegment.html#a44356c908d7182a87614261fc27f462d" title="Segment::set_exposure" alt="" coords="245,259,405,285"/>
+<area shape="rect" id="node8" href="$classSegment.html#aee556839bc461264e7e8bf1c1a2f36bf" title="Segment::set_exposure\l_delta" alt="" coords="245,310,405,351"/>
+<area shape="rect" id="node9" href="$classSegment.html#ac35f5dfb41aeba37ba9bf0f9ae5ba196" title="Segment::set_global\l_intensity" alt="" coords="255,375,396,417"/>
+<area shape="rect" id="node10" href="$classSegment.html#a72332c7cec897a0ed24a156a7eb89827" title="Segment::set_local\l_intensity" alt="" coords="258,441,393,482"/>
+<area shape="rect" id="node11" href="$classSegment.html#ade0cbee27947d720384e4d53e333ad9f" title="Segment::set_startframe" alt="" coords="242,507,409,533"/>
+<area shape="rect" id="node12" href="$classSegment.html#aa0cc9871174bdba1d63dfea150fb014a" title="Segment::set_transformation" alt="" coords="230,557,421,584"/>
+<area shape="rect" id="node13" href="$classSegment.html#a3cbc179f21bc1ccfcab9eab1fce95acc" title="Segment::trigger_transformation" alt="" coords="221,608,429,635"/>
+<area shape="rect" id="node14" href="$classSegment.html#a1ed6fe19f86e28fb0adc26ee9daa4e0d" title="Segment::update_transformation" alt="" coords="220,659,431,685"/>
 </map>

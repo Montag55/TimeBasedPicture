@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['reduce',['Reduce',['../classReduce.html',1,'']]]
+  ['segment',['Segment',['../classSegment.html',1,'']]],
+  ['singleimage',['Singleimage',['../classSingleimage.html',1,'']]]
 ];

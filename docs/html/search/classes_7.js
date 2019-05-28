@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['segment',['Segment',['../classSegment.html',1,'']]],
-  ['singleimage',['Singleimage',['../classSingleimage.html',1,'']]]
+  ['timefadepoints',['Timefadepoints',['../classTimefadepoints.html',1,'']]],
+  ['transferfunction',['Transferfunction',['../classTransferfunction.html',1,'']]],
+  ['transformation',['Transformation',['../classTransformation.html',1,'']]]
 ];

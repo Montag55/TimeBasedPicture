@@ -1,0 +1,19 @@
+<map id="Transformation::update_connections" name="Transformation::update_connections">
+<area shape="rect" id="node2" href="$classAverage.html#a2ea17442cef79661010d853a163afd7c" title="Average::manipulate" alt="" coords="232,5,373,32"/>
+<area shape="rect" id="node4" href="$classSingleimage.html#a152edae18c7a11dba4e3b9a2103e348d" title="Singleimage::manipulate" alt="" coords="221,56,385,83"/>
+<area shape="rect" id="node6" href="$classBoostColor.html#a3c8e40254d2bc09efae0d8d5e18cc010" title="BoostColor::manipulate" alt="" coords="223,107,382,133"/>
+<area shape="rect" id="node8" href="$classReduce.html#a4bcde1aebc2e351daf89c666224d7a58" title="Reduce::manipulate" alt="" coords="233,208,372,235"/>
+<area shape="rect" id="node10" href="$classBoost.html#a87bc55e5cc413d33924984f5e2d0d26a" title="Boost::manipulate" alt="" coords="239,259,366,285"/>
+<area shape="rect" id="node11" href="$classCircularfade.html#a775320cc408903ff918180b45d6b086b" title="Circularfade::manipulate" alt="" coords="221,360,384,387"/>
+<area shape="rect" id="node13" href="$classOverplott.html#ae3ac8f3507db015c57131ee46e585c74" title="Overplott::manipulate" alt="" coords="229,309,376,336"/>
+<area shape="rect" id="node14" href="$classTimefadepoints.html#a17a123797fda1e0ee87405019a891abf" title="Timefadepoints::manipulate" alt="" coords="211,411,394,437"/>
+<area shape="rect" id="node16" href="$classTransferfunction.html#a1e2b0400d9fdc7ca093e3c2af4689bd5" title="Transferfunction::manipulate" alt="" coords="209,157,396,184"/>
+<area shape="rect" id="node17" href="$classPaint.html#a7e59590a95a344b9d0d30537ff569326" title="Paint::manipulate" alt="" coords="241,461,364,488"/>
+<area shape="rect" id="node3" href="$classBase.html#a9a7ed223361f397ee7ca481d9e2781e4" title="Base::manipulate_transformation" alt="" coords="444,5,657,32"/>
+<area shape="rect" id="node5" href="$classBase.html#acad528f40ce57397829cf85c3a07fbdb" title="Base::manipulate_transformation" alt="" coords="444,56,657,83"/>
+<area shape="rect" id="node7" href="$classBase.html#af02adae825451b5633f7db2d2b0dd21e" title="Base::manipulate_transformation" alt="" coords="444,132,657,159"/>
+<area shape="rect" id="node9" href="$classBase.html#a23dd39606de1772fec544828fb681917" title="Base::manipulate_transformation" alt="" coords="444,259,657,285"/>
+<area shape="rect" id="node12" href="$classBase.html#a3aef9494ea6306d7c90e11773f3b03c2" title="Base::manipulate_transformation" alt="" coords="444,360,657,387"/>
+<area shape="rect" id="node15" href="$classBase.html#a519e5e4831d41a2ee7da6cf83560cf95" title="Base::manipulate_transformation" alt="" coords="444,411,657,437"/>
+<area shape="rect" id="node18" href="$classBase.html#a25577b4b346723bf8518ff334bfed10e" title="Base::manipulate_transformation" alt="" coords="444,461,657,488"/>
+</map>

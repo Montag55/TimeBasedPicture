@@ -9,6 +9,9 @@ var searchData=
   ['transferfunction',['Transferfunction',['../classTransferfunction.html',1,'Transferfunction'],['../classTransferfunction.html#acdb7ea90df068b917029903be2a3dd12',1,'Transferfunction::Transferfunction()']]],
   ['transferfunction_2ecpp',['transferfunction.cpp',['../transferfunction_8cpp.html',1,'']]],
   ['transferfunction_2ehpp',['transferfunction.hpp',['../transferfunction_8hpp.html',1,'']]],
-  ['trigger_5fconnections',['trigger_connections',['../classInterpretation.html#ad56f3aaa49caf43de5be020cdce6a746',1,'Interpretation']]],
-  ['trigger_5finterpretation',['trigger_interpretation',['../classSegment.html#a45919e73e6b7e276951d3cc637283be8',1,'Segment']]]
+  ['transformation',['Transformation',['../classTransformation.html',1,'Transformation'],['../classTransformation.html#a78c65d3bef29e650142e6e05af3337f5',1,'Transformation::Transformation()']]],
+  ['transformation_2ecpp',['transformation.cpp',['../transformation_8cpp.html',1,'']]],
+  ['transformation_2ehpp',['transformation.hpp',['../transformation_8hpp.html',1,'']]],
+  ['trigger_5fconnections',['trigger_connections',['../classTransformation.html#a3d293bb053180cc73e0d065aa13200db',1,'Transformation']]],
+  ['trigger_5ftransformation',['trigger_transformation',['../classSegment.html#a3cbc179f21bc1ccfcab9eab1fce95acc',1,'Segment']]]
 ];

@@ -1,0 +1,28 @@
+var classTransformation =
+[
+    [ "Transformation", "classTransformation.html#a78c65d3bef29e650142e6e05af3337f5", null ],
+    [ "~Transformation", "classTransformation.html#ade11a9f133b2acd81ae9383187cc255e", null ],
+    [ "get_id", "classTransformation.html#a7b9542d03aa23a033391a62aa0925642", null ],
+    [ "get_offset", "classTransformation.html#afda28e79e6c413e4226948e8661f7bfa", null ],
+    [ "get_stride", "classTransformation.html#aced1957c7c0d59e39c87e710952e0c70", null ],
+    [ "getTypenumber", "classTransformation.html#ac1d7e293fbc55c303c2c3a74ddfde8bf", null ],
+    [ "get_upload_specification", "classTransformation.html#a3f7cb49f4307ab2f56411d6e5d37f7fd", null ],
+    [ "get_calculation_specification", "classTransformation.html#ab721208ce2165c9f408ac185dbbcec4b", null ],
+    [ "calc", "classTransformation.html#a489122ea128546c006ad124e0405d640", null ],
+    [ "add_connection", "classTransformation.html#a8fe6e8e226a2e61ee87c377321cd5774", null ],
+    [ "delete_connection", "classTransformation.html#a24dd0fe217ae5fdea3fbb4f925a8ea6a", null ],
+    [ "update_connections", "classTransformation.html#a2957c0bcf4c162df78e6493a950444aa", null ],
+    [ "trigger_connections", "classTransformation.html#a3d293bb053180cc73e0d065aa13200db", null ],
+    [ "m_offset", "classTransformation.html#a5c0bbbf70ef4ef551d0a1deb302dae4b", null ],
+    [ "m_stride", "classTransformation.html#ae32910c87b679aedc750755bf285a299", null ],
+    [ "m_video", "classTransformation.html#a1e1c0d5c921ccb5498a1653e8effcd20", null ],
+    [ "m_img_type", "classTransformation.html#ac7f4e85c4f8892e7f77f402b4b43eb71", null ],
+    [ "m_id", "classTransformation.html#a7f1c6bf3d3efddf6091ee7b457dffe98", null ],
+    [ "m_type", "classTransformation.html#a14d84a0157e6da92c9f3706c65aa7778", null ],
+    [ "m_upload_specification", "classTransformation.html#ade03e7cf2282c3ac5f4bf835dc12eaa4", null ],
+    [ "m_calc_specification", "classTransformation.html#a50b487f01c64d57c6b94e76723ff1207", null ],
+    [ "m_recompute", "classTransformation.html#ad835e3104b53965eb94e4d7456e284b4", null ],
+    [ "m_mutex_connections", "classTransformation.html#a724760056142a852a45476f2c3ec682b", null ],
+    [ "m_base", "classTransformation.html#aac2136eb1fd98b656b53428305620db5", null ],
+    [ "m_all_connections", "classTransformation.html#ab3d76f5078a84d0d7e6599d0ed41fcf1", null ]
+];

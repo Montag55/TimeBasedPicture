@@ -15,9 +15,6 @@ var dir_a1848d0b457241b032bbc95b5996cffa =
     [ "circularfade.hpp", "circularfade_8hpp.html", [
       [ "Circularfade", "classCircularfade.html", "classCircularfade" ]
     ] ],
-    [ "interpretation.hpp", "interpretation_8hpp.html", [
-      [ "Interpretation", "classInterpretation.html", "classInterpretation" ]
-    ] ],
     [ "overplott.hpp", "overplott_8hpp.html", [
       [ "Overplott", "classOverplott.html", "classOverplott" ]
     ] ],
@@ -41,6 +38,9 @@ var dir_a1848d0b457241b032bbc95b5996cffa =
     ] ],
     [ "transferfunction.hpp", "transferfunction_8hpp.html", [
       [ "Transferfunction", "classTransferfunction.html", "classTransferfunction" ]
+    ] ],
+    [ "transformation.hpp", "transformation_8hpp.html", [
+      [ "Transformation", "classTransformation.html", "classTransformation" ]
     ] ],
     [ "utils.hpp", "utils_8hpp.html", "utils_8hpp" ]
 ];

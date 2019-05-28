@@ -6,12 +6,12 @@ var annotated_dup =
     [ "BoostColor", "classBoostColor.html", "classBoostColor" ],
     [ "Circularfade", "classCircularfade.html", "classCircularfade" ],
     [ "ColorCoords", "structColorCoords.html", "structColorCoords" ],
-    [ "Interpretation", "classInterpretation.html", "classInterpretation" ],
     [ "Overplott", "classOverplott.html", "classOverplott" ],
     [ "Paint", "classPaint.html", "classPaint" ],
     [ "Reduce", "classReduce.html", "classReduce" ],
     [ "Segment", "classSegment.html", "classSegment" ],
     [ "Singleimage", "classSingleimage.html", "classSingleimage" ],
     [ "Timefadepoints", "classTimefadepoints.html", "classTimefadepoints" ],
-    [ "Transferfunction", "classTransferfunction.html", "classTransferfunction" ]
+    [ "Transferfunction", "classTransferfunction.html", "classTransferfunction" ],
+    [ "Transformation", "classTransformation.html", "classTransformation" ]
 ];

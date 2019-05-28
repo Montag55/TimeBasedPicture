@@ -1,7 +1,6 @@
 <map id="Base" name="Base">
-<area shape="rect" id="node17" href="$classSegment.html" title="Segment" alt="" coords="429,367,503,393"/>
-<area shape="rect" id="node9" title="STL class. " alt="" coords="408,145,524,172"/>
-<area shape="rect" id="node13" title="STL class. " alt="" coords="769,813,849,840"/>
-<area shape="rect" id="node14" title="STL class. " alt="" coords="403,814,529,855"/>
-<area shape="rect" id="node21" title="STL class. " alt="" coords="767,864,851,891"/>
+<area shape="rect" id="node13" href="$classSegment.html" title="Segment" alt="" coords="441,601,515,627"/>
+<area shape="rect" id="node9" title="STL class. " alt="" coords="836,539,916,566"/>
+<area shape="rect" id="node10" title="STL class. " alt="" coords="415,535,541,576"/>
+<area shape="rect" id="node18" title="STL class. " alt="" coords="834,810,918,837"/>
 </map>

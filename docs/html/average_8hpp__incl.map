@@ -1,8 +1,8 @@
 <map id="backend/TBPsys/include/average.hpp" name="backend/TBPsys/include/average.hpp">
-<area shape="rect" id="node2" href="$interpretation_8hpp.html" title="../include/interpretation.hpp" alt="" coords="805,319,984,345"/>
+<area shape="rect" id="node2" href="$transformation_8hpp.html" title="../include/transformation.hpp" alt="" coords="805,319,992,345"/>
 <area shape="rect" id="node6" href="$base_8hpp.html" title="../include/base.hpp" alt="" coords="821,95,953,121"/>
 <area shape="rect" id="node10" href="$segment_8hpp.html" title="segment.hpp" alt="" coords="950,169,1047,196"/>
-<area shape="rect" id="node11" href="$struct_8hpp.html" title="struct.hpp" alt="" coords="1363,319,1443,345"/>
+<area shape="rect" id="node11" href="$struct_8hpp.html" title="struct.hpp" alt="" coords="1371,319,1451,345"/>
 <area shape="rect" id="node15" href="$boost_8hpp.html" title="boost.hpp" alt="" coords="606,244,685,271"/>
 <area shape="rect" id="node17" href="$reduce_8hpp.html" title="reduce.hpp" alt="" coords="361,244,447,271"/>
 <area shape="rect" id="node18" href="$boostColor_8hpp.html" title="boostColor.hpp" alt="" coords="471,244,582,271"/>
@@ -12,5 +12,5 @@
 <area shape="rect" id="node23" href="$circularfade_8hpp.html" title="circularfade.hpp" alt="" coords="709,244,824,271"/>
 <area shape="rect" id="node24" href="$singleimage_8hpp.html" title="singleimage.hpp" alt="" coords="1049,244,1165,271"/>
 <area shape="rect" id="node25" href="$paint_8hpp.html" title="paint.hpp" alt="" coords="949,244,1024,271"/>
-<area shape="rect" id="node20" href="$utils_8hpp.html" title="../include/utils.hpp" alt="" coords="1467,319,1595,345"/>
+<area shape="rect" id="node20" href="$utils_8hpp.html" title="../include/utils.hpp" alt="" coords="1475,319,1603,345"/>
 </map>

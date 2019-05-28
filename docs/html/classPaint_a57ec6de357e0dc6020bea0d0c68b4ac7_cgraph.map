@@ -1,5 +1,5 @@
 <map id="Paint::Paint" name="Paint::Paint">
 <area shape="rect" id="node2" href="$classPaint.html#ac67b2eb8d5a9e2cca4b40c81e193d883" title="Paint::create_time_map" alt="" coords="144,5,304,32"/>
 <area shape="rect" id="node3" href="$classPaint.html#ae65ca42191d8bd4c60df58ef39e53968" title="Paint::update_Mask" alt="" coords="155,56,293,83"/>
-<area shape="rect" id="node4" href="$classInterpretation.html#af0e09385602117a8b0493d78dc0b0b6d" title="Interpretation::get_id" alt="" coords="352,56,493,83"/>
+<area shape="rect" id="node4" href="$classTransformation.html#a7b9542d03aa23a033391a62aa0925642" title="Transformation::get_id" alt="" coords="352,56,504,83"/>
 </map>

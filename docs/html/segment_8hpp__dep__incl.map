@@ -1,10 +1,10 @@
 <map id="backend/TBPsys/include/segment.hpp" name="backend/TBPsys/include/segment.hpp">
 <area shape="rect" id="node2" href="$base_8hpp.html" title="backend/TBPsys/include\l/base.hpp" alt="" coords="1457,95,1623,136"/>
 <area shape="rect" id="node19" href="$base_8cpp.html" title="backend/TBPsys/src\l/base.cpp" alt="" coords="5,184,149,225"/>
-<area shape="rect" id="node20" href="$interpretation_8cpp.html" title="backend/TBPsys/src\l/interpretation.cpp" alt="" coords="173,184,317,225"/>
-<area shape="rect" id="node21" href="$segment_8cpp.html" title="backend/TBPsys/src\l/segment.cpp" alt="" coords="341,184,485,225"/>
-<area shape="rect" id="node22" href="$terminal-time_8cpp.html" title="backend/TBPsys/src\l/terminal&#45;time.cpp" alt="" coords="2257,184,2401,225"/>
-<area shape="rect" id="node23" href="$testlab_8cpp.html" title="backend/TBPsys/src\l/testlab.cpp" alt="" coords="2425,184,2569,225"/>
+<area shape="rect" id="node20" href="$segment_8cpp.html" title="backend/TBPsys/src\l/segment.cpp" alt="" coords="173,184,317,225"/>
+<area shape="rect" id="node21" href="$terminal-time_8cpp.html" title="backend/TBPsys/src\l/terminal&#45;time.cpp" alt="" coords="341,184,485,225"/>
+<area shape="rect" id="node22" href="$testlab_8cpp.html" title="backend/TBPsys/src\l/testlab.cpp" alt="" coords="2257,184,2401,225"/>
+<area shape="rect" id="node23" href="$transformation_8cpp.html" title="backend/TBPsys/src\l/transformation.cpp" alt="" coords="2425,184,2569,225"/>
 <area shape="rect" id="node24" href="$videolab_8cpp.html" title="backend/TBPsys/src\l/videolab.cpp" alt="" coords="2593,184,2737,225"/>
 <area shape="rect" id="node25" href="$timefadepoints_8cpp.html" title="backend/TBPsys/src\l/timefadepoints.cpp" alt="" coords="1120,95,1264,136"/>
 <area shape="rect" id="node26" href="$transferfunction_8cpp.html" title="backend/TBPsys/src\l/transferfunction.cpp" alt="" coords="1288,95,1432,136"/>
